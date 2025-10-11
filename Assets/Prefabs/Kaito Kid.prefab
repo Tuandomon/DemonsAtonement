@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2610351836312679762}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: GroundCheck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -46,7 +46,7 @@ GameObject:
   - component: {fileID: 8407892942825166204}
   - component: {fileID: 5420079336873478932}
   - component: {fileID: 3791028645760374426}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Kaito Kid
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -226,7 +226,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c48009e3ef04faa4e93ed6186b96ddfb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
+  moveSpeed: 7
   jumpForce: 22
   groundCheck: {fileID: 2610351836312679762}
   groundCheckRadius: 0.2
