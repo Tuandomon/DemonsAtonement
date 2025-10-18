@@ -3,6 +3,8 @@ using UnityEngine.UI;
 
 public class PlayerHealth : MonoBehaviour
 {
+    private bool isDead = false; // Đảm bảo hành động chết chỉ chạy một lần
+    private PlayerController  playerController; // Tham chiếu đến script điều khiển di chuyển
     [Header("Health Settings")]
     public int maxHealth = 100;
     public int currentHealth;
@@ -10,6 +12,7 @@ public class PlayerHealth : MonoBehaviour
     [Header("UI Settings")]
     public Image healthFillImage;         // Gán Image của thanh máu
     public Gradient healthGradient;       // Gradient màu máu
+    private Animator animator;
 
     void Start()
     {
@@ -30,6 +33,8 @@ public class PlayerHealth : MonoBehaviour
         }
 
         UpdateHealthUI();
+        playerController = GetComponent<PlayerController>();
+        animator = GetComponent<Animator>();
     }
 
     void Update()
@@ -79,10 +84,18 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
-    // Hàm xử lý khi player chết
     void Die()
     {
-        Debug.Log("Player has died!");
-        // Thêm logic chết như animation, reload scene, v.v.
+        if (isDead) return;
+        isDead = true;
+
+        animator.SetTrigger("Die");
+
+
+        // Khóa di chuyển
+        if (playerController  != null)
+        {
+            playerController.enabled = false;
+        }
     }
 }
