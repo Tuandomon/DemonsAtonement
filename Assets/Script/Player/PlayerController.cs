@@ -24,7 +24,7 @@ public class PlayerController : MonoBehaviour
     public KeyCode dashKey = KeyCode.LeftShift;
 
     [Header("Dash Unlock")]
-    public bool canDash = false; // 🚫 Ban đầu không dash được
+    public bool canDash = false; //  BAN ĐẦU KHÔNG DASH ĐƯỢC
 
     private bool isDashing = false;
     private float lastDashTime;
@@ -36,14 +36,15 @@ public class PlayerController : MonoBehaviour
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         originalGravity = rb.gravityScale;
+
+        // CHẮC CHẮN DASH CHƯA MỞ KHÓA KHI BẮT ĐẦU
+        canDash = false;
+        Debug.Log(" Dash chưa được mở khóa - cần nhặt item!");
     }
 
     void Update()
     {
-        // Input di chuyển ngang
         moveInput = Input.GetAxisRaw("Horizontal");
-
-        // Kiểm tra chạm đất
         isGrounded = CheckGrounded();
 
         // Nhảy
@@ -56,24 +57,29 @@ public class PlayerController : MonoBehaviour
         animator.SetBool("isRunning", moveInput != 0);
         animator.SetBool("isJumping", !isGrounded);
 
-        // Lật sprite theo hướng
+        // Lật hướng nhân vật
         if (moveInput > 0) spriteRenderer.flipX = false;
         else if (moveInput < 0) spriteRenderer.flipX = true;
 
-        // Dash (chỉ khi đã mở khóa)
+        //  DASH - CHỈ HOẠT ĐỘNG KHI ĐÃ MỞ KHÓA
         if (canDash && !isDashing && Input.GetKeyDown(dashKey) && Time.time >= lastDashTime + dashCooldown)
         {
             Vector2 dashDir = new Vector2(spriteRenderer.flipX ? -1 : 1, 0);
             StartCoroutine(Dash(dashDir));
         }
+        
+        //  HIỂN THỊ CẢNH BÁO NẾU CHƯA MỞ KHÓA DASH
+        if (!canDash && Input.GetKeyDown(dashKey))
+        {
+            Debug.Log(" Bạn chưa mở khóa dash! Hãy tìm item dash để mở khóa.");
+        }
     }
 
     void FixedUpdate()
     {
-        // Nếu đang dash, bỏ qua di chuyển bình thường
         if (isDashing) return;
 
-        // Di chuyển ngang
+        // Di chuyển
         rb.velocity = new Vector2(moveInput * moveSpeed, rb.velocity.y);
 
         // Nhảy
@@ -89,42 +95,58 @@ public class PlayerController : MonoBehaviour
         isDashing = true;
         lastDashTime = Time.time;
 
-        // Vô hiệu trọng lực khi dash
         rb.gravityScale = 0;
-
-        // Tốc độ dash
         rb.velocity = dir * dashSpeed;
 
-        // Chờ dash kết thúc
         yield return new WaitForSeconds(dashTime);
 
-        // Khôi phục
         rb.gravityScale = originalGravity;
         isDashing = false;
     }
 
-    // 🎁 Gọi khi nhặt item để bật dash
-    public void UnlockDash(bool temporary = false, float duration = 0f)
+    // HÀM MỞ KHÓA DASH VĨNH VIỄN
+    public void UnlockDashPermanent()
     {
-        canDash = true;
-        Debug.Log("Dash Unlocked!");
+        if (!canDash) // Chỉ mở khóa nếu chưa có
+        {
+            canDash = true;
+            Debug.Log(" DASH ĐÃ ĐƯỢC MỞ KHÓA VĨNH VIỄN!");
 
-        if (temporary && duration > 0)
-            StartCoroutine(LoseDashAfter(duration));
+            // Có thể thêm hiệu ứng, âm thanh ở đây
+            StartCoroutine(ShowDashUnlockedEffect());
+        }
+        else
+        {
+            Debug.Log("✅ Bạn đã có dash rồi!");
+        }
     }
 
-    IEnumerator LoseDashAfter(float time)
+    IEnumerator ShowDashUnlockedEffect()
     {
-        yield return new WaitForSeconds(time);
-        canDash = false;
-        Debug.Log("Dash Lost!");
+        // Hiệu ứng khi mở khóa dash (tuỳ chọn)
+        Debug.Log(" Hiệu ứng mở khóa dash!");
+        yield return new WaitForSeconds(1f);
     }
 
-    // Kiểm tra mặt đất
     private bool CheckGrounded()
     {
         RaycastHit2D hit = Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckRadius);
         return hit.collider != null && hit.collider.CompareTag("Ground");
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        //  KHI CHẠM VÀO ITEM DASH
+        if (collision.CompareTag("DashItem"))
+        {
+            // TỰ ĐỘNG MỞ KHÓA DASH VĨNH VIỄN
+            UnlockDashPermanent();
+            
+            // TỰ ĐỘNG BIẾN MẤT ITEM
+            Destroy(collision.gameObject);
+            
+            Debug.Log("🎯 Đã nhặt item dash và kích hoạt thành công!");
+        }
     }
 
     private void OnDrawGizmosSelected()
