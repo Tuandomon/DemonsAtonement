@@ -23,6 +23,10 @@ public class Enemy : MonoBehaviour
     private Animator animator;
     private bool facingRight = true;
 
+    private bool isRetreating = false;
+    public float retreatDuration = 1f; // thời gian rút lui
+    private Vector2 retreatDirection;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -47,11 +51,14 @@ public class Enemy : MonoBehaviour
     {
         if (player == null) return;
 
-        // Tính khoảng cách theo trục X (chỉ quan tâm chiều ngang)
+        if (isRetreating)
+        {
+            Retreat();
+            return;
+        }
+
         float distanceX = Mathf.Abs(transform.position.x - player.position.x);
         float distanceY = Mathf.Abs(transform.position.y - player.position.y);
-
-        // Chỉ đuổi theo nếu player ở cùng độ cao (trong ngưỡng cho phép)
         float heightTolerance = 2f;
 
         if (distanceX <= chaseRange && distanceX > stopDistance && distanceY <= heightTolerance)
@@ -65,7 +72,6 @@ public class Enemy : MonoBehaviour
             StopChasing();
         }
 
-        // Kiểm tra tấn công
         if (distanceX <= attackRange && Time.time >= lastAttackTime + attackCooldown && distanceY <= heightTolerance)
         {
             Attack();
@@ -73,6 +79,15 @@ public class Enemy : MonoBehaviour
         }
 
         UpdateAnimation();
+    }
+    void Retreat()
+    {
+        Vector2 newPosition = rb.position + retreatDirection * moveSpeed * Time.fixedDeltaTime;
+        rb.MovePosition(new Vector2(newPosition.x, rb.position.y));
+
+        // Lật hướng nếu cần
+        if (retreatDirection.x > 0 && !facingRight) Flip();
+        else if (retreatDirection.x < 0 && facingRight) Flip();
     }
 
     void ChasePlayer()
@@ -115,7 +130,7 @@ public class Enemy : MonoBehaviour
     {
         if (player == null) return;
 
-        PlayerHeath playerHealth = player.GetComponent<PlayerHeath>();
+        PlayerHealth playerHealth = player.GetComponent<PlayerHealth>();
         if (playerHealth != null)
         {
             playerHealth.TakeDamage(attackDamage);
@@ -171,5 +186,34 @@ public class Enemy : MonoBehaviour
         // Vẽ vùng chiều cao cho phép
         Gizmos.color = Color.cyan;
         Gizmos.DrawWireCube(transform.position, new Vector3(chaseRange * 2, 2f, 0));
+    }
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            PlayerHealth playerHealth = collision.gameObject.GetComponent<PlayerHealth>();
+            if (playerHealth != null)
+            {
+                playerHealth.TakeDamage(attackDamage);
+                Debug.Log("Enemy va chạm và gây " + attackDamage + " sát thương!");
+            }
+
+            if (animator != null)
+            {
+                animator.SetTrigger("Attack");
+            }
+
+            // Bắt đầu rút lui
+            Vector2 directionAway = (transform.position - player.position).normalized;
+            retreatDirection = new Vector2(directionAway.x, 0);
+            StartCoroutine(RetreatCoroutine());
+        }
+    }
+    IEnumerator RetreatCoroutine()
+    {
+        isRetreating = true;
+        isChasing = false;
+        yield return new WaitForSeconds(retreatDuration);
+        isRetreating = false;
     }
 }
