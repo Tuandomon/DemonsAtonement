@@ -48,6 +48,7 @@ GameObject:
   - component: {fileID: 3791028645760374426}
   - component: {fileID: 844967971802598192}
   - component: {fileID: 6644279028110382716}
+  - component: {fileID: 3423816199789123521}
   m_Layer: 3
   m_Name: Kaito Kid
   m_TagString: Player
@@ -307,3 +308,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackCooldown: 1
+--- !u!114 &3423816199789123521
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8385089636014069269}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0af6a1c5891823e4ca49546de1f3162b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentCharacter: {fileID: 8385089636014069269}
+  transformedCharacter: {fileID: 4665087410665233936, guid: 8ce22bfd6c7177d40a306f951690be47, type: 3}
