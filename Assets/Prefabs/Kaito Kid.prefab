@@ -159,7 +159,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 5
+  m_GravityScale: 2
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -225,13 +225,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 8385089636014069269}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c48009e3ef04faa4e93ed6186b96ddfb, type: 3}
+  m_Script: {fileID: 11500000, guid: 1f4f89272c4fbe1429a75bdcb5b08645, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 7
-  jumpForce: 22
+  moveSpeed: 5
+  jumpForce: 16
   groundCheck: {fileID: 2610351836312679762}
   groundCheckRadius: 0.2
+  dashSpeed: 20
+  dashTime: 0.15
+  dashCooldown: 0.6
+  dashKey: 304
+  canDash: 0
 --- !u!114 &3791028645760374426
 MonoBehaviour:
   m_ObjectHideFlags: 0
