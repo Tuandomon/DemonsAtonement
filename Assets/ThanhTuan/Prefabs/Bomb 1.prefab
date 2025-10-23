@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3335068303042614153}
   - component: {fileID: 6119125630281197794}
   - component: {fileID: 4262528585999895762}
+  - component: {fileID: 7728959880914154504}
   m_Layer: 0
   m_Name: Bomb 1
   m_TagString: Trap
@@ -152,3 +153,19 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &7728959880914154504
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1006015871643856892}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 435f1a815f60cf44798b3840f229045f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageAmount: 50
+  targetTag: Player
+  explosionSprite: {fileID: 1793890287, guid: 00d4e375fad1a944e830d83c720b7bf9, type: 3}
+  explosionDuration: 0.5
