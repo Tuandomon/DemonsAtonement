@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3294117325771772408}
   - component: {fileID: 2409876120912900979}
-  - component: {fileID: 5649056834317138599}
+  - component: {fileID: 7521780968722428240}
   m_Layer: 0
   m_Name: 'Spike 1 '
   m_TagString: Untagged
@@ -85,7 +85,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!95 &5649056834317138599
+--- !u!95 &7521780968722428240
 Animator:
   serializedVersion: 5
   m_ObjectHideFlags: 0
@@ -95,7 +95,7 @@ Animator:
   m_GameObject: {fileID: 8029551415078185165}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: d9e3a52e891239348a80bd7b6355bb55, type: 2}
+  m_Controller: {fileID: 9100000, guid: d906aac7b9262144b89eff2528e33b9b, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5997865694465089039}
   - component: {fileID: 6983514150898897806}
-  - component: {fileID: 1057364838852121540}
+  - component: {fileID: 6510945335555221262}
   m_Layer: 0
   m_Name: ShooterArrowTrap 1
   m_TagString: Untagged
@@ -85,7 +85,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!95 &1057364838852121540
+--- !u!95 &6510945335555221262
 Animator:
   serializedVersion: 5
   m_ObjectHideFlags: 0
@@ -95,7 +95,7 @@ Animator:
   m_GameObject: {fileID: 8927622281190696691}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 8396dfb4689eb7e4ea9a4bd0a9df7175, type: 2}
+  m_Controller: {fileID: 9100000, guid: 5c7591e59fa017942be8fe09b4a292f8, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

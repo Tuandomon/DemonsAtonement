@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3112965803330262710}
   - component: {fileID: 2211375969705273250}
-  - component: {fileID: 6004026626537205597}
+  - component: {fileID: 4900306131016660408}
   m_Layer: 0
   m_Name: Spear 1
   m_TagString: Untagged
@@ -85,7 +85,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!95 &6004026626537205597
+--- !u!95 &4900306131016660408
 Animator:
   serializedVersion: 5
   m_ObjectHideFlags: 0
@@ -95,7 +95,7 @@ Animator:
   m_GameObject: {fileID: 1208361581201149275}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: f2e0db92eda832f488995008af19290d, type: 2}
+  m_Controller: {fileID: 9100000, guid: 51113c7868671064385aabf74c90c9b1, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
