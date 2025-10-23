@@ -4,9 +4,10 @@ public class Bullet : MonoBehaviour
 {
     public float maxDistance = 10f;
     public float speed = 20f;
+    public int damage = 20; // sát thương của viên đạn
 
     private Vector2 startPosition;
-    private float direction = 1f; // mặc định bên phải
+    private float direction = 1f;
 
     public void SetDirection(float dir)
     {
@@ -20,10 +21,8 @@ public class Bullet : MonoBehaviour
 
     void Update()
     {
-        // Di chuyển theo hướng mặt
         transform.Translate(Vector2.right * direction * speed * Time.deltaTime);
 
-        // Kiểm tra khoảng cách
         float distanceTraveled = Vector2.Distance(transform.position, startPosition);
         if (distanceTraveled >= maxDistance)
         {
@@ -35,6 +34,13 @@ public class Bullet : MonoBehaviour
     {
         if (collision.CompareTag("Enemy"))
         {
+            // Gây sát thương nếu enemy có EnemyHealth
+            EnemyHealth enemyHealth = collision.GetComponent<EnemyHealth>();
+            if (enemyHealth != null)
+            {
+                enemyHealth.TakeDamage(damage);
+            }
+
             Destroy(gameObject);
         }
     }
