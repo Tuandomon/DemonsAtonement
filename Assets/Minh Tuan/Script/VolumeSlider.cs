@@ -51,16 +51,19 @@ public class VolumeSlider : MonoBehaviour
 
     void MuteSound()
     {
-        // Lưu lại âm lượng hiện tại trước khi tắt
         previousVolume = volumeSlider.value;
+        PlayerPrefs.SetFloat("PreviousVolume", previousVolume); // lưu lại
+        PlayerPrefs.SetFloat(VolumeKey, 0f);
+        PlayerPrefs.Save();
+
         volumeSlider.value = 0f;
     }
 
-
     void UnmuteSound()
     {
-        // Khôi phục lại âm lượng trước đó
-        volumeSlider.value = Mathf.Clamp(previousVolume, 0.1f, 1f);
+        // Đọc lại âm lượng trước đó từ PlayerPrefs
+        float restoredVolume = PlayerPrefs.GetFloat("PreviousVolume", 1f);
+        volumeSlider.value = Mathf.Clamp(restoredVolume, 0.1f, 1f);
     }
 
 
