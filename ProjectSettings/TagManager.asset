@@ -7,6 +7,7 @@ TagManager:
   - Ground
   - Enemy
   - DashItem
+  - Trap
   layers:
   - Default
   - TransparentFX
