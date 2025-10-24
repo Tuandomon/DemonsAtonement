@@ -169,7 +169,7 @@ MonoBehaviour:
   projectilePrefab: {fileID: 400868224160246667, guid: 37dc46c0a685ead49bafef66374bf4ca, type: 3}
   barrelTip: {fileID: 1160294528884593720}
   projectileSpeed: 12
-  fireRate: 0.5
+  fireRate: 0.2
   aimPivot: {fileID: 0}
 --- !u!61 &3144008022099199853
 BoxCollider2D:
