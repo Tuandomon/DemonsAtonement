@@ -81,6 +81,10 @@ public class PlayerController : MonoBehaviour
         {
             Debug.Log("⚠️ Bạn chưa mở khóa dash! Hãy tìm item dash để kích hoạt.");
         }
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded && !isDashing)
+        {
+            jumpPressed = true;
+        }
     }
 
     void FixedUpdate()
