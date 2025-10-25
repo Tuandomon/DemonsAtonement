@@ -267,7 +267,7 @@ MonoBehaviour:
   dashSpeed: 20
   dashTime: 0.15
   dashCooldown: 0.6
-  dashKey: 304
+  dashKey: 108
   canDash: 0
 --- !u!114 &3791028645760374426
 MonoBehaviour:
