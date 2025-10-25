@@ -99,6 +99,8 @@ public class PlayerController : MonoBehaviour
         isDashing = true;
         lastDashTime = Time.time;
 
+        animator.SetTrigger("Dash"); // 🔥 Kích hoạt animation Dash
+
         rb.gravityScale = 0;
         rb.velocity = dir * dashSpeed;
 
