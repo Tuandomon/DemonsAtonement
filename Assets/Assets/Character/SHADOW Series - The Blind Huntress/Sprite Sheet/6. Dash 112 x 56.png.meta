@@ -108,7 +108,385 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: 6. Dash 112 x 56_0
+      rect:
+        serializedVersion: 2
+        x: 8
+        y: 3
+        width: 21
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7680da582555d734ea085f16a4b5b99f
+      internalID: -206854283
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 6. Dash 112 x 56_1
+      rect:
+        serializedVersion: 2
+        x: 124
+        y: 3
+        width: 95
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 87f3c6d6617bff34dadbc0fa23740780
+      internalID: 255180013
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 6. Dash 112 x 56_2
+      rect:
+        serializedVersion: 2
+        x: 247
+        y: 3
+        width: 38
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 55014f0c6cd9a4c48a64cd98249663ca
+      internalID: -1820213531
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 6. Dash 112 x 56_3
+      rect:
+        serializedVersion: 2
+        x: 278
+        y: 3
+        width: 17
+        height: 5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0c970aab8c7202a45bb81f5a02e69371
+      internalID: -849783143
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 6. Dash 112 x 56_4
+      rect:
+        serializedVersion: 2
+        x: 297
+        y: 7
+        width: 12
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 509b73ba7cab67444aa8e572cb9368b5
+      internalID: -1644639650
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 6. Dash 112 x 56_5
+      rect:
+        serializedVersion: 2
+        x: 301
+        y: 3
+        width: 26
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 19ac825424b6d8b45943c2adf9e16c08
+      internalID: 217252561
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 6. Dash 112 x 56_6
+      rect:
+        serializedVersion: 2
+        x: 364
+        y: 3
+        width: 40
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cf607e2d18e3e644f817eda24b75e79f
+      internalID: -1823655142
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 6. Dash 112 x 56_7
+      rect:
+        serializedVersion: 2
+        x: 410
+        y: 3
+        width: 29
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 05ba02d34daf7f24281fc8ad5492955b
+      internalID: 1524524731
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 6. Dash 112 x 56_8
+      rect:
+        serializedVersion: 2
+        x: 481
+        y: 3
+        width: 73
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3312ea4c7e53dcb4ba3736685a33812d
+      internalID: -1039388166
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 6. Dash 112 x 56_9
+      rect:
+        serializedVersion: 2
+        x: 646
+        y: 3
+        width: 21
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1d7c579aeb0fe654ab74fcbab7bb4e52
+      internalID: -411647326
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 6. Dash 112 x 56_10
+      rect:
+        serializedVersion: 2
+        x: 680
+        y: 3
+        width: 95
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 322dd428c55de5b4a89b2727f16341c7
+      internalID: -125518642
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 6. Dash 112 x 56_11
+      rect:
+        serializedVersion: 2
+        x: 796
+        y: 3
+        width: 26
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f1e67e4d072bd434c966a591967befab
+      internalID: -1079590986
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 6. Dash 112 x 56_12
+      rect:
+        serializedVersion: 2
+        x: 814
+        y: 7
+        width: 12
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b3e01e960a1dc5f448d1eb6a5266ecf5
+      internalID: -1492591410
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 6. Dash 112 x 56_13
+      rect:
+        serializedVersion: 2
+        x: 828
+        y: 3
+        width: 17
+        height: 5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 06212499711c77e4999c3556f22a884c
+      internalID: 896009029
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 6. Dash 112 x 56_14
+      rect:
+        serializedVersion: 2
+        x: 838
+        y: 3
+        width: 38
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4debdbcb7d02a254db9f82dad188db2e
+      internalID: 749146975
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 6. Dash 112 x 56_15
+      rect:
+        serializedVersion: 2
+        x: 908
+        y: 3
+        width: 29
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 030740c25ff2a6b4d97f8762125644f2
+      internalID: 1156020237
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 6. Dash 112 x 56_16
+      rect:
+        serializedVersion: 2
+        x: 943
+        y: 3
+        width: 40
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a6908448b5d562a49a281d29d4ed2280
+      internalID: -234918895
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 6. Dash 112 x 56_17
+      rect:
+        serializedVersion: 2
+        x: 1017
+        y: 3
+        width: 73
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a8dd2aed8fdf86140af91ba3ae8bbcd2
+      internalID: 1001946368
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -119,7 +497,25 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      6. Dash 112 x 56_0: -206854283
+      6. Dash 112 x 56_1: 255180013
+      6. Dash 112 x 56_10: -125518642
+      6. Dash 112 x 56_11: -1079590986
+      6. Dash 112 x 56_12: -1492591410
+      6. Dash 112 x 56_13: 896009029
+      6. Dash 112 x 56_14: 749146975
+      6. Dash 112 x 56_15: 1156020237
+      6. Dash 112 x 56_16: -234918895
+      6. Dash 112 x 56_17: 1001946368
+      6. Dash 112 x 56_2: -1820213531
+      6. Dash 112 x 56_3: -849783143
+      6. Dash 112 x 56_4: -1644639650
+      6. Dash 112 x 56_5: 217252561
+      6. Dash 112 x 56_6: -1823655142
+      6. Dash 112 x 56_7: 1524524731
+      6. Dash 112 x 56_8: -1039388166
+      6. Dash 112 x 56_9: -411647326
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

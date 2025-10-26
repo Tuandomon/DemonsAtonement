@@ -41,7 +41,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8586308582791742117}
   m_Layer: 3
-  m_Name: firepoint
+  m_Name: FirePoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -56,7 +56,7 @@ Transform:
   m_GameObject: {fileID: 7303185506016131975}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.62, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -79,6 +79,8 @@ GameObject:
   - component: {fileID: 3791028645760374426}
   - component: {fileID: 844967971802598192}
   - component: {fileID: 6644279028110382716}
+  - component: {fileID: 3729511954100794300}
+  - component: {fileID: 5595126428760096320}
   m_Layer: 3
   m_Name: Kaito Kid
   m_TagString: Player
@@ -264,10 +266,10 @@ MonoBehaviour:
   jumpForce: 16
   groundCheck: {fileID: 2610351836312679762}
   groundCheckRadius: 0.2
-  dashSpeed: 20
+  dashSpeed: 50
   dashTime: 0.15
   dashCooldown: 0.6
-  dashKey: 304
+  dashKey: 108
   canDash: 0
 --- !u!114 &3791028645760374426
 MonoBehaviour:
@@ -339,3 +341,39 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackCooldown: 1
+--- !u!114 &3729511954100794300
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8385089636014069269}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad9d301d385367c418441ed9c68294aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bulletPrefab: {fileID: 8509040744687437586, guid: 769dbeec099b2514f93103ada7c67fcc, type: 3}
+  firePoint: {fileID: 8586308582791742117}
+  bulletSpeed: 20
+  shootCooldown: 2
+--- !u!114 &5595126428760096320
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8385089636014069269}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb7bf90e999fc6641906a77b5c13a0a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skillKey: 117
+  skillCooldown: 3
+  skillRange: 5
+  skillDamage: 3
+  skillEffectPrefab: {fileID: 4036288673090410363, guid: 737fea703ab052f4993fe83e1c1fdc73, type: 3}
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 64
