@@ -9,6 +9,8 @@ public class BulletEnemy : MonoBehaviour
     private Vector2 startPosition;
     private Vector2 moveDirection;
     private Rigidbody2D rb;
+    private Animator animator;
+    private bool hasExploded = false;
 
     public void SetDirection(Vector2 dir)
     {
@@ -22,6 +24,7 @@ public class BulletEnemy : MonoBehaviour
     {
         startPosition = transform.position;
         rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
 
         if (rb != null)
         {
@@ -31,6 +34,8 @@ public class BulletEnemy : MonoBehaviour
 
     void Update()
     {
+        if (hasExploded) return;
+
         float distanceTraveled = Vector2.Distance(transform.position, startPosition);
         if (distanceTraveled >= maxDistance)
         {
@@ -40,6 +45,8 @@ public class BulletEnemy : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collision)
     {
+        if (hasExploded) return;
+
         if (collision.CompareTag("Player"))
         {
             PlayerHealth playerHealth = collision.GetComponent<PlayerHealth>();
@@ -49,7 +56,28 @@ public class BulletEnemy : MonoBehaviour
                 Debug.Log("Đạn enemy gây " + damage + " sát thương cho Player.");
             }
 
-            Destroy(gameObject);
+            Explode();
         }
+    }
+
+    void Explode()
+    {
+        hasExploded = true;
+
+        // Dừng chuyển động
+        if (rb != null)
+        {
+            rb.velocity = Vector2.zero;
+            rb.isKinematic = true;
+        }
+
+        // Kích hoạt animation Boom
+        if (animator != null)
+        {
+            animator.SetTrigger("Boom");
+        }
+
+        // Hủy sau thời gian animation Boom (ví dụ 0.5s)
+        Destroy(gameObject, 0.5f);
     }
 }
