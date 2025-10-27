@@ -7,13 +7,14 @@ public class EnemyBall : MonoBehaviour
     public float bulletSpeed = 20f;
     public float shootCooldown = 2f;
     public float detectionRange = 10f;
-    public LayerMask playerLayer;
-    public GameObject shootEffect;
 
-    private float lastShootTime = -Mathf.Infinity;
+    private float lastShootTime;
+    private bool hasShot = false;
 
     void Start()
     {
+        lastShootTime = Time.time; // Khởi tạo thời gian bắn để tránh bắn ngay khi bắt đầu
+
         if (firePoint == null)
         {
             GameObject found = GameObject.Find("FirePoint");
@@ -30,30 +31,42 @@ public class EnemyBall : MonoBehaviour
 
     void Update()
     {
-        Collider2D player = Physics2D.OverlapCircle(transform.position, detectionRange, playerLayer);
-        if (player != null && Time.time >= lastShootTime + shootCooldown)
+        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, detectionRange);
+        bool playerDetected = false;
+
+        foreach (Collider2D hit in hits)
         {
-            Shoot(player.transform);
-            lastShootTime = Time.time;
+            if (hit.CompareTag("Player"))
+            {
+                playerDetected = true;
+
+                if (!hasShot)
+                {
+                    Shoot(hit.transform);
+                    hasShot = true;
+                    lastShootTime = Time.time;
+                }
+
+                break;
+            }
+        }
+
+        // Reset trạng thái sau khi cooldown kết thúc
+        if (hasShot && Time.time >= lastShootTime + shootCooldown)
+        {
+            hasShot = false;
         }
     }
+
 
     void Shoot(Transform target)
     {
         GameObject bullet = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
 
-        // Tính hướng từ Enemy đến Player
         Vector2 direction = (target.position - firePoint.position).normalized;
 
-        // Truyền hướng vào Bullet
         Bullet bulletScript = bullet.GetComponent<Bullet>();
         bulletScript.SetDirection(direction.x);
-
-        // Gắn hiệu ứng nếu có
-        if (shootEffect != null)
-        {
-            Instantiate(shootEffect, firePoint.position, Quaternion.identity);
-        }
     }
 
     void OnDrawGizmosSelected()
