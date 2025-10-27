@@ -7,13 +7,15 @@ public class BulletEnemy : MonoBehaviour
     public int damage = 20;
 
     private Vector2 startPosition;
-    private float direction = 1f;
+    private Vector2 moveDirection;
     private Rigidbody2D rb;
 
-    public void SetDirection(float dir)
+    public void SetDirection(Vector2 dir)
     {
-        direction = Mathf.Sign(dir); // Đảm bảo chỉ là -1 hoặc 1
-        transform.localScale = new Vector3(direction, 1, 1); // Lật sprite nếu cần
+        moveDirection = dir.normalized;
+
+        float angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(0, 0, angle);
     }
 
     void Start()
@@ -23,7 +25,7 @@ public class BulletEnemy : MonoBehaviour
 
         if (rb != null)
         {
-            rb.velocity = Vector2.right * direction * speed;
+            rb.velocity = moveDirection * speed;
         }
     }
 

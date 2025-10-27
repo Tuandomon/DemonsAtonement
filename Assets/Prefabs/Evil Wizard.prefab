@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 7741350308440191276}
   - component: {fileID: 7423726998286329455}
   - component: {fileID: 5750568165589823171}
-  - component: {fileID: 789882354249842943}
   - component: {fileID: 5540076194056708635}
   m_Layer: 6
   m_Name: Evil Wizard
@@ -197,28 +196,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &789882354249842943
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 691645970844619502}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 63c267359af1059429f2363e7207b0e6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moveSpeed: 2
-  chaseRange: 5
-  stopDistance: 1
-  attackRange: 1.5
-  attackDamage: 10
-  attackCooldown: 2
-  playerLayer:
-    serializedVersion: 2
-    m_Bits: 8
-  retreatDuration: 1
 --- !u!114 &5540076194056708635
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -233,9 +210,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletPrefab: {fileID: 1757894140698779959, guid: 1509ff8d68ca5b3489182e06f40513b0, type: 3}
   firePoint: {fileID: 8925631759508933201}
-  bulletSpeed: 20
-  shootCooldown: 55
-  detectionRange: 5
+  moveSpeed: 4
+  chaseRange: 20
+  attackRange: 15
+  attackDelay: 2
 --- !u!1 &2079158454178374213
 GameObject:
   m_ObjectHideFlags: 0
