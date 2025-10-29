@@ -58,6 +58,12 @@ public class BulletEnemy : MonoBehaviour
 
             Explode();
         }
+
+        PlayerController playerController = collision.GetComponent<PlayerController>();
+        if (playerController != null)
+        {
+            playerController.Stun(1f); // stun 1 giây
+        }
     }
 
     void Explode()
