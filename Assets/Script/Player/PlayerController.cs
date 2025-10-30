@@ -32,13 +32,18 @@ public class PlayerController : MonoBehaviour
 
     private bool isStunned = false;
 
+    [Header("Sound Effects")]
+    public AudioClip dashSound;
+    private AudioSource audioSource;
+
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         originalGravity = rb.gravityScale;
-
+        audioSource = GetComponent<AudioSource>();
         // CHẮC CHẮN DASH CHƯA MỞ KHÓA KHI BẮT ĐẦU
         canDash = false;
         Debug.Log(" Dash chưa được mở khóa - cần nhặt item!");
@@ -103,12 +108,23 @@ public class PlayerController : MonoBehaviour
         isDashing = true;
         lastDashTime = Time.time;
 
-        animator.SetTrigger("Dash"); // 🔥 Kích hoạt animation Dash
+        animator.SetTrigger("Dash");
+
+        if (dashSound != null)
+        {
+            audioSource.volume = PlayerPrefs.GetFloat("SFXVolume", 1f);
+            audioSource.PlayOneShot(dashSound);
+        }
 
         rb.gravityScale = 0;
-        rb.velocity = dir * dashSpeed;
 
-        yield return new WaitForSeconds(dashTime);
+        float dashTimer = 0f;
+        while (dashTimer < dashTime)
+        {
+            rb.velocity = dir * dashSpeed;
+            dashTimer += Time.deltaTime;
+            yield return null;
+        }
 
         rb.gravityScale = originalGravity;
         isDashing = false;
