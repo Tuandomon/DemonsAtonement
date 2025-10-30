@@ -30,6 +30,8 @@ public class PlayerController : MonoBehaviour
     private float lastDashTime;
     private float originalGravity;
 
+    private bool isStunned = false;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -44,6 +46,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (isStunned) return;
         moveInput = Input.GetAxisRaw("Horizontal");
         isGrounded = CheckGrounded();
 
@@ -81,6 +84,7 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (isStunned || isDashing) return;
         if (isDashing) return;
 
         // Di chuyển
@@ -155,6 +159,19 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void Stun(float duration)
+    {
+        StartCoroutine(StunCoroutine(duration));
+    }
+
+    private IEnumerator StunCoroutine(float duration)
+    {
+        isStunned = true;
+        animator.SetTrigger("Stunned"); // Nếu có animation "Stunned"
+        Debug.Log("🌀 Player bị stun trong " + duration + " giây!");
+        yield return new WaitForSeconds(duration);
+        isStunned = false;
+    }
     private void OnDrawGizmosSelected()
     {
         if (groundCheck != null)
