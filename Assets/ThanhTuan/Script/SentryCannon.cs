@@ -30,8 +30,6 @@ public class SentryCannon : MonoBehaviour
 
         if (barrelTip == null)
             Debug.LogError("❌ Barrel Tip chưa được gán! Tháp pháo sẽ không bắn được.");
-        if (aimPivot == null)
-            Debug.LogWarning("⚠️ aimPivot chưa được gán! Súng sẽ xoay cả thân thay vì pivot riêng.");
     }
 
     void Update()
