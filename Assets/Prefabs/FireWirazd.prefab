@@ -121,7 +121,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43be6b5cd6d0e454595174b6ba66dad4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 5
+  damage: 60
   activeTime: 0.1
 --- !u!1 &7271669064557597853
 GameObject:
@@ -439,5 +439,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43be6b5cd6d0e454595174b6ba66dad4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 5
+  damage: 60
   activeTime: 0.1
