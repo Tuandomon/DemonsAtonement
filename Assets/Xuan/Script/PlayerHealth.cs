@@ -12,9 +12,12 @@ public class PlayerHealth : MonoBehaviour
     public Image healthFillImage;         // Gán Image của thanh máu
     public Gradient healthGradient;       // Gradient màu máu
 
+    private Animator animator;
+
     void Start()
     {
         currentHealth = maxHealth;
+        animator = GetComponent<Animator>();
 
         // Tự động tìm Image thanh máu nếu chưa gán
         if (healthFillImage == null)
@@ -48,14 +51,18 @@ public class PlayerHealth : MonoBehaviour
         currentHealth -= damage;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 
-        Debug.Log("Player took damage: " + damage + " | Current HP: " + currentHealth);
-
         UpdateHealthUI();
 
+        if (animator != null)
+            animator.SetTrigger("GotHit");
+
+        // Gây stun thông qua PlayerController
+        PlayerController controller = GetComponent<PlayerController>();
+        if (controller != null)
+            controller.Stun(0.4f); // làm choáng 0.2 giây
+
         if (currentHealth <= 0)
-        {
             Die();
-        }
     }
 
     // Gọi hàm này để hồi máu
