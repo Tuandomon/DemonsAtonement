@@ -2,6 +2,7 @@
 
 public class PlayerAttack : MonoBehaviour
 {
+    [Header("Phím S + J")]
     public float attackCooldown = 1f;
     private float lastAttackTime = -Mathf.Infinity;
 
@@ -43,18 +44,17 @@ public class PlayerAttack : MonoBehaviour
             rb.velocity = new Vector2(0f, rb.velocity.y);
         }
 
-        if (Input.GetMouseButtonDown(0) && Time.time >= lastAttackTime + attackCooldown)
+        if (Input.GetKey(KeyCode.S) && Input.GetKeyDown(KeyCode.J) && Time.time >= lastAttackTime + attackCooldown)
         {
-            FlipToMouse();
+            FlipToMoveDirection(); // thay vì FlipToMouse
             Attack();
         }
     }
 
-    void FlipToMouse()
+    void FlipToMoveDirection()
     {
-        Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        float direction = mouseWorldPos.x - transform.position.x;
-        spriteRenderer.flipX = direction < 0;
+        if (moveInput > 0) spriteRenderer.flipX = false;
+        else if (moveInput < 0) spriteRenderer.flipX = true;
     }
 
     void Attack()
