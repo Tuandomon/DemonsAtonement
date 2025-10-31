@@ -3,9 +3,7 @@
 public class PlayerSkill : MonoBehaviour
 {
     [Header("Cài đặt kỹ năng")]
-    [Tooltip("Phím kích hoạt kỹ năng")]
-    public KeyCode skillKey = KeyCode.L;
-
+    [Header("Phím W + U")]
     [Tooltip("Thời gian hồi chiêu (giây)")]
     public float skillCooldown = 3f;
 
@@ -25,7 +23,8 @@ public class PlayerSkill : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(skillKey))
+        // Kích hoạt khi giữ W và nhấn U
+        if (Input.GetKey(KeyCode.W) && Input.GetKeyDown(KeyCode.U))
         {
             if (Time.time >= lastSkillTime + skillCooldown)
             {
@@ -40,9 +39,8 @@ public class PlayerSkill : MonoBehaviour
 
     void TryActivateSkill()
     {
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, skillRange, enemyLayer);
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, skillRange);
 
-        // Lọc ra các collider có tag "Enemy"
         Transform closestEnemy = null;
         float minDistance = Mathf.Infinity;
 

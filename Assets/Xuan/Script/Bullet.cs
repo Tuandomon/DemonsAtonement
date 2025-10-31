@@ -4,25 +4,28 @@ public class Bullet : MonoBehaviour
 {
     public float maxDistance = 10f;
     public float speed = 20f;
-    public int damage = 20; // sát thương của viên đạn
+    public int damage = 20;
 
     private Vector2 startPosition;
-    private float direction = 1f;
-
-    public void SetDirection(float dir)
-    {
-        direction = dir;
-    }
+    private Rigidbody2D rb;
 
     void Start()
     {
         startPosition = transform.position;
+        rb = GetComponent<Rigidbody2D>();
+    }
+
+    public void SetDirection(float direction)
+    {
+        direction = Mathf.Sign(direction); // -1 hoặc 1
+        transform.localScale = new Vector3(direction, 1f, 1f);
+
+        if (rb == null) rb = GetComponent<Rigidbody2D>();
+        rb.velocity = new Vector2(direction * speed, 0f);
     }
 
     void Update()
     {
-        transform.Translate(Vector2.right * direction * speed * Time.deltaTime);
-
         float distanceTraveled = Vector2.Distance(transform.position, startPosition);
         if (distanceTraveled >= maxDistance)
         {
@@ -34,7 +37,6 @@ public class Bullet : MonoBehaviour
     {
         if (collision.CompareTag("Enemy"))
         {
-            // Gây sát thương nếu enemy có EnemyHealth
             EnemyHealth enemyHealth = collision.GetComponent<EnemyHealth>();
             if (enemyHealth != null)
             {

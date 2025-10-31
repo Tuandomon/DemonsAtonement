@@ -4,6 +4,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [Header("Movement Settings")]
+    [Header("Phím nhảy K")]
     public float moveSpeed = 5f;
     public float jumpForce = 7f;
     public Transform groundCheck;
@@ -17,71 +18,83 @@ public class PlayerController : MonoBehaviour
     private bool isGrounded;
     private bool jumpPressed;
 
+    [Header("Fire Point")]
+    public Transform firePoint;
+
     [Header("Dash Settings")]
+    [Header("Phím lướt L")]
     public float dashSpeed = 20f;
     public float dashTime = 0.15f;
     public float dashCooldown = 0.6f;
-    public KeyCode dashKey = KeyCode.LeftShift;
+    public KeyCode dashKey = KeyCode.L;
 
     [Header("Dash Unlock")]
-    public bool canDash = false; // 🚫 Ban đầu chưa có dash
+    public bool canDash = false; //  BAN ĐẦU KHÔNG DASH ĐƯỢC
+
     private bool isDashing = false;
     private float lastDashTime;
     private float originalGravity;
 
-    [Header("Dash Effects")]
-    public TrailRenderer dashTrail;     // Hiệu ứng vệt sáng khi dash
-    public Color dashColor = Color.magenta; // Màu tím khi dash
-    public AudioClip dashSound;         // Âm thanh dash (nếu có)
+    private bool isStunned = false;
 
+    [Header("Sound Effects")]
+    public AudioClip dashSound;
     private AudioSource audioSource;
-    private Color originalColor;
+
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        audioSource = GetComponent<AudioSource>();
         originalGravity = rb.gravityScale;
-        originalColor = spriteRenderer.color;
-
+        audioSource = GetComponent<AudioSource>();
+        // CHẮC CHẮN DASH CHƯA MỞ KHÓA KHI BẮT ĐẦU
         canDash = false;
-        Debug.Log("🚫 Dash chưa được mở khóa - cần nhặt item!");
+        Debug.Log(" Dash chưa được mở khóa - cần nhặt item!");
     }
 
     void Update()
     {
+        if (isStunned) return;
         moveInput = Input.GetAxisRaw("Horizontal");
         isGrounded = CheckGrounded();
 
         // Nhảy
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        if (Input.GetKeyDown(KeyCode.K) && isGrounded)
         {
             jumpPressed = true;
         }
 
-        // Animation di chuyển
+        // Animation
         animator.SetBool("isRunning", moveInput != 0);
         animator.SetBool("isJumping", !isGrounded);
 
         // Lật hướng nhân vật
-        if (moveInput > 0) spriteRenderer.flipX = false;
-        else if (moveInput < 0) spriteRenderer.flipX = true;
+        if (moveInput > 0)
+        {
+            spriteRenderer.flipX = false; // mặt phải
+            firePoint.localPosition = new Vector3(1f, 0f, 0f);
+        }
+        else if (moveInput < 0)
+        {
+            spriteRenderer.flipX = true; // mặt trái
+            firePoint.localPosition = new Vector3(-1f, 0f, 0f);
+        }
 
-        // Dash (chỉ khi đã mở khóa)
+        //  DASH - CHỈ HOẠT ĐỘNG KHI ĐÃ MỞ KHÓA
         if (canDash && !isDashing && Input.GetKeyDown(dashKey) && Time.time >= lastDashTime + dashCooldown)
         {
             Vector2 dashDir = new Vector2(spriteRenderer.flipX ? -1 : 1, 0);
             StartCoroutine(Dash(dashDir));
         }
-
-        // Nếu chưa mở khóa dash
+        
+        //  HIỂN THỊ CẢNH BÁO NẾU CHƯA MỞ KHÓA DASH
         if (!canDash && Input.GetKeyDown(dashKey))
         {
-            Debug.Log("⚠️ Bạn chưa mở khóa dash! Hãy tìm item dash để kích hoạt.");
+            Debug.Log(" Bạn chưa mở khóa dash! Hãy tìm item dash để mở khóa.");
         }
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded && !isDashing)
+        if (Input.GetKeyDown(KeyCode.K) && isGrounded && !isDashing)
         {
             jumpPressed = true;
         }
@@ -89,6 +102,7 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (isStunned || isDashing) return;
         if (isDashing) return;
 
         // Di chuyển
@@ -107,55 +121,49 @@ public class PlayerController : MonoBehaviour
         isDashing = true;
         lastDashTime = Time.time;
 
-        // 🔥 Bật animation Dash
         animator.SetTrigger("Dash");
 
-        // 🔊 Phát âm thanh dash nếu có
-        if (dashSound != null && audioSource != null)
+        if (dashSound != null)
+        {
+            audioSource.volume = PlayerPrefs.GetFloat("SFXVolume", 1f);
             audioSource.PlayOneShot(dashSound);
-
-        // 🌈 Hiệu ứng màu tím
-        spriteRenderer.color = dashColor;
-
-        // 💫 Bật Trail nếu có
-        if (dashTrail != null)
-            dashTrail.emitting = true;
+        }
 
         rb.gravityScale = 0;
-        rb.velocity = dir * dashSpeed;
 
-        yield return new WaitForSeconds(dashTime);
+        float dashTimer = 0f;
+        while (dashTimer < dashTime)
+        {
+            rb.velocity = dir * dashSpeed;
+            dashTimer += Time.deltaTime;
+            yield return null;
+        }
 
-        // Tắt hiệu ứng
-        if (dashTrail != null)
-            dashTrail.emitting = false;
-
-        spriteRenderer.color = originalColor;
         rb.gravityScale = originalGravity;
-        rb.velocity = Vector2.zero;
-
         isDashing = false;
     }
 
-    // 🔓 Mở khóa dash vĩnh viễn
+    // HÀM MỞ KHÓA DASH VĨNH VIỄN
     public void UnlockDashPermanent()
     {
-        if (!canDash)
+        if (!canDash) // Chỉ mở khóa nếu chưa có
         {
             canDash = true;
-            Debug.Log("✅ DASH ĐÃ ĐƯỢC MỞ KHÓA VĨNH VIỄN!");
+            Debug.Log(" DASH ĐÃ ĐƯỢC MỞ KHÓA VĨNH VIỄN!");
+
+            // Có thể thêm hiệu ứng, âm thanh ở đây
             StartCoroutine(ShowDashUnlockedEffect());
         }
         else
         {
-            Debug.Log("⚡ Bạn đã có dash rồi!");
+            Debug.Log("✅ Bạn đã có dash rồi!");
         }
     }
 
     IEnumerator ShowDashUnlockedEffect()
     {
-        Debug.Log("✨ Hiệu ứng mở khóa dash!");
-        // Có thể thêm Particle hoặc animation mở khóa ở đây
+        // Hiệu ứng khi mở khóa dash (tuỳ chọn)
+        Debug.Log(" Hiệu ứng mở khóa dash!");
         yield return new WaitForSeconds(1f);
     }
 
@@ -167,15 +175,32 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        // 🧿 Khi chạm vào Item Dash
+        //  KHI CHẠM VÀO ITEM DASH
         if (collision.CompareTag("DashItem"))
         {
+            // TỰ ĐỘNG MỞ KHÓA DASH VĨNH VIỄN
             UnlockDashPermanent();
+            
+            // TỰ ĐỘNG BIẾN MẤT ITEM
             Destroy(collision.gameObject);
-            Debug.Log("🎯 Đã nhặt item dash và kích hoạt dash vĩnh viễn!");
+            
+            Debug.Log("🎯 Đã nhặt item dash và kích hoạt thành công!");
         }
     }
 
+    public void Stun(float duration)
+    {
+        StartCoroutine(StunCoroutine(duration));
+    }
+
+    private IEnumerator StunCoroutine(float duration)
+    {
+        isStunned = true;
+        animator.SetTrigger("Stunned"); // Nếu có animation "Stunned"
+        Debug.Log("🌀 Player bị stun trong " + duration + " giây!");
+        yield return new WaitForSeconds(duration);
+        isStunned = false;
+    }
     private void OnDrawGizmosSelected()
     {
         if (groundCheck != null)

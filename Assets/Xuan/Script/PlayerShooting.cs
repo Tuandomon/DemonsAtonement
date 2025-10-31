@@ -2,6 +2,7 @@
 
 public class PlayerShooting : MonoBehaviour
 {
+    [Header("Phím U")]
     public GameObject bulletPrefab;
     public Transform firePoint;
     public float bulletSpeed = 20f;
@@ -27,7 +28,7 @@ public class PlayerShooting : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.K))
+        if (!Input.GetKey(KeyCode.W) && Input.GetKeyDown(KeyCode.U))
         {
             if (firePoint != null && Time.time >= lastShootTime + shootCooldown)
             {
@@ -41,10 +42,8 @@ public class PlayerShooting : MonoBehaviour
     {
         GameObject bullet = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
 
-        // Xác định hướng mặt của player
-        float direction = transform.localScale.x > 0 ? 1f : -1f;
+        float direction = GetComponent<SpriteRenderer>().flipX ? -1f : 1f;
 
-        // Truyền hướng vào Bullet
         Bullet bulletScript = bullet.GetComponent<Bullet>();
         bulletScript.SetDirection(direction);
     }

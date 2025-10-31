@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class PlayerHealth : MonoBehaviour
@@ -66,6 +67,7 @@ public class PlayerHealth : MonoBehaviour
         Debug.Log("Player healed: " + amount + " | Current HP: " + currentHealth);
 
         UpdateHealthUI();
+
     }
 
     // Cập nhật UI thanh máu
@@ -84,5 +86,10 @@ public class PlayerHealth : MonoBehaviour
     {
         Debug.Log("Player has died!");
         // Thêm logic chết như animation, reload scene, v.v.
+    }
+
+    internal void TakeDamage(float damagePerTick)
+    {
+        throw new NotImplementedException();
     }
 }
