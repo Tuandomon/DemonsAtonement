@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class PlayerSkill : MonoBehaviour
 {
@@ -71,22 +72,44 @@ public class PlayerSkill : MonoBehaviour
     void ActivateSkill(Transform target)
     {
         Debug.Log("Kích hoạt skill lên: " + target.name);
-
-        if (skillEffectPrefab != null)
-        {
-            Instantiate(skillEffectPrefab, target.position, Quaternion.identity);
-        }
-
-        EnemyHealth enemyHealth = target.GetComponent<EnemyHealth>();
-        if (enemyHealth != null)
-        {
-            enemyHealth.TakeDamage(skillDamage);
-        }
+        StartCoroutine(ApplySkillOverTime(target));
     }
 
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.cyan;
         Gizmos.DrawWireSphere(transform.position, skillRange);
+    }
+
+    IEnumerator ApplySkillOverTime(Transform target)
+    {
+        float duration = 10f;
+        float tickInterval = 1f; // mỗi giây gây sát thương
+        int tickDamage = skillDamage / 10; // chia đều sát thương cho 10 giây
+
+        GameObject effectInstance = null;
+        if (skillEffectPrefab != null)
+        {
+            effectInstance = Instantiate(skillEffectPrefab, target.position, Quaternion.identity, target);
+        }
+
+        EnemyHealth enemyHealth = target.GetComponent<EnemyHealth>();
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            if (enemyHealth != null)
+            {
+                enemyHealth.TakeDamage(tickDamage);
+            }
+
+            yield return new WaitForSeconds(tickInterval);
+            elapsed += tickInterval;
+        }
+
+        if (effectInstance != null)
+        {
+            Destroy(effectInstance);
+        }
     }
 }

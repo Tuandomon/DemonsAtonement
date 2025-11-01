@@ -9,6 +9,8 @@ TagManager:
   - DashItem
   - Trap
   - EnemyAttack
+  - Ladder
+  - Door
   layers:
   - Default
   - TransparentFX
@@ -45,6 +47,9 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Enemy
+    uniqueID: 362621823
     locked: 0
   - name: Player
     uniqueID: 2735738555

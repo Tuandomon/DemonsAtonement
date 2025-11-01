@@ -106,8 +106,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 362621823
+  m_SortingLayer: 1
   m_SortingOrder: 0
   m_Sprite: {fileID: -49790757, guid: 73431ba2ff8d14f4780da5ea9271c344, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -189,6 +189,12 @@ MonoBehaviour:
   slowPercent: 0.4
   slowDuration: 2
   retreatDistance: 2.5
+  detectionRange: 7
+  minionPrefab: {fileID: 0}
+  summonPoint: {fileID: 0}
+  summonInterval: 15
+  activeMinion: {fileID: 0}
+  attackHitBox: {fileID: 0}
   groundCheck: {fileID: 593778416154112882}
   groundCheckRadius: 0.2
   groundLayer:
