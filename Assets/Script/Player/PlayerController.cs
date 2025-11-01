@@ -4,6 +4,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [Header("Movement Settings")]
+    [Header("Phím nhảy K")]
     public float moveSpeed = 5f;
     public float jumpForce = 7f;
     public Transform groundCheck;
@@ -17,11 +18,15 @@ public class PlayerController : MonoBehaviour
     private bool isGrounded;
     private bool jumpPressed;
 
+    [Header("Fire Point")]
+    public Transform firePoint;
+
     [Header("Dash Settings")]
+    [Header("Phím lướt L")]
     public float dashSpeed = 20f;
     public float dashTime = 0.15f;
     public float dashCooldown = 0.6f;
-    public KeyCode dashKey = KeyCode.LeftShift;
+    public KeyCode dashKey = KeyCode.L;
 
     [Header("Dash Unlock")]
     public bool canDash = false; //  BAN ĐẦU KHÔNG DASH ĐƯỢC
@@ -32,13 +37,18 @@ public class PlayerController : MonoBehaviour
 
     private bool isStunned = false;
 
+    [Header("Sound Effects")]
+    public AudioClip dashSound;
+    private AudioSource audioSource;
+
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         originalGravity = rb.gravityScale;
-
+        audioSource = GetComponent<AudioSource>();
         // CHẮC CHẮN DASH CHƯA MỞ KHÓA KHI BẮT ĐẦU
         canDash = false;
         Debug.Log(" Dash chưa được mở khóa - cần nhặt item!");
@@ -51,7 +61,7 @@ public class PlayerController : MonoBehaviour
         isGrounded = CheckGrounded();
 
         // Nhảy
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        if (Input.GetKeyDown(KeyCode.K) && isGrounded)
         {
             jumpPressed = true;
         }
@@ -61,8 +71,16 @@ public class PlayerController : MonoBehaviour
         animator.SetBool("isJumping", !isGrounded);
 
         // Lật hướng nhân vật
-        if (moveInput > 0) spriteRenderer.flipX = false;
-        else if (moveInput < 0) spriteRenderer.flipX = true;
+        if (moveInput > 0)
+        {
+            spriteRenderer.flipX = false; // mặt phải
+            firePoint.localPosition = new Vector3(1f, 0f, 0f);
+        }
+        else if (moveInput < 0)
+        {
+            spriteRenderer.flipX = true; // mặt trái
+            firePoint.localPosition = new Vector3(-1f, 0f, 0f);
+        }
 
         //  DASH - CHỈ HOẠT ĐỘNG KHI ĐÃ MỞ KHÓA
         if (canDash && !isDashing && Input.GetKeyDown(dashKey) && Time.time >= lastDashTime + dashCooldown)
@@ -76,7 +94,7 @@ public class PlayerController : MonoBehaviour
         {
             Debug.Log(" Bạn chưa mở khóa dash! Hãy tìm item dash để mở khóa.");
         }
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded && !isDashing)
+        if (Input.GetKeyDown(KeyCode.K) && isGrounded && !isDashing)
         {
             jumpPressed = true;
         }
@@ -103,12 +121,23 @@ public class PlayerController : MonoBehaviour
         isDashing = true;
         lastDashTime = Time.time;
 
-        animator.SetTrigger("Dash"); // 🔥 Kích hoạt animation Dash
+        animator.SetTrigger("Dash");
+
+        if (dashSound != null)
+        {
+            audioSource.volume = PlayerPrefs.GetFloat("SFXVolume", 1f);
+            audioSource.PlayOneShot(dashSound);
+        }
 
         rb.gravityScale = 0;
-        rb.velocity = dir * dashSpeed;
 
-        yield return new WaitForSeconds(dashTime);
+        float dashTimer = 0f;
+        while (dashTimer < dashTime)
+        {
+            rb.velocity = dir * dashSpeed;
+            dashTimer += Time.deltaTime;
+            yield return null;
+        }
 
         rb.gravityScale = originalGravity;
         isDashing = false;

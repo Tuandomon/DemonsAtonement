@@ -42,7 +42,6 @@ public class VolumeSlider : MonoBehaviour
 
     void OnSliderChanged(float value)
     {
-        AudioListener.volume = value;
         PlayerPrefs.SetFloat(VolumeKey, value);
         PlayerPrefs.Save();
 

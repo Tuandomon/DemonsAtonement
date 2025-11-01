@@ -7,24 +7,21 @@ public class Bullet : MonoBehaviour
     public int damage = 20;
 
     private Vector2 startPosition;
-    private float direction = 1f;
     private Rigidbody2D rb;
-
-    public void SetDirection(float dir)
-    {
-        direction = Mathf.Sign(dir); // Đảm bảo chỉ là -1 hoặc 1
-        transform.localScale = new Vector3(direction, 1, 1); // Lật sprite nếu cần
-    }
 
     void Start()
     {
         startPosition = transform.position;
         rb = GetComponent<Rigidbody2D>();
+    }
 
-        if (rb != null)
-        {
-            rb.velocity = Vector2.right * direction * speed;
-        }
+    public void SetDirection(float direction)
+    {
+        direction = Mathf.Sign(direction); // -1 hoặc 1
+        transform.localScale = new Vector3(direction, 1f, 1f);
+
+        if (rb == null) rb = GetComponent<Rigidbody2D>();
+        rb.velocity = new Vector2(direction * speed, 0f);
     }
 
     void Update()
