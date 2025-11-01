@@ -1,11 +1,15 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class LadderClimb : MonoBehaviour
 {
     public float climbSpeed = 3f;
+    public float moveSpeed = 5f;
+    public float jumpForce = 7f;
     private Rigidbody2D rb;
     private bool isClimbing;
+    private bool onLadderZone;
     private float vertical;
+    private float horizontal;
 
     private void Start()
     {
@@ -14,9 +18,20 @@ public class LadderClimb : MonoBehaviour
 
     private void Update()
     {
-        if (isClimbing)
+        horizontal = Input.GetAxisRaw("Horizontal");
+        vertical = Input.GetAxisRaw("Vertical");
+
+        // Cho phép nhảy khi đang ở cầu thang
+        if (isClimbing && Input.GetButtonDown("Jump"))
         {
-            vertical = Input.GetAxisRaw("Vertical");
+            ExitLadder();
+            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+        }
+
+        // Nếu người chơi ở vùng cầu thang và nhấn phím lên/xuống => bắt đầu leo
+        if (onLadderZone && Mathf.Abs(vertical) > 0.1f)
+        {
+            isClimbing = true;
         }
     }
 
@@ -24,7 +39,13 @@ public class LadderClimb : MonoBehaviour
     {
         if (isClimbing)
         {
-            rb.velocity = new Vector2(0, vertical * climbSpeed);
+            rb.gravityScale = 0f;
+            rb.velocity = new Vector2(horizontal * moveSpeed, vertical * climbSpeed);
+        }
+        else
+        {
+            rb.gravityScale = 1f;
+            rb.velocity = new Vector2(horizontal * moveSpeed, rb.velocity.y);
         }
     }
 
@@ -32,8 +53,7 @@ public class LadderClimb : MonoBehaviour
     {
         if (collision.CompareTag("Ladder"))
         {
-            rb.gravityScale = 0f;
-            isClimbing = true;
+            onLadderZone = true;
         }
     }
 
@@ -41,8 +61,14 @@ public class LadderClimb : MonoBehaviour
     {
         if (collision.CompareTag("Ladder"))
         {
-            rb.gravityScale = 1f;
-            isClimbing = false;
+            onLadderZone = false;
+            ExitLadder();
         }
+    }
+
+    private void ExitLadder()
+    {
+        isClimbing = false;
+        rb.gravityScale = 1f;
     }
 }
