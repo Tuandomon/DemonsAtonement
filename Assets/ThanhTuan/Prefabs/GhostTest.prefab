@@ -98,7 +98,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02f1e0631b2992f40ba3ca2c6b284cab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 4
+  moveSpeed: 7
   hoverHeight: 1
   damagePerSecond: 2
   damageRadius: 2.5
