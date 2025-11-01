@@ -4,11 +4,16 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [Header("Movement Settings")]
-    [Header("Phím nhảy K")]
-    public float moveSpeed = 5f;
+    public float baseMoveSpeed = 5f;
+    private float currentMoveSpeed;
     public float jumpForce = 7f;
     public Transform groundCheck;
     public float groundCheckRadius = 0.2f;
+
+    // Cài đặt Slow Effect
+    [Header("Slow Effect")]
+    private bool isSlowed = false;
+    private Coroutine slowCoroutine;
 
     private Rigidbody2D rb;
     private Animator animator;
@@ -22,19 +27,18 @@ public class PlayerController : MonoBehaviour
     public Transform firePoint;
 
     [Header("Dash Settings")]
-    [Header("Phím lướt L")]
     public float dashSpeed = 20f;
     public float dashTime = 0.15f;
     public float dashCooldown = 0.6f;
     public KeyCode dashKey = KeyCode.L;
 
     [Header("Dash Unlock")]
-    public bool canDash = false; //  BAN ĐẦU KHÔNG DASH ĐƯỢC
+    public bool canDash = false;
 
+    // <<< ĐÃ FIX LỖI CS0103: KHAI BÁO BIẾN BỊ THIẾU >>>
     private bool isDashing = false;
     private float lastDashTime;
     private float originalGravity;
-
     private bool isStunned = false;
 
     [Header("Sound Effects")]
@@ -49,50 +53,48 @@ public class PlayerController : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         originalGravity = rb.gravityScale;
         audioSource = GetComponent<AudioSource>();
-        // CHẮC CHẮN DASH CHƯA MỞ KHÓA KHI BẮT ĐẦU
+
+        currentMoveSpeed = baseMoveSpeed;
+
         canDash = false;
-        Debug.Log(" Dash chưa được mở khóa - cần nhặt item!");
     }
 
     void Update()
     {
-        if (isStunned) return;
+        // Kiểm tra isDashing và isStunned
+        if (isStunned || isDashing) return;
+
         moveInput = Input.GetAxisRaw("Horizontal");
         isGrounded = CheckGrounded();
 
-        // Nhảy
         if (Input.GetKeyDown(KeyCode.K) && isGrounded)
         {
             jumpPressed = true;
         }
 
-        // Animation
         animator.SetBool("isRunning", moveInput != 0);
         animator.SetBool("isJumping", !isGrounded);
 
-        // Lật hướng nhân vật
         if (moveInput > 0)
         {
-            spriteRenderer.flipX = false; // mặt phải
+            spriteRenderer.flipX = false;
             firePoint.localPosition = new Vector3(1f, 0f, 0f);
         }
         else if (moveInput < 0)
         {
-            spriteRenderer.flipX = true; // mặt trái
+            spriteRenderer.flipX = true;
             firePoint.localPosition = new Vector3(-1f, 0f, 0f);
         }
 
-        //  DASH - CHỈ HOẠT ĐỘNG KHI ĐÃ MỞ KHÓA
         if (canDash && !isDashing && Input.GetKeyDown(dashKey) && Time.time >= lastDashTime + dashCooldown)
         {
             Vector2 dashDir = new Vector2(spriteRenderer.flipX ? -1 : 1, 0);
             StartCoroutine(Dash(dashDir));
         }
-        
-        //  HIỂN THỊ CẢNH BÁO NẾU CHƯA MỞ KHÓA DASH
+
         if (!canDash && Input.GetKeyDown(dashKey))
         {
-            Debug.Log(" Bạn chưa mở khóa dash! Hãy tìm item dash để mở khóa.");
+            Debug.Log(" Bạn chưa mở khóa dash!");
         }
         if (Input.GetKeyDown(KeyCode.K) && isGrounded && !isDashing)
         {
@@ -103,23 +105,47 @@ public class PlayerController : MonoBehaviour
     void FixedUpdate()
     {
         if (isStunned || isDashing) return;
-        if (isDashing) return;
 
-        // Di chuyển
-        rb.velocity = new Vector2(moveInput * moveSpeed, rb.velocity.y);
+        rb.velocity = new Vector2(moveInput * currentMoveSpeed, rb.velocity.y);
 
-        // Nhảy
         if (jumpPressed)
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
             jumpPressed = false;
         }
     }
+    // ... (Các hàm ApplySlow, SlowCoroutine, RemoveSlowEffect, Dash, Stun giữ nguyên)
+
+    public void ApplySlow(float slowPercentage, float duration)
+    {
+        if (slowCoroutine != null) StopCoroutine(slowCoroutine);
+
+        slowCoroutine = StartCoroutine(SlowCoroutine(slowPercentage, duration));
+    }
+
+    private IEnumerator SlowCoroutine(float slowPercentage, float duration)
+    {
+        isSlowed = true;
+        currentMoveSpeed = baseMoveSpeed * (1f - slowPercentage);
+
+        yield return new WaitForSeconds(duration);
+
+        RemoveSlowEffect();
+    }
+
+    private void RemoveSlowEffect()
+    {
+        isSlowed = false;
+        currentMoveSpeed = baseMoveSpeed;
+        slowCoroutine = null;
+    }
 
     IEnumerator Dash(Vector2 dir)
     {
         isDashing = true;
         lastDashTime = Time.time;
+
+        if (isSlowed) RemoveSlowEffect();
 
         animator.SetTrigger("Dash");
 
@@ -143,15 +169,12 @@ public class PlayerController : MonoBehaviour
         isDashing = false;
     }
 
-    // HÀM MỞ KHÓA DASH VĨNH VIỄN
     public void UnlockDashPermanent()
     {
-        if (!canDash) // Chỉ mở khóa nếu chưa có
+        if (!canDash)
         {
             canDash = true;
             Debug.Log(" DASH ĐÃ ĐƯỢC MỞ KHÓA VĨNH VIỄN!");
-
-            // Có thể thêm hiệu ứng, âm thanh ở đây
             StartCoroutine(ShowDashUnlockedEffect());
         }
         else
@@ -162,8 +185,6 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator ShowDashUnlockedEffect()
     {
-        // Hiệu ứng khi mở khóa dash (tuỳ chọn)
-        Debug.Log(" Hiệu ứng mở khóa dash!");
         yield return new WaitForSeconds(1f);
     }
 
@@ -175,16 +196,10 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        //  KHI CHẠM VÀO ITEM DASH
         if (collision.CompareTag("DashItem"))
         {
-            // TỰ ĐỘNG MỞ KHÓA DASH VĨNH VIỄN
             UnlockDashPermanent();
-            
-            // TỰ ĐỘNG BIẾN MẤT ITEM
             Destroy(collision.gameObject);
-            
-            Debug.Log("🎯 Đã nhặt item dash và kích hoạt thành công!");
         }
     }
 
@@ -195,18 +210,14 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator StunCoroutine(float duration)
     {
+        if (isSlowed) RemoveSlowEffect();
+
         isStunned = true;
-        animator.SetTrigger("Stunned"); // Nếu có animation "Stunned"
-        Debug.Log("🌀 Player bị stun trong " + duration + " giây!");
+        animator.SetTrigger("Stunned");
+
+        rb.velocity = Vector2.zero;
+
         yield return new WaitForSeconds(duration);
         isStunned = false;
-    }
-    private void OnDrawGizmosSelected()
-    {
-        if (groundCheck != null)
-        {
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
-        }
     }
 }

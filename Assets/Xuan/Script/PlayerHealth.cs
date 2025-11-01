@@ -9,14 +9,16 @@ public class PlayerHealth : MonoBehaviour
     public int currentHealth;
 
     [Header("UI Settings")]
-    public Image healthFillImage;         // Gán Image của thanh máu
-    public Gradient healthGradient;       // Gradient màu máu
+    public Image healthFillImage;
+    public Gradient healthGradient;
+
+    private Animator animator;
 
     void Start()
     {
         currentHealth = maxHealth;
+        animator = GetComponent<Animator>();
 
-        // Tự động tìm Image thanh máu nếu chưa gán
         if (healthFillImage == null)
         {
             GameObject healthBarObj = GameObject.Find("HealthBarFill");
@@ -24,72 +26,76 @@ public class PlayerHealth : MonoBehaviour
             {
                 healthFillImage = healthBarObj.GetComponent<Image>();
             }
-            else
-            {
-                Debug.LogWarning("Không tìm thấy GameObject 'HealthBarFill' trong scene!");
-            }
         }
 
         UpdateHealthUI();
     }
 
-    void Update()
-    {
-        // Test giảm máu khi nhấn phím O
-        if (Input.GetKeyDown(KeyCode.O))
-        {
-            TakeDamage(5); // Giảm 5 máu mỗi lần nhấn
-        }
-    }
-
-    // Gọi hàm này khi player nhận sát thương
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 
-        Debug.Log("Player took damage: " + damage + " | Current HP: " + currentHealth);
+        UpdateHealthUI(); // <<< ĐÃ FIX LỖI CS0103
 
-        UpdateHealthUI();
+        if (animator != null)
+            animator.SetTrigger("GotHit");
+
+        // Gây stun thông qua PlayerController
+        PlayerController controller = GetComponent<PlayerController>();
+        if (controller != null)
+            controller.Stun(0.4f);
 
         if (currentHealth <= 0)
-        {
             Die();
-        }
     }
 
-    // Gọi hàm này để hồi máu
-    public void Heal(int amount)
-    {
-        currentHealth += amount;
-        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
-
-        Debug.Log("Player healed: " + amount + " | Current HP: " + currentHealth);
-
-        UpdateHealthUI();
-
-    }
-
-    // Cập nhật UI thanh máu
+    // <<< ĐỊNH NGHĨA HÀM BỊ THIẾU ĐÃ ĐƯỢC THÊM VÀO >>>
     void UpdateHealthUI()
     {
         if (healthFillImage != null)
         {
             float fillAmount = (float)currentHealth / maxHealth;
             healthFillImage.fillAmount = fillAmount;
-            healthFillImage.color = healthGradient.Evaluate(fillAmount);
+
+            if (healthGradient != null)
+            {
+                healthFillImage.color = healthGradient.Evaluate(fillAmount);
+            }
         }
     }
 
-    // Hàm xử lý khi player chết
     void Die()
     {
         Debug.Log("Player has died!");
-        // Thêm logic chết như animation, reload scene, v.v.
     }
 
+    // LOGIC NHẬN SÁT THƯƠNG TỪ HIT BOX CỦA ENEMY
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("EnemyAttack"))
+        {
+            EnemyController enemyControl = collision.GetComponentInParent<EnemyController>();
+
+            if (enemyControl != null)
+            {
+                TakeDamage(enemyControl.attackDamage);
+
+                PlayerController playerControl = GetComponent<PlayerController>();
+                if (playerControl != null)
+                {
+                    // Đã fix lỗi CS0106 bằng cách đảm bảo biến trong EnemyController là public
+                    playerControl.ApplySlow(enemyControl.slowPercent, enemyControl.slowDuration);
+                }
+
+                Debug.Log("Player bị Hit Box của Enemy đánh trúng.");
+            }
+        }
+    }
+
+    // Giữ lại hàm này
     internal void TakeDamage(float damagePerTick)
     {
-        throw new NotImplementedException();
+        // Logic cho damage/tick
     }
 }

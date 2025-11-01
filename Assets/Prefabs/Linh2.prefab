@@ -42,7 +42,6 @@ GameObject:
   - component: {fileID: 6397136733834634517}
   - component: {fileID: 6179404445659292254}
   - component: {fileID: 1969247862574058061}
-  - component: {fileID: 272762230057203448}
   - component: {fileID: 3224022653534719677}
   - component: {fileID: 6368978711507501478}
   - component: {fileID: 986488575003937548}
@@ -142,51 +141,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!61 &272762230057203448
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5137104403319381024}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0.8714533, y: 0.007470131}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.4375, y: 3.9375}
-    newSize: {x: 1.4375, y: 3.9375}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 16.567312, y: 4.045931}
-  m_EdgeRadius: 0
 --- !u!50 &3224022653534719677
 Rigidbody2D:
   serializedVersion: 4
@@ -227,9 +181,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 3
-  attackRange: 1
   jumpForce: 6
   jumpInterval: 2
+  attackRange: 1
+  attackCooldown: 1
+  attackDamage: 10
+  slowPercent: 0.4
+  slowDuration: 2
+  retreatDistance: 2.5
   groundCheck: {fileID: 593778416154112882}
   groundCheckRadius: 0.2
   groundLayer:
