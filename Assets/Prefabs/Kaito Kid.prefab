@@ -514,7 +514,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1559228741
-  m_SortingLayer: 1
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: -1143664176, guid: c6405fa89d7e24941814a987120ba3b9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -859,3 +859,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   comboWindow: 1
+  attackSound1: {fileID: 8300000, guid: 8169de52db1cc1841bb16fb70c5b9625, type: 3}
+  attackSound2: {fileID: 8300000, guid: 63563fd013a7bcb428bb332ef4167492, type: 3}
