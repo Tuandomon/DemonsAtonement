@@ -9,149 +9,239 @@ public class EnemyController : MonoBehaviour
 
     // Cài đặt Tấn công
     public float attackRange = 1f;
-    public float attackCooldown = 1.0f; // Thêm Cooldown để không tấn công liên tục
+    public float attackCooldown = 1.0f;
+    public int attackDamage = 10;
+
+    // Cài đặt Slow Effect (Đã đảm bảo là PUBLIC để fix lỗi CS0106)
+    [Header("Slow Effect")]
+    public float slowPercent = 0.4f;
+    public float slowDuration = 2.0f;
+
+    // Cài đặt Hành vi Lùi Lại
+    [Header("Retreat Behavior")]
+    public float retreatDistance = 2.5f;
+
+    // CÀI ĐẶT TẦM NHÌN PHÁT HIỆN DÙNG KHOẢNG CÁCH
+    [Header("Detection Settings")]
+    public float detectionRange = 7.0f;
+
+    // Cài đặt Kỹ năng Triệu hồi
+    [Header("Summon Skill Settings")]
+    public GameObject minionPrefab;
+    public Transform summonPoint;
+    public float summonInterval = 15f; // Thời gian tồn tại Minion = Hồi chiêu
+
+    private float summonTimer;
+    public GameObject activeMinion;
+
+    // Biến tham chiếu Hit Box
+    [Header("Attack Hit Box")]
+    public Collider2D attackHitBox;
 
     // Cài đặt Kiểm tra Mặt đất
     public Transform groundCheck;
     public float groundCheckRadius = 0.2f;
     public LayerMask groundLayer;
 
+    private Transform player;
     private Rigidbody2D rb;
     private SpriteRenderer spriteRenderer;
     private Animator animator;
-    private Transform player; // Biến lưu trữ vị trí Player
 
-    // Biến trạng thái
     private bool isGrounded;
     private bool playerDetected = false;
     private float jumpTimer;
-    private float attackTimer; // Timer cho Cooldown tấn công
+    private float attackTimer;
+    private bool isAttacking = false;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
 
-        // Khởi tạo Timer
         jumpTimer = jumpInterval;
         attackTimer = 0f;
+        summonTimer = 0f; // Bắt đầu đếm ngược từ 0
 
-        // Cần đảm bảo GameObject Player có tag "Player"
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj != null)
         {
-            // Trong trường hợp Enemy Controller cần biết player trước khi va chạm
-            // Tùy theo logic thiết kế, ta có thể bỏ dòng này. 
-            // Hiện tại ta vẫn dựa vào OnTriggerEnter2D.
+            player = playerObj.transform;
+        }
+
+        if (attackHitBox != null)
+        {
+            attackHitBox.enabled = false;
         }
     }
 
     void Update()
     {
-        // 1. Cập nhật trạng thái chạm đất
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
 
-        // 2. Cập nhật Attack Cooldown
         if (attackTimer > 0)
         {
             attackTimer -= Time.deltaTime;
         }
 
-        // 3. Logic Hành vi Chính
+        // Cập nhật trạng thái Player Detected
+        if (player != null)
+        {
+            float distanceToPlayer = Vector2.Distance(transform.position, player.position);
+            bool wasDetected = playerDetected;
+
+            if (distanceToPlayer <= detectionRange)
+            {
+                playerDetected = true;
+
+                // >>> LOGIC TRIỆU HỒI NGAY LẬP TỨC VÀ ĐỊNH KỲ (KHÔNG DÙNG ANIMATION)
+                if (activeMinion == null)
+                {
+                    // Lần đầu phát hiện HOẶC Minion vừa chết (timer = 0)
+                    if (!wasDetected || summonTimer <= 0f)
+                    {
+                        SpawnMinions(); // Gọi spawn trực tiếp
+                        summonTimer = summonInterval;
+                    }
+                    else
+                    {
+                        // Giảm timer (dù logic này không cần thiết vì timer được Minion đặt)
+                        summonTimer -= Time.deltaTime;
+                    }
+                }
+            }
+            else
+            {
+                if (!isAttacking)
+                {
+                    playerDetected = false;
+                }
+            }
+        }
+        else
+        {
+            playerDetected = false;
+        }
+
+
+        // ... (Phần còn lại của Logic Hành vi Chính)
         if (playerDetected && player != null)
         {
             float distance = Vector2.Distance(transform.position, player.position);
             float direction = Mathf.Sign(player.position.x - transform.position.x);
 
-            // A. Tấn công nếu trong phạm vi và hết Cooldown
+            // A. Tấn công
             if (distance <= attackRange)
             {
-                AttackPlayer();
+                if (attackTimer <= 0f && !isAttacking)
+                {
+                    AttackPlayer();
+                }
 
-                // Dừng di chuyển khi tấn công (tùy chọn)
                 rb.velocity = new Vector2(0, rb.velocity.y);
                 animator.SetBool("isRunning", false);
             }
-            // B. Đuổi theo Player
-            else
+            // B. Đuổi theo / Lùi lại
+            else if (!isAttacking)
             {
-                // Di chuyển theo Player
-                rb.velocity = new Vector2(direction * moveSpeed, rb.velocity.y);
+                float targetDirection = direction;
+                if (distance < retreatDistance)
+                {
+                    targetDirection = -direction;
+                }
+                else if (distance > retreatDistance + 0.5f)
+                {
+                    targetDirection = direction;
+                }
+                else
+                {
+                    targetDirection = 0;
+                }
 
-                // Lật hướng sprite
+                rb.velocity = new Vector2(targetDirection * moveSpeed, rb.velocity.y);
                 spriteRenderer.flipX = direction < 0;
+                animator.SetBool("isRunning", targetDirection != 0);
 
-                // Cập nhật animation chạy (RUNNING)
-                animator.SetBool("isRunning", true);
-
-                // C. Nhảy mỗi 2 giây nếu đang đứng trên mặt đất (JUMPING)
+                // C. Nhảy định kỳ
                 jumpTimer -= Time.deltaTime;
                 if (jumpTimer <= 0f && isGrounded)
                 {
                     rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-                    // Đã loại bỏ animator.SetTrigger("jump");
                     jumpTimer = jumpInterval;
                 }
             }
+            else
+            {
+                spriteRenderer.flipX = direction < 0;
+            }
         }
-        else // Không phát hiện Player
+        else
         {
-            // Dừng di chuyển
             rb.velocity = new Vector2(0, rb.velocity.y);
-
-            // Cập nhật animation idle
             animator.SetBool("isRunning", false);
-
-            // Đặt lại jumpTimer về trạng thái sẵn sàng
-            jumpTimer = jumpInterval;
+            isAttacking = false;
         }
 
-        // 4. Cập nhật trạng thái nhảy cho Animator
-        // Điều này sẽ điều khiển transition Jump ⇔ Idle/Run trong Animator
         animator.SetBool("isJumping", !isGrounded);
     }
 
-    // Hàm gọi để Boss/Kẻ thù tấn công
+    // HÀM SPAWN MINION THỰC SỰ (Không cần gọi từ Animation Event nữa)
+    public void SpawnMinions()
+    {
+        if (minionPrefab == null || summonPoint == null) return;
+        if (activeMinion != null) return;
+
+        GameObject newMinion = Instantiate(minionPrefab, summonPoint.position, Quaternion.identity);
+        activeMinion = newMinion; // Gán tham chiếu
+
+        SummonedMinion minionScript = newMinion.GetComponent<SummonedMinion>();
+        if (minionScript != null)
+        {
+            minionScript.bossController = this;
+        }
+    }
+
+    // HÀM GỌI TỪ SCRIPT MINION KHI MINION BỊ HỦY
+    public void MinionDestroyed(GameObject minion)
+    {
+        if (minion == activeMinion)
+        {
+            activeMinion = null;
+            summonTimer = 0f;    // Đặt về 0 để Minion mới được triệu hồi ngay lập tức (nếu Player còn trong tầm)
+        }
+    }
+
+    // ... Các hàm Tấn công/HitBox giữ nguyên (đã loại bỏ SummonMinions() cũ)
     void AttackPlayer()
     {
-        if (attackTimer <= 0f)
-        {
-            animator.SetTrigger("attack");
-            attackTimer = attackCooldown; // Đặt lại Cooldown
-
-            // TO DO: Thêm logic gây sát thương cho Player Health System (script PlayerHealth) ở đây
-            // Ví dụ: player.GetComponent<PlayerHealth>().TakeDamage(damageAmount);
-
-            Debug.Log("Enemy tấn công Player!");
-        }
+        isAttacking = true;
+        animator.SetTrigger("attack");
+        attackTimer = attackCooldown;
     }
 
-    // Phát hiện Player đi vào tầm nhìn (trigger collider)
-    void OnTriggerEnter2D(Collider2D other)
+    public void HitTarget()
     {
-        if (other.CompareTag("Player"))
+        if (attackHitBox != null)
         {
-            player = other.transform;
-            playerDetected = true;
+            attackHitBox.enabled = true;
         }
     }
 
-    // Phát hiện Player đi ra khỏi tầm nhìn
-    void OnTriggerExit2D(Collider2D other)
+    public void EndHitBox()
     {
-        if (other.CompareTag("Player"))
+        if (attackHitBox != null)
         {
-            playerDetected = false;
-            player = null;
-
-            // Đảm bảo dừng mọi hành động khi mất mục tiêu
-            rb.velocity = new Vector2(0, rb.velocity.y);
-            animator.SetBool("isRunning", false);
+            attackHitBox.enabled = false;
         }
     }
 
-    // TO DO: Thêm hàm TakeDamage/Die để Boss tương tác với script PlayerHealth
-    // public void TakeDamage(int damage) { ... }
-    // void Die() { ... }
+    public void EndAttack()
+    {
+        isAttacking = false;
+        if (attackHitBox != null)
+        {
+            attackHitBox.enabled = false;
+        }
+    }
 }
