@@ -8,6 +8,8 @@ TagManager:
   - Enemy
   - DashItem
   - Trap
+  - Ladder
+  - Door
   layers:
   - Default
   - TransparentFX
