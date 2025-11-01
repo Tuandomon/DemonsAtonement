@@ -9,6 +9,7 @@ TagManager:
   - DashItem
   - Trap
   - Ladder
+  - Door
   layers:
   - Default
   - TransparentFX
