@@ -74,8 +74,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 362621823
+  m_SortingLayer: 1
   m_SortingOrder: 0
   m_Sprite: {fileID: -939005830, guid: d5186ef98905164448d009c62d099b33, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -106,7 +106,9 @@ MonoBehaviour:
   attackRange: 1.5
   attackDamage: 10
   attackCooldown: 2
-  player: {fileID: 0}
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 0
   retreatDuration: 1
 --- !u!50 &2994109449589461334
 Rigidbody2D:
@@ -171,7 +173,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 8.4375, y: 5.875}
+    oldSize: {x: 8.5, y: 5.9375}
     newSize: {x: 1.35, y: 0.94}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
