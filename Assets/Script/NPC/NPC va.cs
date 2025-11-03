@@ -62,7 +62,7 @@ public class NPCva : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         // Khi bị vũ khí của người chơi va chạm
-        if (other.CompareTag("PlayerWeapon"))
+        if (other.CompareTag("Player"))
         {
             TakeDamage(20); // bị chém 1 lần chết luôn
         }
