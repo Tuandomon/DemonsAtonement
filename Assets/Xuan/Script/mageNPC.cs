@@ -1,112 +1,130 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class mageNPC : MonoBehaviour
 {
-    [Header("Detection Settings")]
-    public float detectionRange = 8f;
-    public float attackRange = 2f;
-    public LayerMask playerLayer;
-
-    [Header("Movement Settings")]
-    public float moveSpeed = 3f;
-
-    [Header("LightningBall Settings")]
+    public GameObject bulletPrefab;
     public Transform firePoint;
-    public GameObject lightningBallPrefab;
-    public float lightningBallCooldown = 5f;
-    private float lastLightningBallTime;
+    public float moveSpeed = 3f;
+    public float chaseRange = 10f;
+    public float attackRange = 6f;
+    public float attackDelay = 2f;
 
-    private Transform player;
+    private Transform playerTarget;
     private Animator animator;
-    private Rigidbody2D rb;
-    private SpriteRenderer spriteRenderer;
-
-    private bool isDead = false;
+    private float lastAttackTime;
 
     void Start()
     {
         animator = GetComponent<Animator>();
-        rb = GetComponent<Rigidbody2D>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        player = GameObject.FindGameObjectWithTag("Player")?.transform;
-        lastLightningBallTime = Time.time - lightningBallCooldown; // Cho phép bắn ngay từ đầu
+        if (animator == null)
+            Debug.LogWarning("Không tìm thấy Animator.");
+
+        if (firePoint == null)
+        {
+            GameObject found = GameObject.Find("FirePoint");
+            if (found != null)
+                firePoint = found.transform;
+            else
+                Debug.LogWarning("Không tìm thấy FirePoint.");
+        }
     }
 
     void Update()
     {
-        if (isDead || player == null) return;
+        FindPlayer();
 
-        float distance = Vector2.Distance(transform.position, player.position);
-
-        if (distance <= detectionRange)
+        if (playerTarget != null)
         {
-            if (distance > attackRange)
+            float distance = Vector2.Distance(transform.position, playerTarget.position);
+
+            FaceTarget(playerTarget);
+
+            if (distance <= attackRange)
             {
-                MoveTowardsPlayer();
+                animator.SetBool("isRunning", false);
+
+                if (Time.time >= lastAttackTime + attackDelay)
+                {
+                    animator.SetTrigger("Attack");
+                    lastAttackTime = Time.time;
+                }
+            }
+            else if (distance <= chaseRange)
+            {
                 animator.SetBool("isRunning", true);
+                MoveTowards(playerTarget);
             }
             else
             {
-                rb.velocity = Vector2.zero;
                 animator.SetBool("isRunning", false);
-
-                // Kiểm tra cooldown để bắn LightningBall
-                if (Time.time >= lastLightningBallTime + lightningBallCooldown)
-                {
-                    TryFire();
-                    lastLightningBallTime = Time.time;
-                }
             }
         }
         else
         {
-            rb.velocity = Vector2.zero;
             animator.SetBool("isRunning", false);
         }
-
-        // Lật hướng enemy theo vị trí Player
-        spriteRenderer.flipX = player.position.x < transform.position.x;
-
-        // Cập nhật vị trí firePoint theo hướng
-        firePoint.localPosition = spriteRenderer.flipX ? new Vector3(-1f, 0f, 0f) : new Vector3(1f, 0f, 0f);
     }
 
-    void MoveTowardsPlayer()
+    void FindPlayer()
     {
-        Vector2 direction = (player.position - transform.position).normalized;
-        rb.velocity = new Vector2(direction.x * moveSpeed, rb.velocity.y);
-    }
-
-    void TryFire()
-    {
-        animator.SetTrigger("Attack"); // Gọi animation bắn
-    }
-
-    // Gọi từ animation event
-    public void ShootLightningBall()
-    {
-        if (lightningBallPrefab != null && firePoint != null)
+        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, chaseRange);
+        foreach (Collider2D hit in hits)
         {
-            GameObject lightningBall = Instantiate(lightningBallPrefab, firePoint.position, Quaternion.identity);
-            Vector2 direction = spriteRenderer.flipX ? Vector2.left : Vector2.right;
-            lightningBall.GetComponent<LightningBall>().SetDirection(direction);
+            if (hit.CompareTag("Player"))
+            {
+                playerTarget = hit.transform;
+                return;
+            }
+        }
+
+        playerTarget = null;
+    }
+
+    void MoveTowards(Transform target)
+    {
+        Vector2 direction = (target.position - transform.position).normalized;
+        transform.position += (Vector3)direction * moveSpeed * Time.deltaTime;
+    }
+
+    void FaceTarget(Transform target)
+    {
+        if (target != null)
+        {
+            float dir = target.position.x - transform.position.x;
+            if (dir < 0)
+                transform.localScale = new Vector3(-1, transform.localScale.y, transform.localScale.z);
+            else
+                transform.localScale = new Vector3(1, transform.localScale.y, transform.localScale.z);
         }
     }
 
-    public void TakeDamage(int damage)
+    // Gọi từ animation event "Attack"
+    public void ShootAtPlayer()
     {
-        if (isDead) return;
-        Die();
+        if (playerTarget == null || Vector2.Distance(transform.position, playerTarget.position) > attackRange)
+            return;
+
+        GameObject bullet = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
+
+        Vector2 direction = (playerTarget.position - firePoint.position).normalized;
+
+        // Xoay viên đạn theo hướng bay
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        bullet.transform.rotation = Quaternion.Euler(0, 0, angle);
+
+        // Gửi hướng đầy đủ cho BulletEnemy
+        BulletEnemy bulletScript = bullet.GetComponent<BulletEnemy>();
+        if (bulletScript != null)
+        {
+            bulletScript.SetDirection(direction);
+        }
     }
 
-    void Die()
+    void OnDrawGizmosSelected()
     {
-        isDead = true;
-        rb.velocity = Vector2.zero;
-        animator.SetTrigger("Death");
-        GetComponent<Collider2D>().enabled = false;
-        this.enabled = false;
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, chaseRange);
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, attackRange);
     }
 }
