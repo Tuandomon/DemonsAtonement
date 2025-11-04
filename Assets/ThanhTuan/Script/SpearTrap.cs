@@ -58,13 +58,13 @@ public class SpearTrap : MonoBehaviour
         {
             rb.velocity = Vector2.up * launchSpeed;
         }
-
         // 3. Chờ hồi phục (10s)
         yield return new WaitForSeconds(cooldownTime);
 
         // 4. HIỆN BẪY
         if (spriteRenderer != null)
         {
+
             spriteRenderer.enabled = true;
         }
         detectionZone.enabled = true;

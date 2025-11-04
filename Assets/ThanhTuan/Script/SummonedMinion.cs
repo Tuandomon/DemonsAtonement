@@ -4,13 +4,13 @@ public class SummonedMinion : MonoBehaviour
 {
     // Cài đặt Di chuyển
     [Header("Movement")]
-    public float moveSpeed = 3f;           // <<< KIỂM TRA GIÁ TRỊ NÀY
+    public float moveSpeed = 3f;           
     public float hoverHeight = 1f;
 
     // Cài đặt AoE Damage
     [Header("AoE Damage Settings")]
     public float damagePerSecond = 2f;
-    public float damageRadius = 2.5f;  // <<< KIỂM TRA GIÁ TRỊ NÀY (Vùng dừng lại)
+    public float damageRadius = 2.5f;  
     public float damageInterval = 0.5f;
 
     // Cài đặt Tồn tại
@@ -39,7 +39,7 @@ public class SummonedMinion : MonoBehaviour
         // CÀI ĐẶT BAY LƠ LỬNG
         if (rb != null)
         {
-            rb.gravityScale = 0; // PHẢI LÀ 0
+            rb.gravityScale = 0;
             rb.drag = 0f;
         }
 
