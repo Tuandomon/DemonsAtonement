@@ -203,6 +203,21 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+
+    public void ApplyStun(float duration)
+    {
+        if (isSlowed) RemoveSlowEffect(); // Loại bỏ hiệu ứng làm chậm nếu có
+
+        if (!isStunned)
+        {
+            isStunned = true;
+            rb.velocity = Vector2.zero;
+            animator.SetTrigger("Stunned");
+            StartCoroutine(StunCoroutine(duration));
+        }
+    }
+
+
     public void Stun(float duration)
     {
         StartCoroutine(StunCoroutine(duration));
