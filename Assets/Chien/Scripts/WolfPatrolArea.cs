@@ -175,14 +175,26 @@ public class WolfPatrolArea : MonoBehaviour
         if ((dir > 0 && !facingRight) || (dir < 0 && facingRight))
             Flip();
 
-        // 🩸 Chỉ tấn công khi cooldown đã xong
+        // Nếu cooldown đã hết → tấn công
         if (Time.time - lastAttackTime >= attackCooldown)
         {
-            animator.ResetTrigger("Attack"); // reset trước tránh kẹt trigger
             animator.SetTrigger("Attack");
             lastAttackTime = Time.time;
+
+            // 🔥 Gây sát thương trực tiếp nếu người chơi trong phạm vi tấn công
+            float distanceToPlayer = Vector2.Distance(transform.position, player.position);
+            if (distanceToPlayer <= attackRange)
+            {
+                PlayerHealth playerHealth = player.GetComponent<PlayerHealth>();
+                if (playerHealth != null)
+                {
+                    playerHealth.TakeDamage(100);
+                    Debug.Log("🐺 Sói tấn công trúng người chơi!");
+                }
+            }
         }
     }
+
 
     void Flip()
     {
