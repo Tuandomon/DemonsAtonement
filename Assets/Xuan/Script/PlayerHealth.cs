@@ -36,15 +36,15 @@ public class PlayerHealth : MonoBehaviour
         currentHealth -= damage;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 
-        UpdateHealthUI(); // <<< ĐÃ FIX LỖI CS0103
+        UpdateHealthUI();
 
         if (animator != null)
             animator.SetTrigger("GotHit");
 
-        // Gây stun thông qua PlayerController
+        // Gây stun trong 1 giây
         PlayerController controller = GetComponent<PlayerController>();
         if (controller != null)
-            controller.Stun(0.4f);
+            controller.Stun(1f);
 
         if (currentHealth <= 0)
             Die();
@@ -92,6 +92,7 @@ public class PlayerHealth : MonoBehaviour
             }
         }
     }
+
 
     // Giữ lại hàm này
     internal void TakeDamage(float damagePerTick)
