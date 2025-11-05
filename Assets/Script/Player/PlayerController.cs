@@ -220,19 +220,20 @@ public class PlayerController : MonoBehaviour
 
     public void Stun(float duration)
     {
-        StartCoroutine(StunCoroutine(duration));
+        if (!isStunned)
+            StartCoroutine(StunCoroutine(duration));ư
     }
 
     private IEnumerator StunCoroutine(float duration)
     {
-        if (isSlowed) RemoveSlowEffect();
-
         isStunned = true;
+
+        // Ngăn di chuyển và animation stun
+        rb.velocity = Vector2.zero;
         animator.SetTrigger("Stunned");
 
-        rb.velocity = Vector2.zero;
-
         yield return new WaitForSeconds(duration);
+
         isStunned = false;
     }
 }
