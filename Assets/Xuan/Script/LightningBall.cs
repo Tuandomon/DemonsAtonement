@@ -47,6 +47,7 @@ public class LightningBall : MonoBehaviour
     {
         if (hasExploded) return;
 
+        // Gây sát thương nếu là Player
         if (collision.CompareTag("Player"))
         {
             PlayerHealth playerHealth = collision.GetComponent<PlayerHealth>();
@@ -55,19 +56,22 @@ public class LightningBall : MonoBehaviour
                 playerHealth.TakeDamage(damage);
                 Debug.Log("Đạn enemy gây " + damage + " sát thương cho Player.");
             }
-
-            Explode();
         }
 
+        // Stun nếu có PlayerController
         PlayerController playerController = collision.GetComponent<PlayerController>();
         if (playerController != null)
         {
             playerController.Stun(1f); // stun 1 giây
         }
+
+        // Luôn gọi Explode sau khi xử lý va chạm
+        Explode();
     }
 
     void Explode()
     {
+        if (hasExploded) return; // tránh gọi nhiều lần
         hasExploded = true;
 
         // Dừng chuyển động
@@ -83,7 +87,7 @@ public class LightningBall : MonoBehaviour
             animator.SetTrigger("Boom");
         }
 
-        // Hủy sau thời gian animation Boom (ví dụ 0.5s)
-        Destroy(gameObject, 0.5f);
+        // Hủy sau 1 giây
+        Destroy(gameObject, 1.0f);
     }
 }
