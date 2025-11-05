@@ -29,7 +29,7 @@ public class EnemyController : MonoBehaviour
     [Header("Summon Skill Settings")]
     public GameObject minionPrefab;
     public Transform summonPoint;
-    public float summonInterval = 15f; // Thời gian tồn tại Minion = Hồi chiêu
+    public float summonInterval = 15f; 
 
     private float summonTimer;
     public GameObject activeMinion;
@@ -95,7 +95,6 @@ public class EnemyController : MonoBehaviour
             {
                 playerDetected = true;
 
-                // >>> LOGIC TRIỆU HỒI NGAY LẬP TỨC VÀ ĐỊNH KỲ (KHÔNG DÙNG ANIMATION)
                 if (activeMinion == null)
                 {
                     // Lần đầu phát hiện HOẶC Minion vừa chết (timer = 0)
@@ -125,7 +124,7 @@ public class EnemyController : MonoBehaviour
         }
 
 
-        // ... (Phần còn lại của Logic Hành vi Chính)
+        
         if (playerDetected && player != null)
         {
             float distance = Vector2.Distance(transform.position, player.position);
@@ -186,7 +185,7 @@ public class EnemyController : MonoBehaviour
         animator.SetBool("isJumping", !isGrounded);
     }
 
-    // HÀM SPAWN MINION THỰC SỰ (Không cần gọi từ Animation Event nữa)
+    
     public void SpawnMinions()
     {
         if (minionPrefab == null || summonPoint == null) return;
@@ -208,11 +207,11 @@ public class EnemyController : MonoBehaviour
         if (minion == activeMinion)
         {
             activeMinion = null;
-            summonTimer = 0f;    // Đặt về 0 để Minion mới được triệu hồi ngay lập tức (nếu Player còn trong tầm)
+            summonTimer = 0f;    
         }
     }
 
-    // ... Các hàm Tấn công/HitBox giữ nguyên (đã loại bỏ SummonMinions() cũ)
+    
     void AttackPlayer()
     {
         isAttacking = true;

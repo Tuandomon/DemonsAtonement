@@ -6,23 +6,53 @@ public class ChestOpenOnce : MonoBehaviour
     public Transform player;
     public Animator chestAnimator;
 
+    [Header("Coin Settings")]
+    public GameObject coinPrefab;        // prefab đồng xu
+    public int coinCount = 5;            // số xu bắn ra
+    public float spawnForce = 4f;        // lực bắn xu ra xung quanh
+    public Transform spawnPoint;         // điểm xuất phát (ví dụ miệng rương)
+
     private bool isPlayerNear = false;
     private bool isOpened = false;
 
     void Start()
     {
         buttonUI.SetActive(false);
-        chestAnimator.enabled = false; // 🧩 Tắt animator để không tự chạy animation
+        chestAnimator.enabled = false;
     }
 
     void Update()
     {
         if (isPlayerNear && !isOpened && Input.GetKeyDown(KeyCode.E))
         {
-            chestAnimator.enabled = true; // ✅ Bật lại Animator khi nhấn E
-            chestAnimator.Play("Chest_wood"); // 🔁 Chạy animation "mở rương" (đặt đúng tên clip)
+            chestAnimator.enabled = true;
+            chestAnimator.Play("Chest_wood");
             isOpened = true;
             buttonUI.SetActive(false);
+
+            SpawnCoins(); // 💰 Gọi hàm tạo xu
+        }
+    }
+
+    void SpawnCoins()
+    {
+        if (coinPrefab == null) return;
+
+        for (int i = 0; i < coinCount; i++)
+        {
+            // tạo xu tại vị trí spawnPoint hoặc vị trí rương
+            Vector3 spawnPos = (spawnPoint != null ? spawnPoint.position : transform.position);
+
+            GameObject coin = Instantiate(coinPrefab, spawnPos, Quaternion.identity);
+
+            // thêm lực ngẫu nhiên để xu bay tung ra
+            Rigidbody2D rb = coin.GetComponent<Rigidbody2D>();
+            if (rb != null)
+            {
+                // hướng bắn ngẫu nhiên
+                Vector2 randomDir = new Vector2(Random.Range(-1f, 1f), Random.Range(0.8f, 1.2f)).normalized;
+                rb.AddForce(randomDir * spawnForce, ForceMode2D.Impulse);
+            }
         }
     }
 
