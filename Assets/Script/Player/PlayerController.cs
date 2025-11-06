@@ -221,7 +221,7 @@ public class PlayerController : MonoBehaviour
     public void Stun(float duration)
     {
         if (!isStunned)
-            StartCoroutine(StunCoroutine(duration));ư
+            StartCoroutine(StunCoroutine(duration));
     }
 
     private IEnumerator StunCoroutine(float duration)

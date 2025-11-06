@@ -27,4 +27,9 @@ public class EnemyHealth : MonoBehaviour
         Debug.Log($"{gameObject.name} đã bị tiêu diệt!");
         Destroy(gameObject);
     }
+
+    public int GetCurrentHealth()
+    {
+        return currentHealth;
+    }
 }
