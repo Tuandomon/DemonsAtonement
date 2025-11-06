@@ -4,18 +4,21 @@ using UnityEngine.UI;
 public class EnemyHealthBarUI : MonoBehaviour
 {
     [Header("Tham chiếu")]
-    public EnemyHealth enemyHealth;
+    public EnemyHealth enemyHealth;  // 💡 đổi sang script mới
     public Slider healthSlider;
-    public Transform target;  // sói (đối tượng cần bám theo)
+    public Transform target;  // Quái (đối tượng cần bám theo)
 
     void Start()
     {
+        // Tự lấy script HealthEnemyMage từ target nếu chưa gán
         if (enemyHealth == null && target != null)
             enemyHealth = target.GetComponent<EnemyHealth>();
 
+        // Tự lấy Slider nếu chưa gán
         if (healthSlider == null)
             healthSlider = GetComponentInChildren<Slider>();
 
+        // Khởi tạo giá trị thanh máu
         if (enemyHealth != null && healthSlider != null)
         {
             healthSlider.maxValue = enemyHealth.maxHealth;
@@ -27,13 +30,13 @@ public class EnemyHealthBarUI : MonoBehaviour
     {
         if (enemyHealth == null || healthSlider == null || target == null) return;
 
-        // cập nhật giá trị máu
+        // 🩸 Cập nhật giá trị máu
         healthSlider.value = enemyHealth.GetCurrentHealth();
 
-        // luôn giữ vị trí gốc của thanh máu (không cộng offset)
-        transform.position = target.position;
+        // 🧭 Giữ vị trí thanh máu trùng vị trí quái (hoặc cộng offset nếu muốn)
+        transform.position = target.position + new Vector3(0, 1.5f, 0); // tùy chỉnh cao/thấp
 
-        // giữ cho thanh máu không bị xoay theo sói
+        // 🔒 Giữ cho thanh máu không bị xoay theo quái
         transform.rotation = Quaternion.identity;
     }
 }
