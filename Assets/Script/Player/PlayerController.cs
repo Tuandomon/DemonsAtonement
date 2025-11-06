@@ -203,21 +203,37 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+
+    public void ApplyStun(float duration)
+    {
+        if (isSlowed) RemoveSlowEffect(); // Loại bỏ hiệu ứng làm chậm nếu có
+
+        if (!isStunned)
+        {
+            isStunned = true;
+            rb.velocity = Vector2.zero;
+            animator.SetTrigger("Stunned");
+            StartCoroutine(StunCoroutine(duration));
+        }
+    }
+
+
     public void Stun(float duration)
     {
-        StartCoroutine(StunCoroutine(duration));
+        if (!isStunned)
+            StartCoroutine(StunCoroutine(duration));
     }
 
     private IEnumerator StunCoroutine(float duration)
     {
-        if (isSlowed) RemoveSlowEffect();
-
         isStunned = true;
+
+        // Ngăn di chuyển và animation stun
+        rb.velocity = Vector2.zero;
         animator.SetTrigger("Stunned");
 
-        rb.velocity = Vector2.zero;
-
         yield return new WaitForSeconds(duration);
+
         isStunned = false;
     }
 }

@@ -126,13 +126,43 @@ public class EnemyFireWizard : MonoBehaviour
     public void TriggerAttackHitbox1()
     {
         if (attackHitbox1 != null)
+        {
             attackHitbox1.ActivateHitbox();
+
+            Collider2D[] hits = Physics2D.OverlapBoxAll(attackHitboxTransform1.position, new Vector2(1f, 1f), 0f, playerLayer);
+            foreach (Collider2D hit in hits)
+            {
+                if (hit.CompareTag("Player"))
+                {
+                    PlayerController playerController = hit.GetComponent<PlayerController>();
+                    if (playerController != null)
+                    {
+                        playerController.ApplyStun(2f); // Gây choáng 2 giây
+                    }
+                }
+            }
+        }
     }
 
     public void TriggerAttackHitbox2()
     {
         if (attackHitbox2 != null)
+        {
             attackHitbox2.ActivateHitbox();
+
+            Collider2D[] hits = Physics2D.OverlapBoxAll(attackHitboxTransform2.position, new Vector2(1f, 1f), 0f, playerLayer);
+            foreach (Collider2D hit in hits)
+            {
+                if (hit.CompareTag("Player"))
+                {
+                    PlayerController playerController = hit.GetComponent<PlayerController>();
+                    if (playerController != null)
+                    {
+                        playerController.ApplyStun(2f); // Gây choáng 2 giây
+                    }
+                }
+            }
+        }
     }
 
 
