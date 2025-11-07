@@ -103,7 +103,7 @@ MonoBehaviour:
   damagePerSecond: 2
   damageRadius: 2.5
   damageInterval: 0.5
-  lifetime: 15
+  lifetime: 5
   bossController: {fileID: 0}
 --- !u!50 &937147573370147404
 Rigidbody2D:
