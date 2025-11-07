@@ -713,6 +713,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackCooldown: 1.5
+  attack: {fileID: 8300000, guid: cab24c8546587da43882261e6aee28e4, type: 3}
   attackBox1: {fileID: 1789422549984041950}
   attackBox2: {fileID: 4560161171605537656}
 --- !u!114 &3729511954100794300
@@ -731,6 +732,7 @@ MonoBehaviour:
   firePoint: {fileID: 8586308582791742117}
   bulletSpeed: 20
   shootCooldown: 2
+  shoot: {fileID: 8300000, guid: 92e47ce0c5b360f4181491aa5c453831, type: 3}
 --- !u!114 &5595126428760096320
 MonoBehaviour:
   m_ObjectHideFlags: 0

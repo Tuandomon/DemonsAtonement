@@ -13,6 +13,9 @@ public class PlayerAttack : MonoBehaviour
     private bool isAttacking = false;
     private float moveInput;
 
+    public AudioClip attack;
+    private AudioSource audioSource;
+
     private PlayerController playerController;
 
     // 🔥 Thêm 2 box gây damage
@@ -21,6 +24,8 @@ public class PlayerAttack : MonoBehaviour
 
     void Start()
     {
+        audioSource = GetComponent<AudioSource>(); 
+
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
@@ -59,6 +64,9 @@ public class PlayerAttack : MonoBehaviour
 
     void Attack()
     {
+        audioSource.volume = PlayerPrefs.GetFloat("SFXVolume", 1f);
+        audioSource.PlayOneShot(attack);
+
         animator.SetTrigger("attack");
         lastAttackTime = Time.time;
         isAttacking = true;

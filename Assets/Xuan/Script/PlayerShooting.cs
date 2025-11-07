@@ -8,10 +8,15 @@ public class PlayerShooting : MonoBehaviour
     public float bulletSpeed = 20f;
     public float shootCooldown = 2f;
 
+    public AudioClip shoot;
+    private AudioSource audioSource;
+
     private float lastShootTime = -Mathf.Infinity;
 
     void Start()
     {
+        audioSource = GetComponent<AudioSource>();
+
         if (firePoint == null)
         {
             GameObject found = GameObject.Find("FirePoint");
@@ -40,6 +45,9 @@ public class PlayerShooting : MonoBehaviour
 
     void Shoot()
     {
+        audioSource.volume = PlayerPrefs.GetFloat("SFXVolume", 1f);
+        audioSource.PlayOneShot(shoot);
+
         GameObject bullet = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
 
         float direction = GetComponent<SpriteRenderer>().flipX ? -1f : 1f;

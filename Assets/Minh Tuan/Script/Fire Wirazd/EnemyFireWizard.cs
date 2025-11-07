@@ -39,8 +39,14 @@ public class EnemyFireWizard : MonoBehaviour
 
     private bool isDead = false;
 
+    public AudioClip attack;
+    public AudioClip attack2;
+    private AudioSource audioSource;
+
     void Start()
     {
+        audioSource = GetComponent<AudioSource>();
+
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -125,6 +131,9 @@ public class EnemyFireWizard : MonoBehaviour
 
     public void TriggerAttackHitbox1()
     {
+        audioSource.volume = PlayerPrefs.GetFloat("SFXVolume", 1f);
+        audioSource.PlayOneShot(attack);
+
         if (attackHitbox1 != null)
         {
             attackHitbox1.ActivateHitbox();
@@ -146,6 +155,9 @@ public class EnemyFireWizard : MonoBehaviour
 
     public void TriggerAttackHitbox2()
     {
+        audioSource.volume = PlayerPrefs.GetFloat("SFXVolume", 1f);
+        audioSource.PlayOneShot(attack2);
+
         if (attackHitbox2 != null)
         {
             attackHitbox2.ActivateHitbox();
@@ -197,4 +209,5 @@ public class EnemyFireWizard : MonoBehaviour
         GetComponent<Collider2D>().enabled = false;
         this.enabled = false;
     }
+
 }

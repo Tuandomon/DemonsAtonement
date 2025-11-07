@@ -11,6 +11,9 @@ public class FireBallSkill : MonoBehaviour
     private Rigidbody2D rb;
     private bool isExploding = false;
 
+    public AudioClip FireBall;
+    private AudioSource audioSource;
+
     void Start()
     {
         animator = GetComponent<Animator>();
