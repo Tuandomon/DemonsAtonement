@@ -48,13 +48,13 @@ public class SummonedMinion : MonoBehaviour
         damageTimer = damageInterval;
     }
 
-    void OnDestroy()
-    {
-        if (bossController != null)
-        {
-            bossController.MinionDestroyed(gameObject);
-        }
-    }
+    //void OnDestroy()
+    //{
+    //    if (bossController != null)
+    //    {
+    //        bossController.MinionDestroyed(gameObject);
+    //    }
+    //}
 
     void Update()
     {
