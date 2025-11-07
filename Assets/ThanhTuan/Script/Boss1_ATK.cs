@@ -3,36 +3,35 @@
 public class Boss1_ATK : MonoBehaviour
 {
     [Header("Normal Attack Settings")]
-    public GameObject lightPrefab;         // Prefab quả cầu ánh sáng
-    public Transform firePoint;            // Vị trí bắn (đặt ở tay quái)
-    public float attackRange = 6f;         // Phạm vi phát hiện Player
-    public float attackCooldown = 2f;      // Thời gian giữa các lần bắn
+    public GameObject lightPrefab;
+    public Transform firePoint;
+    public float attackRange = 6f;
+    public float attackCooldown = 2f;
 
     [Header("Triple Skill Settings")]
-    public float tripleSkillCooldown = 5f; // Mỗi 5 giây dùng skill 1 lần
-    public float angleSpread = 15f;        // Góc xoè giữa các tia
+    public float tripleSkillCooldown = 4f;
+    public float angleSpread = 15f;
     private float nextTripleSkillTime = 0f;
     private bool isUsingTripleSkill = false;
 
     [Header("FireBall Skill Settings")]
-    public GameObject fireBallPrefab;      // Prefab của skill FireBall
-    public float fireBallCooldown = 10f;   // Hồi chiêu FireBall
-    private float nextFireBallTime = 0f;   // Thời điểm được dùng lại FireBall
+    public GameObject fireBallPrefab;
+    public float fireBallCooldown = 8f;
+    private float nextFireBallTime = 0f;
     private bool isUsingFireBall = false;
 
     [Header("References")]
     public Animator animator;
     private Transform player;
     private float nextAttackTime;
+   
 
     private void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player")?.transform;
+ 
 
-        // 🕒 Đợi 10 giây sau khi bắt đầu mới được dùng FireBall
         nextFireBallTime = Time.time + fireBallCooldown;
-
-        // 🕔 Đợi 5 giây sau khi bắt đầu mới được dùng Triple Skill
         nextTripleSkillTime = Time.time + tripleSkillCooldown;
     }
 
@@ -44,50 +43,50 @@ public class Boss1_ATK : MonoBehaviour
 
         if (distance <= attackRange)
         {
-            // 🔄 Quay mặt về phía Player
             if (player.position.x < transform.position.x)
                 transform.localScale = new Vector3(-0.8f, 0.8f, 1f);
             else
                 transform.localScale = new Vector3(0.8f, 0.8f, 1f);
 
-            // 🚫 Nếu đang dùng skill đặc biệt thì không bắn gì khác
             if (isUsingTripleSkill || isUsingFireBall) return;
 
-            // 🔥 Ưu tiên dùng FireBall nếu hồi xong
+   
+            if (animator.GetBool("isRunning")) return;
+
             if (Time.time >= nextFireBallTime)
             {
                 isUsingFireBall = true;
-                animator.SetTrigger("Attack");
-                Invoke(nameof(ShootFireBall), 0.6f); // Delay theo animation
+                animator.SetTrigger("attack");
+                Invoke(nameof(ShootFireBall), 0.6f);
                 nextFireBallTime = Time.time + fireBallCooldown;
                 return;
             }
 
-            // ⚡ Dùng skill 3 tia nếu hồi xong
             if (Time.time >= nextTripleSkillTime)
             {
                 isUsingTripleSkill = true;
-                animator.SetTrigger("Attack");
+                animator.SetTrigger("attack");
                 nextTripleSkillTime = Time.time + tripleSkillCooldown;
                 Invoke(nameof(ShootTriple), 0.4f);
                 return;
             }
 
-            // 🏹 Bắn thường
             if (Time.time >= nextAttackTime)
             {
-                animator.SetTrigger("Attack");
+                animator.SetTrigger("attack");
+                Invoke(nameof(Shoot), 0.4f);
                 nextAttackTime = Time.time + attackCooldown;
             }
         }
         else
         {
-            animator.ResetTrigger("Attack");
-            animator.Play("Idle");
+            animator.ResetTrigger("attack");
+            animator.Play("Idle_Linh2");
         }
     }
 
-    // 🏹 Bắn thường
+    // Loại bỏ hàm BatDauTanCong và KetThucTanCong
+
     public void Shoot()
     {
         if (isUsingTripleSkill || isUsingFireBall) return;
@@ -101,10 +100,9 @@ public class Boss1_ATK : MonoBehaviour
 
         Rigidbody2D rb = light.GetComponent<Rigidbody2D>();
         if (rb != null)
-            rb.velocity = dir * 6f;
+            rb.velocity = dir * 8f;
     }
 
-    // ⚡ Skill bắn 3 tia
     private void ShootTriple()
     {
         if (lightPrefab == null || firePoint == null || player == null) return;
@@ -120,7 +118,7 @@ public class Boss1_ATK : MonoBehaviour
             if (rb != null)
             {
                 Vector2 shootDir = Quaternion.Euler(0, 0, spread) * baseDir;
-                rb.velocity = shootDir * 6f;
+                rb.velocity = shootDir * 8f;
             }
         }
 
@@ -130,7 +128,6 @@ public class Boss1_ATK : MonoBehaviour
 
     private void ResetTripleSkill() => isUsingTripleSkill = false;
 
-    // 🔥 Bắn FireBall
     private void ShootFireBall()
     {
         if (fireBallPrefab == null || firePoint == null || player == null) return;
@@ -143,7 +140,7 @@ public class Boss1_ATK : MonoBehaviour
 
         Rigidbody2D rb = fireBall.GetComponent<Rigidbody2D>();
         if (rb != null)
-            rb.velocity = dir * 8f;
+            rb.velocity = dir * 10f;
 
         Invoke(nameof(ResetFireBallSkill), 1f);
         Debug.Log("Mage used FireBall!");
