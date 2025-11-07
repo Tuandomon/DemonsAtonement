@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2881355874288139673}
   - component: {fileID: 1116807001955875265}
   - component: {fileID: 7622891350609751499}
+  - component: {fileID: 3605191904737865041}
   m_Layer: 0
   m_Name: Projectile
   m_TagString: Untagged
@@ -75,7 +76,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 2
   m_Sprite: {fileID: 1194758498, guid: c959ac7e3e8e39a438f89421152fd844, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -99,6 +100,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e0d267215343664a801255953503e5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lifetime: 4
+  damageAmount: 30
 --- !u!50 &1116807001955875265
 Rigidbody2D:
   serializedVersion: 4
@@ -161,3 +164,24 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.375
+--- !u!95 &3605191904737865041
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 400868224160246667}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: b2611ac0f17b5ab4caf4f7b6c0e6aa86, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
