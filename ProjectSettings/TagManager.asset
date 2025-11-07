@@ -11,7 +11,7 @@ TagManager:
   - EnemyAttack
   - Ladder
   - Door
-  - light
+  - Boss
   layers:
   - Default
   - TransparentFX
