@@ -25,8 +25,14 @@ public class MageEnemyAttack : MonoBehaviour
     private Transform player;
     private float nextAttackTime;
 
+    public AudioClip lightningSkill;
+    public AudioClip FireBall;
+    private AudioSource audioSource;
+
     private void Start()
     {
+        audioSource = GetComponent<AudioSource>();
+
         player = GameObject.FindGameObjectWithTag("Player")?.transform;
 
         // 🕒 Đợi 10 giây sau khi bắt đầu mới được dùng FireBall
@@ -90,6 +96,9 @@ public class MageEnemyAttack : MonoBehaviour
     // 🏹 Bắn thường
     public void Shoot()
     {
+        audioSource.volume = PlayerPrefs.GetFloat("SFXVolume", 1f);
+        audioSource.PlayOneShot(lightningSkill);
+
         if (isUsingTripleSkill || isUsingFireBall) return;
         if (lightPrefab == null || firePoint == null || player == null) return;
 
@@ -107,6 +116,9 @@ public class MageEnemyAttack : MonoBehaviour
     // ⚡ Skill bắn 3 tia
     private void ShootTriple()
     {
+        audioSource.volume = PlayerPrefs.GetFloat("SFXVolume", 1f);
+        audioSource.PlayOneShot(lightningSkill);
+
         if (lightPrefab == null || firePoint == null || player == null) return;
 
         Vector3 baseDir = (player.position - firePoint.position).normalized;
@@ -133,6 +145,9 @@ public class MageEnemyAttack : MonoBehaviour
     // 🔥 Bắn FireBall
     private void ShootFireBall()
     {
+        audioSource.volume = PlayerPrefs.GetFloat("SFXVolume", 1f);
+        audioSource.PlayOneShot(FireBall);
+
         if (fireBallPrefab == null || firePoint == null || player == null) return;
 
         GameObject fireBall = Instantiate(fireBallPrefab, firePoint.position, Quaternion.identity);
@@ -156,4 +171,5 @@ public class MageEnemyAttack : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, attackRange);
     }
+
 }
