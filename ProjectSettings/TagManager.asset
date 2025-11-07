@@ -11,6 +11,7 @@ TagManager:
   - EnemyAttack
   - Ladder
   - Door
+  - Enemy_Wolf
   layers:
   - Default
   - TransparentFX
