@@ -1,26 +1,21 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class DashPickup : MonoBehaviour
 {
-    [Header("Visual Effects")]
-    public GameObject collectEffect;
-    public float rotateSpeed = 90f;
+    [Header("Hiệu ứng & Âm thanh")]
+    public GameObject collectEffect;    // Hiệu ứng khi ăn
+    public AudioClip collectSound;      // Âm thanh khi ăn
 
-    [Header("Sound")]
-    public AudioClip collectSound;
-
-    [Header("Animation")]
-    public float floatAmplitude = 0.5f;
-    public float floatFrequency = 1f;
+    [Header("Chuyển động")]
+    public float rotateSpeed = 90f;     // Tốc độ xoay
+    public float floatAmplitude = 0.1f; // Biên độ nổi thấp hơn (dễ ăn)
+    public float floatFrequency = 1f;   // Tốc độ nổi
 
     private Vector3 startPos;
     private bool isCollected = false;
 
     void Start()
     {
-        // Lưu vị trí ban đầu để tạo hiệu ứng nổi
         startPos = transform.position;
     }
 
@@ -28,62 +23,39 @@ public class DashPickup : MonoBehaviour
     {
         if (isCollected) return;
 
-        // Xoay item để thu hút người chơi
-        transform.Rotate(0, rotateSpeed * Time.deltaTime, 0);
+        // Xoay vật phẩm quanh trục Y
+        transform.Rotate(0f, rotateSpeed * Time.deltaTime, 0f);
 
-        // Hiệu ứng nổi lên xuống
-        FloatAnimation();
-    }
-
-    void FloatAnimation()
-    {
-        // Tạo hiệu ứng nổi bằng Mathf.Sin
-        float newY = startPos.y + Mathf.Sin(Time.time * floatFrequency) * floatAmplitude;
-        transform.position = new Vector3(transform.position.x, newY, transform.position.z);
+        // Hiệu ứng nổi nhẹ
+        float offsetY = Mathf.Sin(Time.time * floatFrequency) * floatAmplitude;
+        transform.position = new Vector3(startPos.x, startPos.y + offsetY, startPos.z);
     }
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Player") && !isCollected)
-        {
-            CollectItem(other.gameObject);
-        }
-    }
+        if (isCollected) return;
+        if (!other.CompareTag("Player")) return;
 
-    void CollectItem(GameObject player)
-    {
         isCollected = true;
 
-        // Hiệu ứng khi nhặt item
+        // Hiệu ứng và âm thanh khi nhặt
         if (collectEffect != null)
-        {
             Instantiate(collectEffect, transform.position, Quaternion.identity);
-        }
 
-        // Âm thanh khi nhặt item
         if (collectSound != null)
-        {
             AudioSource.PlayClipAtPoint(collectSound, transform.position);
-        }
 
-        // Tự động kích hoạt dash vĩnh viễn cho player
-        PlayerController playerController = player.GetComponent<PlayerController>();
+        // Kích hoạt Dash cho nhân vật
+        PlayerController playerController = other.GetComponent<PlayerController>();
         if (playerController != null)
-        {
             playerController.UnlockDashPermanent();
-        }
-        else
-        {
-            Debug.LogWarning("❌ Không tìm thấy PlayerController trên player!");
-        }
 
-        // Tự động biến mất
+        // Biến mất ngay lập tức
         Destroy(gameObject);
 
-        Debug.Log("🎯 Item dash đã được thu thập!");
+        Debug.Log("⚡ Nhặt Dash item - biến mất ngay!");
     }
 
-    // Hiển thị phạm vi trigger trong Scene (tuỳ chọn)
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.cyan;
