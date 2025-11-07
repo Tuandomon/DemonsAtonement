@@ -4,49 +4,39 @@ using UnityEngine.UI;
 public class EnemyHealthBarUI : MonoBehaviour
 {
     [Header("Tham chiếu")]
-    public EnemyHealth enemyHealth;     // Script máu của quái
-    public Slider healthSlider;         // Slider hiển thị máu
-    public Transform followTarget;      // Object để thanh máu theo (ví dụ: đầu sói)
-
-    private Quaternion fixedRotation;   // Giữ canvas không xoay theo quái
+    public EnemyHealth enemyHealth;  // 💡 đổi sang script mới
+    public Slider healthSlider;
+    public Transform target;  // Quái (đối tượng cần bám theo)
 
     void Start()
     {
-        if (enemyHealth == null)
-            Debug.LogWarning("⚠️ Chưa gán EnemyHealth trong Inspector!");
+        // Tự lấy script HealthEnemyMage từ target nếu chưa gán
+        if (enemyHealth == null && target != null)
+            enemyHealth = target.GetComponent<EnemyHealth>();
 
+        // Tự lấy Slider nếu chưa gán
         if (healthSlider == null)
             healthSlider = GetComponentInChildren<Slider>();
 
+        // Khởi tạo giá trị thanh máu
         if (enemyHealth != null && healthSlider != null)
         {
             healthSlider.maxValue = enemyHealth.maxHealth;
-            healthSlider.value = enemyHealth.maxHealth;
+            healthSlider.value = enemyHealth.GetCurrentHealth();
         }
-
-        // Giữ hướng gốc
-        fixedRotation = transform.rotation;
-
-        if (followTarget == null && enemyHealth != null)
-            followTarget = enemyHealth.transform; // fallback
     }
 
     void LateUpdate()
     {
-        if (enemyHealth == null || healthSlider == null || followTarget == null)
-            return;
+        if (enemyHealth == null || healthSlider == null || target == null) return;
 
-        // Theo dõi vị trí của followTarget (đầu sói hoặc vị trí mong muốn)
-        transform.position = followTarget.position;
+        // 🩸 Cập nhật giá trị máu
+        healthSlider.value = enemyHealth.GetCurrentHealth();
 
-        // Giữ hướng cố định (tránh xoay theo sói)
-        transform.rotation = fixedRotation;
+        // 🧭 Giữ vị trí thanh máu trùng vị trí quái (hoặc cộng offset nếu muốn)
+        transform.position = target.position + new Vector3(0, 1.5f, 0); // tùy chỉnh cao/thấp
 
-        // Cập nhật thanh máu
-        healthSlider.value = Mathf.Clamp(enemyHealth.GetCurrentHealth(), 0, enemyHealth.maxHealth);
-
-        // Khi quái chết thì xoá luôn thanh máu
-        if (enemyHealth.GetCurrentHealth() <= 0)
-            Destroy(gameObject);
+        // 🔒 Giữ cho thanh máu không bị xoay theo quái
+        transform.rotation = Quaternion.identity;
     }
 }
