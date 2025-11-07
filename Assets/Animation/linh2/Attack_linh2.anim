@@ -21,31 +21,19 @@ AnimationClip:
   - serializedVersion: 2
     curve:
     - time: 0
-      value: {fileID: -272045469, guid: 9ae99ac2f24124143be4ffcea1175717, type: 3}
-    - time: 0.1
-      value: {fileID: 1198403733, guid: 9ae99ac2f24124143be4ffcea1175717, type: 3}
+      value: {fileID: 999874724, guid: 4abbcf21111677b49bc6042250f85b5c, type: 3}
     - time: 0.15
-      value: {fileID: -413236546, guid: 9ae99ac2f24124143be4ffcea1175717, type: 3}
-    - time: 0.25
-      value: {fileID: 935292806, guid: 9ae99ac2f24124143be4ffcea1175717, type: 3}
+      value: {fileID: 1642793066, guid: 4abbcf21111677b49bc6042250f85b5c, type: 3}
     - time: 0.35
-      value: {fileID: 546260283, guid: 9ae99ac2f24124143be4ffcea1175717, type: 3}
-    - time: 0.4
-      value: {fileID: 1799255760, guid: 9ae99ac2f24124143be4ffcea1175717, type: 3}
+      value: {fileID: -774758523, guid: 4abbcf21111677b49bc6042250f85b5c, type: 3}
     - time: 0.5
-      value: {fileID: 806719122, guid: 9ae99ac2f24124143be4ffcea1175717, type: 3}
-    - time: 0.6
-      value: {fileID: -1946521520, guid: 9ae99ac2f24124143be4ffcea1175717, type: 3}
-    - time: 0.65
-      value: {fileID: -2106105455, guid: 9ae99ac2f24124143be4ffcea1175717, type: 3}
-    - time: 0.75
-      value: {fileID: 1109496454, guid: 9ae99ac2f24124143be4ffcea1175717, type: 3}
-    - time: 0.85
-      value: {fileID: 2071506701, guid: 9ae99ac2f24124143be4ffcea1175717, type: 3}
+      value: {fileID: -687482069, guid: 4abbcf21111677b49bc6042250f85b5c, type: 3}
+    - time: 0.7
+      value: {fileID: 278874069, guid: 4abbcf21111677b49bc6042250f85b5c, type: 3}
     - time: 0.9
-      value: {fileID: -10034304, guid: 9ae99ac2f24124143be4ffcea1175717, type: 3}
-    - time: 1
-      value: {fileID: 456645523, guid: 9ae99ac2f24124143be4ffcea1175717, type: 3}
+      value: {fileID: -895116886, guid: 4abbcf21111677b49bc6042250f85b5c, type: 3}
+    - time: 1.05
+      value: {fileID: -1093525866, guid: 4abbcf21111677b49bc6042250f85b5c, type: 3}
     attribute: m_Sprite
     path: 
     classID: 212
@@ -68,25 +56,19 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     pptrCurveMapping:
-    - {fileID: -272045469, guid: 9ae99ac2f24124143be4ffcea1175717, type: 3}
-    - {fileID: 1198403733, guid: 9ae99ac2f24124143be4ffcea1175717, type: 3}
-    - {fileID: -413236546, guid: 9ae99ac2f24124143be4ffcea1175717, type: 3}
-    - {fileID: 935292806, guid: 9ae99ac2f24124143be4ffcea1175717, type: 3}
-    - {fileID: 546260283, guid: 9ae99ac2f24124143be4ffcea1175717, type: 3}
-    - {fileID: 1799255760, guid: 9ae99ac2f24124143be4ffcea1175717, type: 3}
-    - {fileID: 806719122, guid: 9ae99ac2f24124143be4ffcea1175717, type: 3}
-    - {fileID: -1946521520, guid: 9ae99ac2f24124143be4ffcea1175717, type: 3}
-    - {fileID: -2106105455, guid: 9ae99ac2f24124143be4ffcea1175717, type: 3}
-    - {fileID: 1109496454, guid: 9ae99ac2f24124143be4ffcea1175717, type: 3}
-    - {fileID: 2071506701, guid: 9ae99ac2f24124143be4ffcea1175717, type: 3}
-    - {fileID: -10034304, guid: 9ae99ac2f24124143be4ffcea1175717, type: 3}
-    - {fileID: 456645523, guid: 9ae99ac2f24124143be4ffcea1175717, type: 3}
+    - {fileID: 999874724, guid: 4abbcf21111677b49bc6042250f85b5c, type: 3}
+    - {fileID: 1642793066, guid: 4abbcf21111677b49bc6042250f85b5c, type: 3}
+    - {fileID: -774758523, guid: 4abbcf21111677b49bc6042250f85b5c, type: 3}
+    - {fileID: -687482069, guid: 4abbcf21111677b49bc6042250f85b5c, type: 3}
+    - {fileID: 278874069, guid: 4abbcf21111677b49bc6042250f85b5c, type: 3}
+    - {fileID: -895116886, guid: 4abbcf21111677b49bc6042250f85b5c, type: 3}
+    - {fileID: -1093525866, guid: 4abbcf21111677b49bc6042250f85b5c, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 1.05
+    m_StopTime: 1.0999999
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
@@ -107,7 +89,7 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 1.05
-    functionName: EndAttack
+    functionName: ShootFireBall
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

@@ -12,6 +12,11 @@ public class PlayerHealth : MonoBehaviour
     public Image healthFillImage;
     public Gradient healthGradient;
 
+    [Header("Default Enemy Damage")]
+    public int defaultEnemyDamage = 10;
+    public float defaultSlowPercent = 0.4f;
+    public float defaultSlowDuration = 2.0f;
+
     private Animator animator;
 
     void Start()
@@ -41,7 +46,6 @@ public class PlayerHealth : MonoBehaviour
         if (animator != null)
             animator.SetTrigger("GotHit");
 
-        // Gây stun trong 1 giây
         PlayerController controller = GetComponent<PlayerController>();
         if (controller != null)
             controller.Stun(1f);
@@ -50,7 +54,6 @@ public class PlayerHealth : MonoBehaviour
             Die();
     }
 
-    // <<< ĐỊNH NGHĨA HÀM BỊ THIẾU ĐÃ ĐƯỢC THÊM VÀO >>>
     void UpdateHealthUI()
     {
         if (healthFillImage != null)
@@ -70,33 +73,25 @@ public class PlayerHealth : MonoBehaviour
         Debug.Log("Player has died!");
     }
 
-    // LOGIC NHẬN SÁT THƯƠNG TỪ HIT BOX CỦA ENEMY
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("EnemyAttack"))
         {
-            EnemyController enemyControl = collision.GetComponentInParent<EnemyController>();
+            TakeDamage(defaultEnemyDamage);
 
-            if (enemyControl != null)
+            PlayerController playerControl = GetComponent<PlayerController>();
+            if (playerControl != null)
             {
-                TakeDamage(enemyControl.attackDamage);
-
-                PlayerController playerControl = GetComponent<PlayerController>();
-                if (playerControl != null)
-                {
-                    // Đã fix lỗi CS0106 bằng cách đảm bảo biến trong EnemyController là public
-                    playerControl.ApplySlow(enemyControl.slowPercent, enemyControl.slowDuration);
-                }
-
-                Debug.Log("Player bị Hit Box của Enemy đánh trúng.");
+                playerControl.ApplySlow(defaultSlowPercent, defaultSlowDuration);
             }
+
+            Debug.Log("Player bị Hit Box của Enemy đánh trúng. (Sát thương mặc định)");
         }
     }
 
-
-    // Giữ lại hàm này
     internal void TakeDamage(float damagePerTick)
     {
-        // Logic cho damage/tick
+        int roundedDamage = Mathf.RoundToInt(damagePerTick);
+        TakeDamage(roundedDamage);
     }
 }
