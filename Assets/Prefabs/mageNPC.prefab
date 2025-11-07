@@ -226,12 +226,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f68c12f41335588418c60b336fd45704, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bulletPrefab: {fileID: 8977338955778219669, guid: 7af60de313310c14ca37d0919f5a9f3b, type: 3}
+  lightPrefab: {fileID: 0}
   firePoint: {fileID: 7271899641768234823}
-  moveSpeed: 3
-  chaseRange: 10
   attackRange: 8
-  attackDelay: 2
+  attackCooldown: 2
+  tripleSkillCooldown: 5
+  angleSpread: 15
+  fireBallPrefab: {fileID: 3511151460980922237, guid: 894ee6fc1cb671c468146e1cfc0d3ea4, type: 3}
+  fireBallCooldown: 10
+  animator: {fileID: 0}
 --- !u!114 &1059299834568041451
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -4,6 +4,7 @@ public class LightSkill : MonoBehaviour
 {
     public float lifeTime = 4f;  // Thời gian tự huỷ nếu không trúng gì
     public int damage = 100;     // Sát thương gây ra cho Player
+    
 
     private void Start()
     {
