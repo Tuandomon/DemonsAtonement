@@ -12,6 +12,7 @@ TagManager:
   - Ladder
   - Door
   - Boss
+  - HealthItem
   layers:
   - Default
   - TransparentFX

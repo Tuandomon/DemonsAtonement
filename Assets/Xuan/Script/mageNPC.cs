@@ -2,128 +2,157 @@
 
 public class mageNPC : MonoBehaviour
 {
-    public GameObject bulletPrefab;
-    public Transform firePoint;
-    public float moveSpeed = 3f;
-    public float chaseRange = 10f;
-    public float attackRange = 6f;
-    public float attackDelay = 2f;
+    [Header("Normal Attack Settings")]
+    public GameObject lightPrefab;         // Prefab quả cầu ánh sáng
+    public Transform firePoint;            // Vị trí bắn (đặt ở tay quái)
+    public float attackRange = 6f;         // Phạm vi phát hiện Player
+    public float attackCooldown = 2f;      // Thời gian giữa các lần bắn
 
-    private Transform playerTarget;
-    private Animator animator;
-    private float lastAttackTime;
+    [Header("Triple Skill Settings")]
+    public float tripleSkillCooldown = 5f; // Mỗi 5 giây dùng skill 1 lần
+    public float angleSpread = 15f;        // Góc xoè giữa các tia
+    private float nextTripleSkillTime = 0f;
+    private bool isUsingTripleSkill = false;
 
-    void Start()
+    [Header("FireBall Skill Settings")]
+    public GameObject fireBallPrefab;      // Prefab của skill FireBall
+    public float fireBallCooldown = 10f;   // Hồi chiêu FireBall
+    private float nextFireBallTime = 0f;   // Thời điểm được dùng lại FireBall
+    private bool isUsingFireBall = false;
+
+    [Header("References")]
+    public Animator animator;
+    private Transform player;
+    private float nextAttackTime;
+
+    private void Start()
     {
-        animator = GetComponent<Animator>();
-        if (animator == null)
-            Debug.LogWarning("Không tìm thấy Animator.");
+        player = GameObject.FindGameObjectWithTag("Player")?.transform;
 
-        if (firePoint == null)
-        {
-            GameObject found = GameObject.Find("FirePoint");
-            if (found != null)
-                firePoint = found.transform;
-            else
-                Debug.LogWarning("Không tìm thấy FirePoint.");
-        }
+        // 🕒 Đợi 10 giây sau khi bắt đầu mới được dùng FireBall
+        nextFireBallTime = Time.time + fireBallCooldown;
+
+        // 🕔 Đợi 5 giây sau khi bắt đầu mới được dùng Triple Skill
+        nextTripleSkillTime = Time.time + tripleSkillCooldown;
     }
 
-    void Update()
+    private void Update()
     {
-        FindPlayer();
+        if (player == null) return;
 
-        if (playerTarget != null)
+        float distance = Vector2.Distance(transform.position, player.position);
+
+        if (distance <= attackRange)
         {
-            float distance = Vector2.Distance(transform.position, playerTarget.position);
-
-            FaceTarget(playerTarget);
-
-            if (distance <= attackRange)
-            {
-                animator.SetBool("isRunning", false);
-
-                if (Time.time >= lastAttackTime + attackDelay)
-                {
-                    animator.SetTrigger("Attack");
-                    lastAttackTime = Time.time;
-                }
-            }
-            else if (distance <= chaseRange)
-            {
-                animator.SetBool("isRunning", true);
-                MoveTowards(playerTarget);
-            }
+            // 🔄 Quay mặt về phía Player
+            if (player.position.x < transform.position.x)
+                transform.localScale = new Vector3(-0.8f, 0.8f, 1f);
             else
+                transform.localScale = new Vector3(0.8f, 0.8f, 1f);
+
+            // 🚫 Nếu đang dùng skill đặc biệt thì không bắn gì khác
+            if (isUsingTripleSkill || isUsingFireBall) return;
+
+            // 🔥 Ưu tiên dùng FireBall nếu hồi xong
+            if (Time.time >= nextFireBallTime)
             {
-                animator.SetBool("isRunning", false);
+                isUsingFireBall = true;
+                animator.SetTrigger("Attack");
+                Invoke(nameof(ShootFireBall), 0.6f); // Delay theo animation
+                nextFireBallTime = Time.time + fireBallCooldown;
+                return;
+            }
+
+            // ⚡ Dùng skill 3 tia nếu hồi xong
+            if (Time.time >= nextTripleSkillTime)
+            {
+                isUsingTripleSkill = true;
+                animator.SetTrigger("Attack");
+                nextTripleSkillTime = Time.time + tripleSkillCooldown;
+                Invoke(nameof(ShootTriple), 0.4f);
+                return;
+            }
+
+            // 🏹 Bắn thường
+            if (Time.time >= nextAttackTime)
+            {
+                animator.SetTrigger("Attack");
+                nextAttackTime = Time.time + attackCooldown;
             }
         }
         else
         {
-            animator.SetBool("isRunning", false);
+            animator.ResetTrigger("Attack");
+            animator.Play("Idle");
         }
     }
 
-    void FindPlayer()
+    // 🏹 Bắn thường
+    public void Shoot()
     {
-        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, chaseRange);
-        foreach (Collider2D hit in hits)
+        if (isUsingTripleSkill || isUsingFireBall) return;
+        if (lightPrefab == null || firePoint == null || player == null) return;
+
+        GameObject light = Instantiate(lightPrefab, firePoint.position, Quaternion.identity);
+
+        Vector3 dir = (player.position - firePoint.position).normalized;
+        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+        light.transform.rotation = Quaternion.Euler(0, 0, angle);
+
+        Rigidbody2D rb = light.GetComponent<Rigidbody2D>();
+        if (rb != null)
+            rb.velocity = dir * 6f;
+    }
+
+    // ⚡ Skill bắn 3 tia
+    private void ShootTriple()
+    {
+        if (lightPrefab == null || firePoint == null || player == null) return;
+
+        Vector3 baseDir = (player.position - firePoint.position).normalized;
+        float baseAngle = Mathf.Atan2(baseDir.y, baseDir.x) * Mathf.Rad2Deg;
+        float[] spreadAngles = { -angleSpread, 0f, angleSpread };
+
+        foreach (float spread in spreadAngles)
         {
-            if (hit.CompareTag("Player"))
+            GameObject light = Instantiate(lightPrefab, firePoint.position, Quaternion.Euler(0, 0, baseAngle + spread));
+            Rigidbody2D rb = light.GetComponent<Rigidbody2D>();
+            if (rb != null)
             {
-                playerTarget = hit.transform;
-                return;
+                Vector2 shootDir = Quaternion.Euler(0, 0, spread) * baseDir;
+                rb.velocity = shootDir * 6f;
             }
         }
 
-        playerTarget = null;
+        Invoke(nameof(ResetTripleSkill), 1f);
+        Debug.Log("Mage used Triple Light Skill!");
     }
 
-    void MoveTowards(Transform target)
+    private void ResetTripleSkill() => isUsingTripleSkill = false;
+
+    // 🔥 Bắn FireBall
+    private void ShootFireBall()
     {
-        Vector2 direction = (target.position - transform.position).normalized;
-        transform.position += (Vector3)direction * moveSpeed * Time.deltaTime;
+        if (fireBallPrefab == null || firePoint == null || player == null) return;
+
+        GameObject fireBall = Instantiate(fireBallPrefab, firePoint.position, Quaternion.identity);
+
+        Vector3 dir = (player.position - firePoint.position).normalized;
+        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+        fireBall.transform.rotation = Quaternion.Euler(0, 0, angle);
+
+        Rigidbody2D rb = fireBall.GetComponent<Rigidbody2D>();
+        if (rb != null)
+            rb.velocity = dir * 8f;
+
+        Invoke(nameof(ResetFireBallSkill), 1f);
+        Debug.Log("Mage used FireBall!");
     }
 
-    void FaceTarget(Transform target)
+    private void ResetFireBallSkill() => isUsingFireBall = false;
+
+    private void OnDrawGizmosSelected()
     {
-        if (target != null)
-        {
-            float dir = target.position.x - transform.position.x;
-            if (dir < 0)
-                transform.localScale = new Vector3(-1, transform.localScale.y, transform.localScale.z);
-            else
-                transform.localScale = new Vector3(1, transform.localScale.y, transform.localScale.z);
-        }
-    }
-
-    // Gọi từ animation event "Attack"
-    public void ShootAtPlayer()
-    {
-        if (playerTarget == null || Vector2.Distance(transform.position, playerTarget.position) > attackRange)
-            return;
-
-        GameObject bullet = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
-
-        Vector2 direction = (playerTarget.position - firePoint.position).normalized;
-
-        // Xoay viên đạn theo hướng bay
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        bullet.transform.rotation = Quaternion.Euler(0, 0, angle);
-
-        // Gửi hướng đầy đủ cho BulletEnemy
-        BulletEnemy bulletScript = bullet.GetComponent<BulletEnemy>();
-        if (bulletScript != null)
-        {
-            bulletScript.SetDirection(direction);
-        }
-    }
-
-    void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, chaseRange);
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, attackRange);
     }

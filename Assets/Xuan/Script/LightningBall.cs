@@ -71,7 +71,7 @@ public class LightningBall : MonoBehaviour
 
     void Explode()
     {
-        if (hasExploded) return; // tránh gọi nhiều lần
+        if (hasExploded) return;
         hasExploded = true;
 
         // Dừng chuyển động
@@ -81,13 +81,13 @@ public class LightningBall : MonoBehaviour
             rb.isKinematic = true;
         }
 
-        // Kích hoạt animation Boom
+        // Kích hoạt animation Boom nếu có
         if (animator != null)
         {
             animator.SetTrigger("Boom");
         }
 
-        // Hủy sau 1 giây
-        Destroy(gameObject, 1.0f);
+        // Hủy sau 0.5 giây (hoặc thời gian bạn muốn)
+        Destroy(gameObject, 0.5f);
     }
 }
