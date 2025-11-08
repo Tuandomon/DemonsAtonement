@@ -1,17 +1,17 @@
 ﻿using UnityEngine;
 
-public class BossAI_RangeAndCircle : MonoBehaviour
+public class BossAI_MoveOnly : MonoBehaviour
 {
     [Header("Player Settings")]
-    public Transform player;              // Gán Player
-    public float detectionRadius = 5f;    // Vòng tròn phát hiện player
-    public float moveSpeed = 2f;          // Tốc độ đuổi
-    public float returnSpeed = 2f;        // Tốc độ quay về vị trí ban đầu
-    public float stopDistance = 0.2f;     // Khoảng dừng khi về tới chỗ cũ
+    public Transform player;
+    public float detectionRadius = 5f;     // Vòng phát hiện player
+    public float moveSpeed = 2f;
+    public float returnSpeed = 2f;
+    public float stopDistance = 0.2f;
 
     [Header("Movement Range")]
-    public Transform leftPoint;           // Giới hạn trái
-    public Transform rightPoint;          // Giới hạn phải
+    public Transform leftPoint;
+    public Transform rightPoint;
 
     [Header("Components")]
     private Animator anim;
@@ -20,13 +20,13 @@ public class BossAI_RangeAndCircle : MonoBehaviour
     private bool isChasing = false;
     private bool isReturning = false;
     private bool facingRight = true;
-    private bool detectionActive = true;  // Cho phép vòng tròn phát hiện hoạt động
 
     void Start()
     {
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
         startPosition = transform.position;
+
         anim.SetBool("isRunning", false);
     }
 
@@ -36,18 +36,16 @@ public class BossAI_RangeAndCircle : MonoBehaviour
             return;
 
         float distanceToPlayer = Vector2.Distance(transform.position, player.position);
-
         bool playerInRange = player.position.x > leftPoint.position.x && player.position.x < rightPoint.position.x;
 
-        // Nếu đang cho phép vòng tròn phát hiện hoạt động
-        if (detectionActive && distanceToPlayer <= detectionRadius && playerInRange)
+        // Nếu player lọt vào vùng phát hiện → bắt đầu rượt
+        if (!isChasing && distanceToPlayer <= detectionRadius && playerInRange)
         {
             isChasing = true;
             isReturning = false;
-            detectionActive = false; // tắt vòng tròn để boss tiếp tục đuổi
         }
 
-        // Nếu player ra khỏi phạm vi trái–phải → boss quay về
+        // Nếu player ra khỏi vùng trái–phải → quay lại
         if (!playerInRange && isChasing)
         {
             isChasing = false;
@@ -55,11 +53,17 @@ public class BossAI_RangeAndCircle : MonoBehaviour
         }
 
         if (isChasing)
+        {
             ChasePlayer();
+        }
         else if (isReturning)
+        {
             ReturnToStart();
+        }
         else
+        {
             Idle();
+        }
     }
 
     void ChasePlayer()
@@ -68,7 +72,6 @@ public class BossAI_RangeAndCircle : MonoBehaviour
 
         Vector2 direction = (player.position - transform.position).normalized;
         rb.velocity = new Vector2(direction.x * moveSpeed, rb.velocity.y);
-
         FlipSprite(direction.x);
     }
 
@@ -84,7 +87,6 @@ public class BossAI_RangeAndCircle : MonoBehaviour
         {
             rb.velocity = Vector2.zero;
             isReturning = false;
-            detectionActive = true; // bật lại vòng tròn phát hiện
             Idle();
         }
     }
@@ -113,8 +115,8 @@ public class BossAI_RangeAndCircle : MonoBehaviour
 
     void OnDrawGizmosSelected()
     {
-        // Vẽ vòng tròn phát hiện
-        Gizmos.color = detectionActive ? Color.red : new Color(1, 0, 0, 0.3f); // nhạt hơn khi tắt
+        // 🔴 Vòng phát hiện
+        Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, detectionRadius);
 
         // Vẽ phạm vi trái–phải
