@@ -5,6 +5,7 @@ public class LightBall : MonoBehaviour
     [Header("LightBall Settings")]
     public float speed = 6f;           // Tốc độ bay
     public float lifeTime = 5f;        // Tự hủy sau bao lâu
+    public int damage = 40;            // Sát thương khi trúng Player
 
     private Vector2 moveDirection;     // Hướng bay cố định sau khi spawn
 
@@ -42,7 +43,14 @@ public class LightBall : MonoBehaviour
         // Khi trúng Player
         if (collision.CompareTag("Player"))
         {
-            Debug.Log("LightBall trúng Player!");
+            // Gọi TakeDamage của PlayerHealth
+            PlayerHealth playerHealth = collision.GetComponent<PlayerHealth>();
+            if (playerHealth != null)
+            {
+                playerHealth.TakeDamage(damage);
+            }
+
+            Debug.Log("LightBall trúng Player! Gây " + damage + " dame.");
             Destroy(gameObject);
         }
         // Khi trúng Ground (hoặc các vật thể có layer Ground)
