@@ -55,6 +55,10 @@ public class BossMagicAttack : MonoBehaviour
     public Slider bossHealthSlider; // Slider máu boss
     private bool skillsLocked = false; // khóa Lightning, Teleport, Spirit khi máu đầy
 
+    [Header("Spirit Fireball Audio")]
+    public AudioClip fireballSound;        // Kéo âm thanh Fireball vào đây
+    public AudioSource audioSource;        // Kéo AudioSource lên Boss hoặc tự GetComponent
+
     void Update()
     {
         if (player == null || leftPoint == null || rightPoint == null)
@@ -255,6 +259,7 @@ public class BossMagicAttack : MonoBehaviour
             anim.SetTrigger("MagicAttack");
         }
 
+        // Tạo vòng bắt đầu
         GameObject startCircle = null;
         if (teleportCirclePrefab != null)
             startCircle = Instantiate(teleportCirclePrefab, new Vector3(transform.position.x, -19f, 0f), Quaternion.identity);
@@ -277,22 +282,27 @@ public class BossMagicAttack : MonoBehaviour
 
         transform.position = new Vector3(teleportPos.x, -19f, 0f);
 
+        // Xóa follower + startCircle sau khi teleport
+        if (follower != null) Destroy(follower);
+        if (startCircle != null) Destroy(startCircle);
+
+        // Tạo vòng kết thúc
         GameObject endCircle = null;
         if (teleportCirclePrefab != null)
             endCircle = Instantiate(teleportCirclePrefab, new Vector3(teleportPos.x, -19f, 0f), Quaternion.identity);
-
-        if (follower != null) Destroy(follower);
 
         SpriteRenderer sr = GetComponent<SpriteRenderer>();
         if (sr != null) sr.enabled = true;
 
         yield return new WaitForSeconds(1.5f);
+
         if (endCircle != null) Destroy(endCircle);
 
         isTeleporting = false;
         yield return new WaitForSeconds(teleportCooldown);
         canTeleport = true;
     }
+
 
     void OnDrawGizmosSelected()
     {
@@ -326,6 +336,18 @@ public class BossMagicAttack : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         if (firePoint != null && fireballPrefab != null)
-            Instantiate(fireballPrefab, firePoint.position, Quaternion.identity);
+        {
+            GameObject fireball = Instantiate(fireballPrefab, firePoint.position, Quaternion.identity);
+
+            // Tạo AudioSource tạm trên Fireball để phát âm thanh tại vị trí Fireball
+            if (fireballSound != null)
+            {
+                AudioSource tempAudio = fireball.AddComponent<AudioSource>();
+                tempAudio.clip = fireballSound;
+                tempAudio.spatialBlend = 1f; // âm thanh 3D, phát theo vị trí Fireball
+                tempAudio.Play();
+                Destroy(tempAudio, fireballSound.length); // tự hủy AudioSource sau khi phát xong
+            }
+        }
     }
 }

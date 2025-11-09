@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.UI; // cần nếu dùng Slider
 
 public class BossAI_RangeAndCircle : MonoBehaviour
 {
@@ -31,27 +30,21 @@ public class BossAI_RangeAndCircle : MonoBehaviour
     private float attack3Timer = 0f;
     private bool nextAttack3 = false;
 
-    [Header("Boss Health UI")]
-    public EnemyHealth bossHealth;        // reference tới EnemyHealth
-    public GameObject healthBarUI;        // GameObject slider
-    public Slider healthSlider;           // Slider để hiển thị HP
+    [Header("Attack Damage")]
+    public int attackDamage = 40;
+    public int attack3Damage = 50;
+
+    [Header("Audio")]
+    public AudioClip slashSound;   // âm thanh chém
+    private AudioSource audioSource;
 
     void Start()
     {
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
+        audioSource = GetComponent<AudioSource>(); // cần AudioSource trên boss
         startPosition = transform.position;
         anim.SetBool("isRunning", false);
-
-        // setup slider
-        if (bossHealth != null && healthSlider != null)
-        {
-            healthSlider.maxValue = bossHealth.maxHealth;
-            healthSlider.value = bossHealth.GetCurrentHealth();
-        }
-
-        if (healthBarUI != null)
-            healthBarUI.SetActive(false); // ẩn lúc đầu
     }
 
     void Update()
@@ -61,10 +54,6 @@ public class BossAI_RangeAndCircle : MonoBehaviour
 
         float distanceToPlayer = Vector2.Distance(transform.position, player.position);
         bool playerInRange = player.position.x > leftPoint.position.x && player.position.x < rightPoint.position.x;
-
-        // ===== Hiển thị thanh máu =====
-        if (healthBarUI != null)
-            healthBarUI.SetActive(playerInRange);
 
         // ===== Chase Logic =====
         if (playerInRange && distanceToPlayer <= detectionRadius)
@@ -93,10 +82,6 @@ public class BossAI_RangeAndCircle : MonoBehaviour
             ReturnToStart();
         else
             Idle();
-
-        // ===== Update Slider =====
-        if (bossHealth != null && healthSlider != null)
-            healthSlider.value = bossHealth.GetCurrentHealth();
     }
 
     void ChasePlayer(float distanceToPlayer)
@@ -123,14 +108,22 @@ public class BossAI_RangeAndCircle : MonoBehaviour
             anim.SetBool("isAttacking", true);
             anim.SetBool("isRunning", false);
 
+            // Kiểm tra khoảng cách trước khi gây damage
+            float distanceToPlayer = Vector2.Distance(transform.position, player.position);
+            bool playerInAttackRange = distanceToPlayer <= attackRadius;
+
             if (nextAttack3)
             {
                 anim.SetTrigger("Attack3");
+                if (playerInAttackRange) DealDamage(attack3Damage);
+                PlaySlashSound(); // phát âm thanh
                 nextAttack3 = false;
             }
             else
             {
                 anim.SetTrigger("Attack");
+                if (playerInAttackRange) DealDamage(attackDamage);
+                PlaySlashSound(); // phát âm thanh
             }
 
             attackTimer = attackCooldown;
@@ -141,6 +134,22 @@ public class BossAI_RangeAndCircle : MonoBehaviour
                 attack3Timer = 0f;
             }
         }
+    }
+
+    void DealDamage(int damageAmount)
+    {
+        if (player != null)
+        {
+            PlayerHealth ph = player.GetComponent<PlayerHealth>();
+            if (ph != null)
+                ph.TakeDamage(damageAmount);
+        }
+    }
+
+    void PlaySlashSound()
+    {
+        if (audioSource != null && slashSound != null)
+            audioSource.PlayOneShot(slashSound);
     }
 
     void ReturnToStart()
