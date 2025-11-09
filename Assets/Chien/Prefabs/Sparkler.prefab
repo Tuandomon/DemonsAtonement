@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: -5894198336512757861}
   m_Layer: 0
   m_Name: Sparkler
-  m_TagString: Untagged
+  m_TagString: Spirit
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -120,9 +120,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c9eaf4ac861ecd4da175180d9f33ff9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  boss: {fileID: 0}
+  offset: {x: 1.5, y: 0, z: 0}
+  moveSpeed: 5
   fireballPrefab: {fileID: 907646786815702930, guid: aa3a6ce845e23ab46bfc958793426160, type: 3}
   firePoint: {fileID: 0}
   shootInterval: 2
+  fireballSpeed: 5
 --- !u!114 &-5894198336512757861
 MonoBehaviour:
   m_ObjectHideFlags: 0

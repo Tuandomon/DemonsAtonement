@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
-using UnityEngine.UI; // Thêm nếu dùng Slider
+using System.Collections.Generic; // Thêm để dùng List
+using UnityEngine.UI;
 
 public class BossMagicAttack : MonoBehaviour
 {
@@ -49,27 +50,40 @@ public class BossMagicAttack : MonoBehaviour
     private bool hasStartedChasing = false;
 
     [Header("Cài đặt Linh hồn")]
-    public GameObject spiritFireballPrefab; // Prefab Fireball riêng cho Linh hồn
+    public GameObject spiritFireballPrefab;
 
     [Header("Boss Health UI")]
-    public Slider bossHealthSlider; // Slider máu boss
-    private bool skillsLocked = false; // khóa Lightning, Teleport, Spirit khi máu đầy
+    public Slider bossHealthSlider;
+    private bool skillsLocked = false;
 
     [Header("Spirit Fireball Audio")]
-    public AudioClip fireballSound;        // Kéo âm thanh Fireball vào đây
-    public AudioSource audioSource;        // Kéo AudioSource lên Boss hoặc tự GetComponent
+    public AudioClip fireballSound;
+    public AudioSource audioSource;
+
+    // 🌀 Thêm danh sách quản lý toàn bộ Spirit đang tồn tại
+    private List<GameObject> activeSpirits = new List<GameObject>();
 
     void Update()
     {
         if (player == null || leftPoint == null || rightPoint == null)
             return;
 
-        // --- Cập nhật trạng thái khóa skill theo máu ---
+        // --- Kiểm tra máu Boss ---
         if (bossHealthSlider != null)
         {
             float healthPercent = bossHealthSlider.value / bossHealthSlider.maxValue;
-            if (healthPercent >= 1f) skillsLocked = true;   // máu đầy → khóa skill
-            else if (healthPercent <= 0.5f) skillsLocked = false; // máu ≤50% → mở khóa
+
+            // 🔒 Khóa skill khi máu đầy
+            if (healthPercent >= 1f) skillsLocked = true;
+            // 🔓 Mở skill khi máu <= 50%
+            else if (healthPercent <= 0.5f) skillsLocked = false;
+
+            // 💀 Khi máu Boss = 0 → Hủy toàn bộ Spirit
+            if (bossHealthSlider.value <= 0f)
+            {
+                DestroyAllSpirits();
+                return; // Dừng Update luôn để boss không còn hoạt động
+            }
         }
 
         float distanceToPlayer = Vector2.Distance(transform.position, player.position);
@@ -78,7 +92,6 @@ public class BossMagicAttack : MonoBehaviour
         bool inMagicRange = distanceToPlayer <= magicRadius;
         bool inAttackRange = distanceToPlayer <= attackRadius;
 
-        // Player trong detection → bắt đầu rượt
         if (inDetection && inRange)
         {
             isPlayerDetected = true;
@@ -94,7 +107,7 @@ public class BossMagicAttack : MonoBehaviour
 
         if (!hasStartedChasing) return;
 
-        // ⚡ Lightning (khóa khi máu đầy hoặc trong phạm vi tấn công gần)
+        // ⚡ Lightning
         if (isPlayerDetected && canCastLightning && !lightningActive
             && chaseTimer >= chaseDelayBeforeLightning
             && !inAttackRange && !skillsLocked)
@@ -102,24 +115,24 @@ public class BossMagicAttack : MonoBehaviour
             StartCoroutine(CastLightning());
         }
 
-        // 🔮 Magic Ball (animation vẫn chạy, spawn chỉ khi ngoài phạm vi gần)
+        // 🔮 Magic Ball
         magicTimer += Time.deltaTime;
         if (isPlayerDetected && !inAttackRange && !lightningActive && !isSummoning && !isTeleporting)
         {
             if (magicTimer >= magicCooldown)
             {
-                CastMagicBall(); // animation vẫn chạy
+                CastMagicBall();
                 magicTimer = 0f;
             }
         }
 
-        // 👁 Triệu hồi Spirit (khóa khi máu đầy, Spirit luôn có thể spawn trong phạm vi gần)
+        // 👁 Triệu hồi Spirit
         if (isPlayerDetected && canSummon && !isSummoning && !lightningActive && !isTeleporting && !skillsLocked)
         {
             StartCoroutine(SummonSpirits());
         }
 
-        // 🌀 Teleport (khóa khi máu đầy hoặc trong phạm vi tấn công gần)
+        // 🌀 Teleport
         if (isPlayerDetected && canTeleport && !isTeleporting && !lightningActive && !isSummoning
             && !skillsLocked && !inAttackRange)
         {
@@ -131,14 +144,12 @@ public class BossMagicAttack : MonoBehaviour
     void CastMagicBall()
     {
         if (rb != null) rb.velocity = Vector2.zero;
-
         if (anim != null)
         {
             anim.SetBool("isRunning", false);
             anim.SetTrigger("MagicAttack");
         }
 
-        // spawn khi ngoài phạm vi tấn công gần
         if (magicPrefab != null && magicSpawnPoint != null)
         {
             if (Vector2.Distance(transform.position, player.position) > attackRadius)
@@ -194,7 +205,7 @@ public class BossMagicAttack : MonoBehaviour
         if (anim != null)
         {
             anim.SetBool("isRunning", false);
-            anim.SetTrigger("MagicAttack"); // animation triệu hồi Spirit
+            anim.SetTrigger("MagicAttack");
         }
 
         yield return new WaitForSeconds(0.5f);
@@ -211,7 +222,6 @@ public class BossMagicAttack : MonoBehaviour
         }
 
         GameObject[] circles = new GameObject[3];
-
         for (int i = 0; i < 3; i++)
             circles[i] = Instantiate(summonCirclePrefab, summonPositions[i], Quaternion.identity);
 
@@ -222,6 +232,7 @@ public class BossMagicAttack : MonoBehaviour
             if (spiritPrefab != null)
             {
                 GameObject spirit = Instantiate(spiritPrefab, summonPositions[i], Quaternion.identity);
+                activeSpirits.Add(spirit); // 🌀 thêm vào danh sách để quản lý
 
                 SpiritFollowBoss follow = spirit.AddComponent<SpiritFollowBoss>();
                 follow.boss = this.transform;
@@ -245,6 +256,17 @@ public class BossMagicAttack : MonoBehaviour
         canSummon = true;
     }
 
+    // 🧨 Hủy toàn bộ Spirit khi Boss chết
+    void DestroyAllSpirits()
+    {
+        foreach (GameObject spirit in activeSpirits)
+        {
+            if (spirit != null)
+                Destroy(spirit);
+        }
+        activeSpirits.Clear();
+    }
+
     // ================== KỸ NĂNG DỊCH CHUYỂN ====================
     IEnumerator TeleportToPlayer()
     {
@@ -259,7 +281,6 @@ public class BossMagicAttack : MonoBehaviour
             anim.SetTrigger("MagicAttack");
         }
 
-        // Tạo vòng bắt đầu
         GameObject startCircle = null;
         if (teleportCirclePrefab != null)
             startCircle = Instantiate(teleportCirclePrefab, new Vector3(transform.position.x, -19f, 0f), Quaternion.identity);
@@ -282,11 +303,9 @@ public class BossMagicAttack : MonoBehaviour
 
         transform.position = new Vector3(teleportPos.x, -19f, 0f);
 
-        // Xóa follower + startCircle sau khi teleport
         if (follower != null) Destroy(follower);
         if (startCircle != null) Destroy(startCircle);
 
-        // Tạo vòng kết thúc
         GameObject endCircle = null;
         if (teleportCirclePrefab != null)
             endCircle = Instantiate(teleportCirclePrefab, new Vector3(teleportPos.x, -19f, 0f), Quaternion.identity);
@@ -295,31 +314,11 @@ public class BossMagicAttack : MonoBehaviour
         if (sr != null) sr.enabled = true;
 
         yield return new WaitForSeconds(1.5f);
-
         if (endCircle != null) Destroy(endCircle);
 
         isTeleporting = false;
         yield return new WaitForSeconds(teleportCooldown);
         canTeleport = true;
-    }
-
-
-    void OnDrawGizmosSelected()
-    {
-        if (transform == null) return;
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, detectionRadius);
-        Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(transform.position, magicRadius);
-        Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(transform.position, attackRadius);
-
-        if (leftPoint != null && rightPoint != null)
-        {
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawLine(leftPoint.position + Vector3.up, leftPoint.position + Vector3.down);
-            Gizmos.DrawLine(rightPoint.position + Vector3.up, rightPoint.position + Vector3.down);
-        }
     }
 
     public class TeleportCircleFollower : MonoBehaviour
@@ -339,14 +338,13 @@ public class BossMagicAttack : MonoBehaviour
         {
             GameObject fireball = Instantiate(fireballPrefab, firePoint.position, Quaternion.identity);
 
-            // Tạo AudioSource tạm trên Fireball để phát âm thanh tại vị trí Fireball
             if (fireballSound != null)
             {
                 AudioSource tempAudio = fireball.AddComponent<AudioSource>();
                 tempAudio.clip = fireballSound;
-                tempAudio.spatialBlend = 1f; // âm thanh 3D, phát theo vị trí Fireball
+                tempAudio.spatialBlend = 1f;
                 tempAudio.Play();
-                Destroy(tempAudio, fireballSound.length); // tự hủy AudioSource sau khi phát xong
+                Destroy(tempAudio, fireballSound.length);
             }
         }
     }

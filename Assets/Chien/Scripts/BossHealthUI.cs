@@ -11,6 +11,8 @@ public class BossHealthUI : MonoBehaviour
     [Header("Offset vị trí")]
     public Vector3 offset = new Vector3(0, 2f, 0); // Thanh máu nằm trên đầu boss
 
+    private bool isBossDead = false;
+
     void Start()
     {
         // Tự lấy script EnemyHealth từ target nếu chưa gán
@@ -31,7 +33,20 @@ public class BossHealthUI : MonoBehaviour
 
     void LateUpdate()
     {
-        if (bossHealth == null || healthSlider == null || target == null) return;
+        // Nếu boss hoặc healthSlider hoặc target bị mất => xóa UI luôn
+        if (target == null || bossHealth == null || healthSlider == null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        // Nếu boss đã chết thì xóa thanh máu
+        if (!isBossDead && bossHealth.GetCurrentHealth() <= 0)
+        {
+            isBossDead = true;
+            Destroy(gameObject, 0.2f); // chờ 0.2s để tránh xóa khi animation chết chưa xong
+            return;
+        }
 
         // Cập nhật giá trị máu
         healthSlider.value = bossHealth.GetCurrentHealth();
