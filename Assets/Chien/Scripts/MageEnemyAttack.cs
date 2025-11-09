@@ -27,11 +27,11 @@ public class MageEnemyAttack : MonoBehaviour
 
     public AudioClip lightningSkill;
     public AudioClip FireBall;
-    private AudioSource audioSource;
+    //private AudioSource audioSource;
 
     private void Start()
     {
-        audioSource = GetComponent<AudioSource>();
+        //audioSource = GetComponent<AudioSource>();
 
         player = GameObject.FindGameObjectWithTag("Player")?.transform;
 
@@ -96,8 +96,8 @@ public class MageEnemyAttack : MonoBehaviour
     // 🏹 Bắn thường
     public void Shoot()
     {
-        audioSource.volume = PlayerPrefs.GetFloat("SFXVolume", 1f);
-        audioSource.PlayOneShot(lightningSkill);
+        //audioSource.volume = PlayerPrefs.GetFloat("SFXVolume", 1f);
+        //audioSource.PlayOneShot(lightningSkill);
 
         if (isUsingTripleSkill || isUsingFireBall) return;
         if (lightPrefab == null || firePoint == null || player == null) return;
@@ -116,8 +116,8 @@ public class MageEnemyAttack : MonoBehaviour
     // ⚡ Skill bắn 3 tia
     private void ShootTriple()
     {
-        audioSource.volume = PlayerPrefs.GetFloat("SFXVolume", 1f);
-        audioSource.PlayOneShot(lightningSkill);
+        //audioSource.volume = PlayerPrefs.GetFloat("SFXVolume", 1f);
+        //audioSource.PlayOneShot(lightningSkill);
 
         if (lightPrefab == null || firePoint == null || player == null) return;
 
@@ -145,8 +145,8 @@ public class MageEnemyAttack : MonoBehaviour
     // 🔥 Bắn FireBall
     private void ShootFireBall()
     {
-        audioSource.volume = PlayerPrefs.GetFloat("SFXVolume", 1f);
-        audioSource.PlayOneShot(FireBall);
+        //audioSource.volume = PlayerPrefs.GetFloat("SFXVolume", 1f);
+        //audioSource.PlayOneShot(FireBall);
 
         if (fireBallPrefab == null || firePoint == null || player == null) return;
 
