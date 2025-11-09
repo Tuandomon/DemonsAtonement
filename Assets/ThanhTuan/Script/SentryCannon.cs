@@ -7,19 +7,23 @@ public class SentryCannon : MonoBehaviour
     private int currentHealth;
 
     [Header("Targeting & Range")]
-    public float detectionRange = 8f;        // Bán kính tầm bắn có thể điều chỉnh
-    public float rotationSpeed = 5f;         // Tốc độ tháp pháo quay
-    public string targetTag = "Player";      // Tag của mục tiêu (Người chơi)
+    public float detectionRange = 8f;
+    public float rotationSpeed = 5f;
+    public string targetTag = "Player";
 
     [Header("Firing Settings")]
-    public GameObject projectilePrefab;       // Đạn Prefab
-    public Transform barrelTip;               // Vị trí đạn spawn
-    public float projectileSpeed = 15f;       // Tốc độ/Lực bắn của đạn
-    public float fireRate = 0.5f;             // Tốc độ bắn (0.5f = 2 viên/giây)
+    public GameObject projectilePrefab;
+    public Transform barrelTip;
+    public float projectileSpeed = 15f;
+    public float fireRate = 0.5f;
     private float nextFireTime;
 
+    [Header("Audio Settings")]
+    public AudioClip shootSound;
+    private AudioSource audioSource;
+
     [Header("Parts")]
-    public Transform aimPivot;                // Transform chịu trách nhiệm xoay súng
+    public Transform aimPivot;
 
     private Transform currentTarget;
 
@@ -28,8 +32,14 @@ public class SentryCannon : MonoBehaviour
         currentHealth = maxHealth;
         nextFireTime = Time.time;
 
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+
         if (barrelTip == null)
-            Debug.LogError("❌ Barrel Tip chưa được gán! Tháp pháo sẽ không bắn được.");
+            Debug.LogError("Barrel Tip chưa được gán! Tháp pháo sẽ không bắn được.");
     }
 
     void Update()
@@ -54,7 +64,6 @@ public class SentryCannon : MonoBehaviour
         }
     }
 
-    // --- LOGIC SỨC KHỎE ---
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
@@ -67,11 +76,9 @@ public class SentryCannon : MonoBehaviour
     private void Die()
     {
         Debug.Log($"{gameObject.name} has been destroyed!");
-        // TODO: Thêm hiệu ứng nổ, âm thanh, sprite...
         Destroy(gameObject);
     }
 
-    // --- TÌM VÀ XỬ LÝ MỤC TIÊU ---
     private void FindTarget()
     {
         Collider2D[] hitColliders = Physics2D.OverlapCircleAll(transform.position, detectionRange);
@@ -98,16 +105,12 @@ public class SentryCannon : MonoBehaviour
     {
         if (currentTarget == null) return;
 
-        // Xác định vị trí để xoay (ưu tiên aimPivot, nếu không có thì dùng chính transform)
         Transform pivot = aimPivot != null ? aimPivot : transform;
 
-        // Vector hướng tới mục tiêu
         Vector3 direction = currentTarget.position - pivot.position;
 
-        // Góc hướng mục tiêu
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
 
-        // Quay “mông” về phía mục tiêu => cộng thêm 180 độ
         float desiredAngle = angle + 180f;
 
         Quaternion targetRotation = Quaternion.Euler(0f, 0f, desiredAngle);
@@ -123,12 +126,15 @@ public class SentryCannon : MonoBehaviour
 
         if (rb != null)
         {
-            // Giữ hướng bắn chuẩn theo barrelTip.right
             rb.AddForce(-barrelTip.right * projectileSpeed, ForceMode2D.Impulse);
+        }
+
+        if (audioSource != null && shootSound != null)
+        {
+            audioSource.PlayOneShot(shootSound);
         }
     }
 
-    // --- GIZMOS ---
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.yellow;
