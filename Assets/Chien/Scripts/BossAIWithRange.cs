@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
+using UnityEngine.UI; // cần nếu dùng Slider
 
 public class BossAI_RangeAndCircle : MonoBehaviour
 {
     [Header("Player Settings")]
     public Transform player;
     public float detectionRadius = 5f;
-    public float attackRadius = 1.5f;     // Phạm vi tấn công player
+    public float attackRadius = 1.5f;
     public float moveSpeed = 2f;
     public float returnSpeed = 2f;
     public float stopDistance = 0.2f;
@@ -22,7 +23,7 @@ public class BossAI_RangeAndCircle : MonoBehaviour
     private bool isReturning = false;
     private bool facingRight = true;
 
-    // ===== Attack Variables =====
+    [Header("Attack Variables")]
     private bool isAttacking = false;
     private float attackCooldown = 1.2f;
     private float attackTimer = 0f;
@@ -30,12 +31,27 @@ public class BossAI_RangeAndCircle : MonoBehaviour
     private float attack3Timer = 0f;
     private bool nextAttack3 = false;
 
+    [Header("Boss Health UI")]
+    public EnemyHealth bossHealth;        // reference tới EnemyHealth
+    public GameObject healthBarUI;        // GameObject slider
+    public Slider healthSlider;           // Slider để hiển thị HP
+
     void Start()
     {
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
         startPosition = transform.position;
         anim.SetBool("isRunning", false);
+
+        // setup slider
+        if (bossHealth != null && healthSlider != null)
+        {
+            healthSlider.maxValue = bossHealth.maxHealth;
+            healthSlider.value = bossHealth.GetCurrentHealth();
+        }
+
+        if (healthBarUI != null)
+            healthBarUI.SetActive(false); // ẩn lúc đầu
     }
 
     void Update()
@@ -46,22 +62,23 @@ public class BossAI_RangeAndCircle : MonoBehaviour
         float distanceToPlayer = Vector2.Distance(transform.position, player.position);
         bool playerInRange = player.position.x > leftPoint.position.x && player.position.x < rightPoint.position.x;
 
+        // ===== Hiển thị thanh máu =====
+        if (healthBarUI != null)
+            healthBarUI.SetActive(playerInRange);
+
         // ===== Chase Logic =====
         if (playerInRange && distanceToPlayer <= detectionRadius)
         {
-            // Player vào vùng phát hiện và trong Left–Right → rượt
             isChasing = true;
             isReturning = false;
         }
         else if (playerInRange && isChasing)
         {
-            // Player ra ngoài detectionRadius nhưng còn trong Left–Right → vẫn rượt
             isChasing = true;
             isReturning = false;
         }
         else if (!playerInRange && isChasing)
         {
-            // Player ra khỏi Left–Right → quay về
             isChasing = false;
             isReturning = true;
         }
@@ -76,6 +93,10 @@ public class BossAI_RangeAndCircle : MonoBehaviour
             ReturnToStart();
         else
             Idle();
+
+        // ===== Update Slider =====
+        if (bossHealth != null && healthSlider != null)
+            healthSlider.value = bossHealth.GetCurrentHealth();
     }
 
     void ChasePlayer(float distanceToPlayer)
@@ -84,7 +105,6 @@ public class BossAI_RangeAndCircle : MonoBehaviour
         rb.velocity = new Vector2(direction.x * moveSpeed, rb.velocity.y);
         FlipSprite(direction.x);
 
-        // Tấn công nếu trong phạm vi
         if (distanceToPlayer <= attackRadius)
             Attack();
         else
@@ -115,7 +135,6 @@ public class BossAI_RangeAndCircle : MonoBehaviour
 
             attackTimer = attackCooldown;
 
-            // Kiểm tra đủ thời gian dùng Attack3
             if (attack3Timer >= attack3Interval)
             {
                 nextAttack3 = true;
@@ -149,7 +168,6 @@ public class BossAI_RangeAndCircle : MonoBehaviour
         isAttacking = false;
     }
 
-    // Gọi trong animation event cuối clip Attack hoặc Attack3
     public void EndAttack()
     {
         isAttacking = false;
@@ -174,11 +192,9 @@ public class BossAI_RangeAndCircle : MonoBehaviour
 
     void OnDrawGizmosSelected()
     {
-        // Vòng phát hiện
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, detectionRadius);
 
-        // Phạm vi trái–phải
         if (leftPoint != null && rightPoint != null)
         {
             Gizmos.color = Color.yellow;
@@ -186,7 +202,6 @@ public class BossAI_RangeAndCircle : MonoBehaviour
             Gizmos.DrawLine(rightPoint.position + Vector3.up, rightPoint.position + Vector3.down);
         }
 
-        // Vòng tấn công
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position, attackRadius);
     }
