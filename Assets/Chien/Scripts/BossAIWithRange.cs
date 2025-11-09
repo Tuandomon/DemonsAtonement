@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 
-public class BossAI_MoveOnly : MonoBehaviour
+public class BossAI_RangeAndCircle : MonoBehaviour
 {
     [Header("Player Settings")]
     public Transform player;
-    public float detectionRadius = 5f;      // Vòng phát hiện player
-    public float attackRadius = 1.5f;       // Vòng tấn công player
+    public float detectionRadius = 5f;
+    public float attackRadius = 1.5f;     // Phạm vi tấn công player
     public float moveSpeed = 2f;
     public float returnSpeed = 2f;
     public float stopDistance = 0.2f;
@@ -18,23 +18,24 @@ public class BossAI_MoveOnly : MonoBehaviour
     private Animator anim;
     private Rigidbody2D rb;
     private Vector3 startPosition;
-
     private bool isChasing = false;
     private bool isReturning = false;
     private bool facingRight = true;
-    private bool isAttacking = false;
 
-    private float attackCooldown = 1.2f;   // Thời gian giữa 2 lần đánh
+    // ===== Attack Variables =====
+    private bool isAttacking = false;
+    private float attackCooldown = 1.2f;
     private float attackTimer = 0f;
+    private float attack3Interval = 4f;
+    private float attack3Timer = 0f;
+    private bool nextAttack3 = false;
 
     void Start()
     {
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
         startPosition = transform.position;
-
         anim.SetBool("isRunning", false);
-        anim.SetBool("isAttacking", false);
     }
 
     void Update()
@@ -45,72 +46,81 @@ public class BossAI_MoveOnly : MonoBehaviour
         float distanceToPlayer = Vector2.Distance(transform.position, player.position);
         bool playerInRange = player.position.x > leftPoint.position.x && player.position.x < rightPoint.position.x;
 
-        // Phát hiện và rượt đuổi
-        if (!isChasing && distanceToPlayer <= detectionRadius && playerInRange)
+        // ===== Chase Logic =====
+        if (playerInRange && distanceToPlayer <= detectionRadius)
         {
+            // Player vào vùng phát hiện và trong Left–Right → rượt
             isChasing = true;
             isReturning = false;
         }
-
-        // Nếu player ra khỏi vùng → quay lại
-        if (!playerInRange && isChasing)
+        else if (playerInRange && isChasing)
         {
+            // Player ra ngoài detectionRadius nhưng còn trong Left–Right → vẫn rượt
+            isChasing = true;
+            isReturning = false;
+        }
+        else if (!playerInRange && isChasing)
+        {
+            // Player ra khỏi Left–Right → quay về
             isChasing = false;
             isReturning = true;
         }
 
-        if (isChasing)
-        {
-            ChasePlayer(distanceToPlayer);
-        }
-        else if (isReturning)
-        {
-            ReturnToStart();
-        }
-        else
-        {
-            Idle();
-        }
-
+        // ===== Attack Timers =====
         attackTimer -= Time.deltaTime;
+        attack3Timer += Time.deltaTime;
+
+        if (isChasing)
+            ChasePlayer(distanceToPlayer);
+        else if (isReturning)
+            ReturnToStart();
+        else
+            Idle();
     }
 
     void ChasePlayer(float distanceToPlayer)
     {
-        // Nếu player trong phạm vi tấn công → đánh
+        Vector2 direction = (player.position - transform.position).normalized;
+        rb.velocity = new Vector2(direction.x * moveSpeed, rb.velocity.y);
+        FlipSprite(direction.x);
+
+        // Tấn công nếu trong phạm vi
         if (distanceToPlayer <= attackRadius)
-        {
             Attack();
-        }
         else
         {
-            // 🔹 Ra khỏi phạm vi tấn công → chuyển sang chạy
-            if (isAttacking)
-            {
-                isAttacking = false;
-                anim.SetBool("isAttacking", false);
-                anim.ResetTrigger("Attack");
-                anim.SetBool("isRunning", true);
-            }
-
-            Vector2 direction = (player.position - transform.position).normalized;
-            rb.velocity = new Vector2(direction.x * moveSpeed, rb.velocity.y);
-            FlipSprite(direction.x);
+            anim.SetBool("isRunning", true);
+            anim.SetBool("isAttacking", false);
         }
     }
 
     void Attack()
     {
-        // Không spam tấn công liên tục
         if (attackTimer <= 0f)
         {
             isAttacking = true;
+            rb.velocity = Vector2.zero;
             anim.SetBool("isAttacking", true);
             anim.SetBool("isRunning", false);
-            anim.SetTrigger("Attack");
-            rb.velocity = Vector2.zero;
+
+            if (nextAttack3)
+            {
+                anim.SetTrigger("Attack3");
+                nextAttack3 = false;
+            }
+            else
+            {
+                anim.SetTrigger("Attack");
+            }
 
             attackTimer = attackCooldown;
+
+            // Kiểm tra đủ thời gian dùng Attack3
+            if (attack3Timer >= attack3Interval)
+            {
+                nextAttack3 = true;
+                attack3Timer = 0f;
+            }
         }
     }
 
@@ -118,7 +128,6 @@ public class BossAI_MoveOnly : MonoBehaviour
     {
         anim.SetBool("isRunning", true);
         anim.SetBool("isAttacking", false);
-        anim.ResetTrigger("Attack");
 
         Vector2 direction = (startPosition - transform.position).normalized;
         rb.velocity = new Vector2(direction.x * returnSpeed, rb.velocity.y);
@@ -136,12 +145,11 @@ public class BossAI_MoveOnly : MonoBehaviour
     {
         anim.SetBool("isRunning", false);
         anim.SetBool("isAttacking", false);
-        anim.ResetTrigger("Attack");
         rb.velocity = Vector2.zero;
         isAttacking = false;
     }
 
-    // Gọi trong animation event cuối clip Attack
+    // Gọi trong animation event cuối clip Attack hoặc Attack3
     public void EndAttack()
     {
         isAttacking = false;
@@ -166,13 +174,9 @@ public class BossAI_MoveOnly : MonoBehaviour
 
     void OnDrawGizmosSelected()
     {
-        // 🔴 Vòng phát hiện
+        // Vòng phát hiện
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, detectionRadius);
-
-        // 🟢 Vòng tấn công
-        Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(transform.position, attackRadius);
 
         // Phạm vi trái–phải
         if (leftPoint != null && rightPoint != null)
@@ -181,5 +185,9 @@ public class BossAI_MoveOnly : MonoBehaviour
             Gizmos.DrawLine(leftPoint.position + Vector3.up, leftPoint.position + Vector3.down);
             Gizmos.DrawLine(rightPoint.position + Vector3.up, rightPoint.position + Vector3.down);
         }
+
+        // Vòng tấn công
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, attackRadius);
     }
 }
