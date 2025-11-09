@@ -17,6 +17,7 @@ public class BossMagicAttack : MonoBehaviour
     [Header("Magic Settings")]
     public float magicCooldown = 5f; // thời gian giữa các lần cast phép
     private float magicTimer = 0f;
+    private bool isPlayerDetected = false; // boss chỉ cast khi đã rượt
 
     [Header("Magic Prefab")]
     public GameObject magicPrefab;    // Prefab LightBall
@@ -29,13 +30,27 @@ public class BossMagicAttack : MonoBehaviour
 
         magicTimer += Time.deltaTime;
 
-        // Kiểm tra player còn trong phạm vi hoạt động (vòng đỏ + left-right)
-        bool playerInDetection = Vector2.Distance(transform.position, player.position) <= detectionRadius;
-        bool playerInRange = player.position.x > leftPoint.position.x && player.position.x < rightPoint.position.x;
-        bool playerInMagicRange = Vector2.Distance(transform.position, player.position) <= magicRadius;
+        float distanceToPlayer = Vector2.Distance(transform.position, player.position);
 
-        // Player không gần (ngoài attackRadius) nhưng còn trong vùng → cast phép
-        if (playerInDetection && playerInRange && playerInMagicRange && Vector2.Distance(transform.position, player.position) > attackRadius)
+        // Kiểm tra player trong vùng detection
+        bool inDetection = distanceToPlayer <= detectionRadius;
+        bool inRange = player.position.x > leftPoint.position.x && player.position.x < rightPoint.position.x;
+        bool inMagicRange = distanceToPlayer <= magicRadius;
+        bool inAttackRange = distanceToPlayer <= attackRadius;
+
+        // Khi player vào phạm vi phát hiện → bắt đầu rượt
+        if (inDetection && inRange)
+        {
+            isPlayerDetected = true;
+        }
+        else if (distanceToPlayer > detectionRadius * 1.5f)
+        {
+            // Nếu player ra quá xa → reset
+            isPlayerDetected = false;
+        }
+
+        // Chỉ cast phép nếu boss đã rượt và player ở trong vùng phép
+        if (isPlayerDetected && inMagicRange && !inAttackRange)
         {
             if (magicTimer >= magicCooldown)
             {
@@ -51,18 +66,25 @@ public class BossMagicAttack : MonoBehaviour
         if (rb != null)
             rb.velocity = Vector2.zero;
 
-        // Bật animation Tan cong phep thuat
+        // Gọi animation Tan cong phep thuat
         if (anim != null)
         {
             anim.SetBool("isRunning", false);
-            anim.SetBool("isAttacking", false);
-            anim.SetTrigger("MagicAttack"); // trigger của Tan cong phep thuat
+            anim.SetBool("isAttacking", true);
+            anim.SetTrigger("MagicAttack");
         }
 
-        // Spawn LightBall
+        // ❌ KHÔNG spawn LightBall ở đây nữa
+        // Quả cầu sẽ spawn bằng Animation Event
+    }
+
+    // ✅ Hàm này sẽ được gọi từ Animation Event trong animation "Tan cong phep thuat"
+    public void SpawnMagicProjectile()
+    {
         if (magicPrefab != null && magicSpawnPoint != null)
         {
             Instantiate(magicPrefab, magicSpawnPoint.position, Quaternion.identity);
+            Debug.Log("Boss cast LightBall!");
         }
     }
 
@@ -70,19 +92,19 @@ public class BossMagicAttack : MonoBehaviour
     {
         if (transform == null) return;
 
-        // Vòng phát hiện
+        // Vòng phát hiện (đỏ)
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, detectionRadius);
 
-        // Vòng tấn công gần
-        Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(transform.position, attackRadius);
-
-        // Vòng phép thuật
+        // Vòng phép thuật (xanh dương)
         Gizmos.color = Color.blue;
         Gizmos.DrawWireSphere(transform.position, magicRadius);
 
-        // Phạm vi trái–phải
+        // Vòng tấn công gần (xanh lá)
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, attackRadius);
+
+        // Phạm vi trái–phải (vàng)
         if (leftPoint != null && rightPoint != null)
         {
             Gizmos.color = Color.yellow;
