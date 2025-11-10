@@ -10,7 +10,6 @@ public class PlayerController : MonoBehaviour
     public Transform groundCheck;
     public float groundCheckRadius = 0.2f;
 
-    // Cài đặt Slow Effect
     [Header("Slow Effect")]
     private bool isSlowed = false;
     private Coroutine slowCoroutine;
@@ -35,7 +34,6 @@ public class PlayerController : MonoBehaviour
     [Header("Dash Unlock")]
     public bool canDash = false;
 
-    // <<< ĐÃ FIX LỖI CS0103: KHAI BÁO BIẾN BỊ THIẾU >>>
     private bool isDashing = false;
     private float lastDashTime;
     private float originalGravity;
@@ -45,7 +43,6 @@ public class PlayerController : MonoBehaviour
     public AudioClip dashSound;
     private AudioSource audioSource;
 
-
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -53,15 +50,12 @@ public class PlayerController : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         originalGravity = rb.gravityScale;
         audioSource = GetComponent<AudioSource>();
-
         currentMoveSpeed = baseMoveSpeed;
-
         canDash = false;
     }
 
     void Update()
     {
-        // Kiểm tra isDashing và isStunned
         if (isStunned || isDashing) return;
 
         moveInput = Input.GetAxisRaw("Horizontal");
@@ -96,6 +90,7 @@ public class PlayerController : MonoBehaviour
         {
             Debug.Log(" Bạn chưa mở khóa dash!");
         }
+
         if (Input.GetKeyDown(KeyCode.K) && isGrounded && !isDashing)
         {
             jumpPressed = true;
@@ -114,12 +109,10 @@ public class PlayerController : MonoBehaviour
             jumpPressed = false;
         }
     }
-    // ... (Các hàm ApplySlow, SlowCoroutine, RemoveSlowEffect, Dash, Stun giữ nguyên)
 
     public void ApplySlow(float slowPercentage, float duration)
     {
         if (slowCoroutine != null) StopCoroutine(slowCoroutine);
-
         slowCoroutine = StartCoroutine(SlowCoroutine(slowPercentage, duration));
     }
 
@@ -127,9 +120,7 @@ public class PlayerController : MonoBehaviour
     {
         isSlowed = true;
         currentMoveSpeed = baseMoveSpeed * (1f - slowPercentage);
-
         yield return new WaitForSeconds(duration);
-
         RemoveSlowEffect();
     }
 
@@ -203,11 +194,9 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-
     public void ApplyStun(float duration)
     {
-        if (isSlowed) RemoveSlowEffect(); // Loại bỏ hiệu ứng làm chậm nếu có
-
+        if (isSlowed) RemoveSlowEffect();
         if (!isStunned)
         {
             isStunned = true;
@@ -216,7 +205,6 @@ public class PlayerController : MonoBehaviour
             StartCoroutine(StunCoroutine(duration));
         }
     }
-
 
     public void Stun(float duration)
     {
@@ -227,13 +215,9 @@ public class PlayerController : MonoBehaviour
     private IEnumerator StunCoroutine(float duration)
     {
         isStunned = true;
-
-        // Ngăn di chuyển và animation stun
         rb.velocity = Vector2.zero;
         animator.SetTrigger("Stunned");
-
         yield return new WaitForSeconds(duration);
-
         isStunned = false;
     }
 }
