@@ -49,7 +49,30 @@ public class WolfPatrolArea : MonoBehaviour
             if (moveDirection < 0 && facingRight) Flip();
             if (moveDirection > 0 && !facingRight) Flip();
         }
+
+        // 🧠 Bỏ qua va chạm giữa các sói và enemy khác
+        Collider2D myCol = GetComponent<Collider2D>();
+        if (myCol != null)
+        {
+            GameObject[] allEnemies = GameObject.FindGameObjectsWithTag("Enemy");
+            GameObject[] allWolves = GameObject.FindGameObjectsWithTag("Enemy_Wolf");
+
+            foreach (GameObject e in allEnemies)
+            {
+                if (e == gameObject) continue;
+                Collider2D col = e.GetComponent<Collider2D>();
+                if (col != null) Physics2D.IgnoreCollision(myCol, col);
+            }
+
+            foreach (GameObject e in allWolves)
+            {
+                if (e == gameObject) continue;
+                Collider2D col = e.GetComponent<Collider2D>();
+                if (col != null) Physics2D.IgnoreCollision(myCol, col);
+            }
+        }
     }
+
 
     void Update()
     {
