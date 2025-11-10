@@ -43,12 +43,12 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 16
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -108,7 +108,259 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: Lightning Trap - Level 2_3
+      rect:
+        serializedVersion: 2
+        x: 321
+        y: 0
+        width: 32
+        height: 96
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5e461e8d99ae37348902d006b3e3610a
+      internalID: 1146903035
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning Trap - Level 2_4
+      rect:
+        serializedVersion: 2
+        x: 421
+        y: 0
+        width: 28
+        height: 96
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8060d6bef50ef894d958b17e0a1fceb8
+      internalID: 1139627134
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning Trap - Level 2_5
+      rect:
+        serializedVersion: 2
+        x: 517
+        y: 0
+        width: 28
+        height: 96
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 13be77004b15e4d47a0b368705f41c6e
+      internalID: -54018758
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning Trap - Level 2_6
+      rect:
+        serializedVersion: 2
+        x: 609
+        y: 0
+        width: 32
+        height: 96
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 82b1f00c38df99f448e1485e3d999ea3
+      internalID: 2103066588
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning Trap - Level 2_7
+      rect:
+        serializedVersion: 2
+        x: 705
+        y: 0
+        width: 32
+        height: 96
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 68627bbefbfc95041a95eb034913f752
+      internalID: -220487560
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning Trap - Level 2_8
+      rect:
+        serializedVersion: 2
+        x: 805
+        y: 0
+        width: 28
+        height: 96
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b42f6eb548e6ba7459a120135b3d0754
+      internalID: -881670105
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning Trap - Level 2_9
+      rect:
+        serializedVersion: 2
+        x: 901
+        y: 0
+        width: 28
+        height: 96
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 696ccd285c404b64a91169fa22b7f1c6
+      internalID: -1896044701
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning Trap - Level 2_10
+      rect:
+        serializedVersion: 2
+        x: 993
+        y: 0
+        width: 32
+        height: 96
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d6d3238aca9926b4695c61fd9c60f08c
+      internalID: -1049505470
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning Trap - Level 2_12
+      rect:
+        serializedVersion: 2
+        x: 42
+        y: 0
+        width: 23
+        height: 96
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: be237d2f225003546a2a0ae49d364b9e
+      internalID: -1630445862
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning Trap - Level 2_13
+      rect:
+        serializedVersion: 2
+        x: 139
+        y: 0
+        width: 22
+        height: 96
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 89cb64da4b6e4804085d4745ab8894b1
+      internalID: 578131414
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning Trap - Level 2_14
+      rect:
+        serializedVersion: 2
+        x: 234
+        y: 0
+        width: 23
+        height: 96
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b794720bfaad9d14bad8e70a07c6ba04
+      internalID: 339948239
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning Trap - Level 2_15
+      rect:
+        serializedVersion: 2
+        x: 1099
+        y: 0
+        width: 22
+        height: 96
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a36541a6e38601a41967c7da64b1aff5
+      internalID: 2048063919
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -119,7 +371,23 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Lightning Trap - Level 2_0: 1210084211
+      Lightning Trap - Level 2_1: -1920955162
+      Lightning Trap - Level 2_10: -1049505470
+      Lightning Trap - Level 2_11: 1071985903
+      Lightning Trap - Level 2_12: -1630445862
+      Lightning Trap - Level 2_13: 578131414
+      Lightning Trap - Level 2_14: 339948239
+      Lightning Trap - Level 2_15: 2048063919
+      Lightning Trap - Level 2_2: 727187548
+      Lightning Trap - Level 2_3: 1146903035
+      Lightning Trap - Level 2_4: 1139627134
+      Lightning Trap - Level 2_5: -54018758
+      Lightning Trap - Level 2_6: 2103066588
+      Lightning Trap - Level 2_7: -220487560
+      Lightning Trap - Level 2_8: -881670105
+      Lightning Trap - Level 2_9: -1896044701
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
