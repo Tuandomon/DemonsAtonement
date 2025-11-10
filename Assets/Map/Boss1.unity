@@ -1190,11 +1190,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8874407509574199018, guid: 5248485ab7286a94da927841283dc840, type: 3}
   m_PrefabInstance: {fileID: 302659413}
   m_PrefabAsset: {fileID: 0}
---- !u!95 &1176385147 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 9035256200144046356, guid: 5248485ab7286a94da927841283dc840, type: 3}
-  m_PrefabInstance: {fileID: 302659413}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1222487265
 GameObject:
   m_ObjectHideFlags: 0
@@ -3581,7 +3576,7 @@ MonoBehaviour:
   attackRange: 1
   attackMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 8
 --- !u!114 &1241427474
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3597,7 +3592,12 @@ MonoBehaviour:
   attackRange: 3
   attackCooldown: 1.5
   player: {fileID: 1176385135}
-  animator: {fileID: 1176385147}
+  animator: {fileID: 1241427479}
+--- !u!95 &1241427479 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 8926100922140944865, guid: ec9babcde8a48cb40bfa8690fb63d3a2, type: 3}
+  m_PrefabInstance: {fileID: 1840989927}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1243450012
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4368,6 +4368,10 @@ PrefabInstance:
     - target: {fileID: 3272318459913414956, guid: ec9babcde8a48cb40bfa8690fb63d3a2, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4226337022505128675, guid: ec9babcde8a48cb40bfa8690fb63d3a2, type: 3}
+      propertyPath: maxHealth
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 6894277834040784074, guid: ec9babcde8a48cb40bfa8690fb63d3a2, type: 3}
       propertyPath: m_Name

@@ -12,6 +12,9 @@ EditorBuildSettings:
     path: Assets/Map/Wecom.unity
     guid: 1412b19b79aaf464a83be1c9e10008cd
   - enabled: 1
+    path: Assets/Map/Map 1.unity
+    guid: fcba87a7b29af734db7770eba5b8e345
+  - enabled: 1
     path: Assets/Map/Man_1.unity
     guid: aa45099434c6e4a4a886b53013b1052a
   - enabled: 1
