@@ -13,6 +13,9 @@ TagManager:
   - Door
   - Boss
   - HealthItem
+  - Enemy_Wolf
+  - Lightning
+  - Spirit
   layers:
   - Default
   - TransparentFX
