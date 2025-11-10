@@ -120,7 +120,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c9eaf4ac861ecd4da175180d9f33ff9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boss: {fileID: 0}
+  boss: {fileID: 6589841786721443281, guid: 18696d5648fa2fd4e8cf84a6ddc7a21f, type: 3}
   offset: {x: 1.5, y: 0, z: 0}
   moveSpeed: 5
   fireballPrefab: {fileID: 907646786815702930, guid: aa3a6ce845e23ab46bfc958793426160, type: 3}
