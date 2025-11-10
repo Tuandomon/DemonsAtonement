@@ -47,7 +47,7 @@ public class WildBoarPatrolArea : MonoBehaviour
         if (myCol != null)
         {
             GameObject[] allEnemies = GameObject.FindGameObjectsWithTag("Enemy");
-            GameObject[] allBoars = GameObject.FindGameObjectsWithTag("Enemy_Boar");
+            GameObject[] allWolf = GameObject.FindGameObjectsWithTag("Enemy_Wolf");
 
             foreach (GameObject e in allEnemies)
             {
@@ -56,7 +56,7 @@ public class WildBoarPatrolArea : MonoBehaviour
                 if (col != null) Physics2D.IgnoreCollision(myCol, col);
             }
 
-            foreach (GameObject e in allBoars)
+            foreach (GameObject e in allWolf)
             {
                 if (e == gameObject) continue;
                 Collider2D col = e.GetComponent<Collider2D>();
