@@ -2,71 +2,42 @@
 
 public class BombTrap : MonoBehaviour
 {
-    [Header("Damage Settings")]
-    public int damageAmount = 50;
-    public string targetTag = "Player";
+    // Kéo thả animation clip nổ vào đây trong Inspector
+    public Animator bombAnimator;
 
-    [Header("Visual Settings")]
-    public Sprite explosionSprite; // Gán Sprite hình ngọn lửa vào đây
-    public float explosionDuration = 0.5f; // Thời gian hiển thị ngọn lửa
+    // Kéo thả hiệu ứng hạt nổ (Particle System) vào đây (Tùy chọn)
+    public GameObject explosionEffectPrefab;
 
-    private SpriteRenderer spriteRenderer;
-    private Collider2D trapCollider;
-
-    void Start()
-    {
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        trapCollider = GetComponent<Collider2D>();
-
-        if (spriteRenderer == null)
-        {
-            Debug.LogError("BombTrap: Thiếu SpriteRenderer Component!");
-        }
-        if (trapCollider == null)
-        {
-            Debug.LogError("BombTrap: Thiếu Collider2D Component!");
-        }
-    }
-
-    // Xử lý va chạm (Trigger)
+    // Hàm này được gọi khi một Collider 2D khác đi vào vùng Trigger của bom
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // Kiểm tra đối tượng va chạm
-        if (other.CompareTag(targetTag))
+        // Giả sử người chơi của bạn có tag là "Player"
+        if (other.gameObject.CompareTag("Player"))
         {
-            // Gây sát thương
-            PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
-            if (playerHealth != null)
-            {
-                playerHealth.TakeDamage(damageAmount);
-            }
-
-            // Bắt đầu chuỗi kích hoạt
-            StartExplosionSequence();
+            Explode();
         }
     }
 
-    private void StartExplosionSequence()
+    void Explode()
     {
-        // 1. Tắt Collider để không gây sát thương lần nữa
-        trapCollider.enabled = false;
-
-        // 2. Thay đổi Sprite sang hình ngọn lửa
-        if (explosionSprite != null && spriteRenderer != null)
+        // 1. Kích hoạt Animation Nổ
+        if (bombAnimator != null)
         {
-            spriteRenderer.sprite = explosionSprite;
+            // Đặt biến Trigger trong Animator để chuyển sang trạng thái "Explode"
+            bombAnimator.SetTrigger("Explode");
         }
 
-        // 3. Hủy quả bom sau 0.5 giây (hoặc giá trị explosionDuration)
-        Invoke("DestroyBomb", explosionDuration);
+        // 2. Tạo hiệu ứng hạt nổ (nếu có)
+        if (explosionEffectPrefab != null)
+        {
+            Instantiate(explosionEffectPrefab, transform.position, Quaternion.identity);
+        }
 
-        // Vô hiệu hóa script này để không chạy thêm OnTriggerEnter2D nào nữa
-        enabled = false;
-    }
+        // 3. Xử lý sát thương người chơi (Tùy thuộc vào game của bạn)
+        // Ví dụ: other.GetComponent<PlayerHealth>().TakeDamage(100);
 
-    private void DestroyBomb()
-    {
-        // Hủy GameObject quả bom
-        Destroy(gameObject);
+        // 4. Hủy đối tượng bom sau khi nổ một thời gian ngắn (để animation nổ kịp chạy)
+        // Ví dụ: Bom sẽ biến mất sau 0.5 giây
+        Destroy(gameObject, 0.5f);
     }
 }
