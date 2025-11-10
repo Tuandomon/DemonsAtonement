@@ -1,23 +1,31 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 public class EnemyFireWizard : MonoBehaviour
 {
-    [Header("Detection Settings")]
-    public float detectionRange = 8f;
-    public float attackRange = 2f;
-    public LayerMask playerLayer;
-
     [Header("Movement Settings")]
     public float moveSpeed = 3f;
+    public Transform leftPoint;
+    public Transform rightPoint;
+    public float idleWaitTime = 3f; // Thời gian đứng im
+    private bool movingRight = true;
+    private bool isIdle = false;
 
     [Header("Attack Settings")]
+    public float attackRange = 2f;
     public float attackCooldown = 1.5f;
     private float lastAttackTime;
 
-    [Header("References")]
+    [Header("Fireball Settings")]
     public Transform firePoint;
     public GameObject fireballPrefab;
+    public float fireballCooldown = 10f;
+    private float lastFireballTime;
 
+    [Header("Detection")]
+    public float detectionRange = 8f;
+
+    [Header("References")]
     private Transform player;
     private Animator animator;
     private Rigidbody2D rb;
@@ -25,17 +33,6 @@ public class EnemyFireWizard : MonoBehaviour
 
     public EnemyAttackHitbox attackHitbox1;
     public EnemyAttackHitbox attackHitbox2;
-    public Transform attackHitboxTransform1; // Gán cho AttackHitbox1
-    public Transform attackHitboxTransform2; // Gán cho AttackHitbox2
-
-    public Vector3 firePointOffsetRight = new Vector3(1f, 0f, 0f);
-    public Vector3 firePointOffsetLeft = new Vector3(-1f, 0f, 0f);
-
-    [Header("Fireball Settings")]
-    public float fireballCooldown = 10f;
-    private float lastFireballTime;
-
-    private bool isFiring = false;
 
     private bool isDead = false;
 
@@ -45,7 +42,19 @@ public class EnemyFireWizard : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         player = GameObject.FindGameObjectWithTag("Player")?.transform;
-        lastFireballTime = Time.time - fireballCooldown; // Cho phép bắn ngay lần đầu
+        lastFireballTime = Time.time - fireballCooldown;
+
+        // 🔹 Bỏ qua va chạm với các enemy khác và hitbox của chúng
+        Collider2D myCollider = GetComponent<Collider2D>();
+        Collider2D[] allColliders = FindObjectsOfType<Collider2D>();
+        foreach (Collider2D col in allColliders)
+        {
+            if (col == myCollider) continue;
+            if (col.CompareTag("Enemy") || col.CompareTag("EnemyAttack") || col.CompareTag("Enemy_Wolf"))
+            {
+                Physics2D.IgnoreCollision(myCollider, col);
+            }
+        }
     }
 
     void Update()
@@ -54,60 +63,92 @@ public class EnemyFireWizard : MonoBehaviour
 
         float distance = Vector2.Distance(transform.position, player.position);
 
-        if (distance <= detectionRange)
+        if (distance <= attackRange && distance <= detectionRange)
         {
-            if (distance > attackRange)
-            {
-                MoveTowardsPlayer();
-                animator.SetBool("isRunning", true);
-
-                // Chỉ bắn nếu đủ thời gian cooldown
-                if (Time.time >= lastFireballTime + fireballCooldown)
-                {
-                    rb.velocity = Vector2.zero;
-                    animator.SetBool("isRunning", false);
-                    TryFire();
-                    lastFireballTime = Time.time;
-                }
-            }
-            else
+            // Player trong tầm tấn công → Attack
+            rb.velocity = Vector2.zero;
+            TryAttack();
+        }
+        else if (distance <= detectionRange)
+        {
+            // Player trong tầm phát hiện → Chase
+            MoveTowardsPlayerWithinBounds();
+            if (Time.time >= lastFireballTime + fireballCooldown)
             {
                 rb.velocity = Vector2.zero;
-                animator.SetBool("isRunning", false);
-                TryAttack();
+                TryFire();
+                lastFireballTime = Time.time;
             }
         }
         else
         {
-            rb.velocity = Vector2.zero;
-            animator.SetBool("isRunning", false);
+            // Player ra khỏi phạm vi phát hiện → Patrol
+            Patrol();
         }
 
-        // Lật hướng enemy theo vị trí Player
-        if (player.position.x < transform.position.x)
-            spriteRenderer.flipX = true;
-        else
-            spriteRenderer.flipX = false;
+        UpdateFacing();
+    }
 
-        // Cập nhật vị trí hitbox theo hướng
-        if (spriteRenderer.flipX)
+    void Patrol()
+    {
+        if (isIdle) return;
+
+        animator.SetBool("isRunning", true);
+
+        float targetX = movingRight ? rightPoint.position.x : leftPoint.position.x;
+        float step = moveSpeed * Time.deltaTime * (movingRight ? 1 : -1);
+        transform.position = new Vector3(Mathf.MoveTowards(transform.position.x, targetX, Mathf.Abs(step)), transform.position.y, transform.position.z);
+
+        if ((movingRight && transform.position.x >= targetX) || (!movingRight && transform.position.x <= targetX))
         {
-            attackHitboxTransform1.localPosition = new Vector3(-2f, 0f, 0f); // trái
-            attackHitboxTransform2.localPosition = new Vector3(-3f, 0f, 0f); // trái
-            firePoint.localPosition = new Vector3(-1f, 0f, 0f); // trái
+            StartCoroutine(IdleAndTurn(!movingRight));
         }
         else
         {
-            attackHitboxTransform1.localPosition = new Vector3(1f, 0f, 0f); // phải
-            attackHitboxTransform2.localPosition = new Vector3(1f, 0f, 0f); // phải
-            firePoint.localPosition = new Vector3(1f, 0f, 0f); // phải
+            if (Random.value < 0.002f)
+            {
+                StartCoroutine(IdleRandom());
+            }
         }
     }
 
-    void MoveTowardsPlayer()
+    IEnumerator IdleAndTurn(bool nextMoveRight)
     {
-        Vector2 direction = (player.position - transform.position).normalized;
-        rb.velocity = new Vector2(direction.x * moveSpeed, rb.velocity.y);
+        isIdle = true;
+        rb.velocity = Vector2.zero;
+        animator.SetBool("isRunning", false);
+        yield return new WaitForSeconds(idleWaitTime);
+        movingRight = nextMoveRight;
+        isIdle = false;
+    }
+
+    IEnumerator IdleRandom()
+    {
+        isIdle = true;
+        rb.velocity = Vector2.zero;
+        animator.SetBool("isRunning", false);
+        yield return new WaitForSeconds(idleWaitTime);
+        isIdle = false;
+    }
+
+    void MoveTowardsPlayerWithinBounds()
+    {
+        float targetX = Mathf.Clamp(player.position.x, leftPoint.position.x, rightPoint.position.x);
+        float step = moveSpeed * Time.deltaTime * (targetX > transform.position.x ? 1 : -1);
+        transform.position = new Vector3(Mathf.MoveTowards(transform.position.x, targetX, Mathf.Abs(step)), transform.position.y, transform.position.z);
+        animator.SetBool("isRunning", true);
+    }
+
+    void UpdateFacing()
+    {
+        if (player != null && Vector2.Distance(transform.position, player.position) <= detectionRange)
+        {
+            transform.eulerAngles = new Vector3(0, player.position.x > transform.position.x ? 0f : 180f, 0f);
+        }
+        else
+        {
+            transform.eulerAngles = new Vector3(0, movingRight ? 0f : 180f, 0f);
+        }
     }
 
     void TryAttack()
@@ -118,6 +159,7 @@ public class EnemyFireWizard : MonoBehaviour
             lastAttackTime = Time.time;
         }
     }
+
     void TryFire()
     {
         animator.SetTrigger("Fire");
@@ -125,58 +167,20 @@ public class EnemyFireWizard : MonoBehaviour
 
     public void TriggerAttackHitbox1()
     {
-        if (attackHitbox1 != null)
-        {
-            attackHitbox1.ActivateHitbox();
-
-            Collider2D[] hits = Physics2D.OverlapBoxAll(attackHitboxTransform1.position, new Vector2(1f, 1f), 0f, playerLayer);
-            foreach (Collider2D hit in hits)
-            {
-                if (hit.CompareTag("Player"))
-                {
-                    PlayerController playerController = hit.GetComponent<PlayerController>();
-                    if (playerController != null)
-                    {
-                        playerController.ApplyStun(2f); // Gây choáng 2 giây
-                    }
-                }
-            }
-        }
+        if (attackHitbox1 != null) attackHitbox1.ActivateHitbox();
     }
 
     public void TriggerAttackHitbox2()
     {
-        if (attackHitbox2 != null)
-        {
-            attackHitbox2.ActivateHitbox();
-
-            Collider2D[] hits = Physics2D.OverlapBoxAll(attackHitboxTransform2.position, new Vector2(1f, 1f), 0f, playerLayer);
-            foreach (Collider2D hit in hits)
-            {
-                if (hit.CompareTag("Player"))
-                {
-                    PlayerController playerController = hit.GetComponent<PlayerController>();
-                    if (playerController != null)
-                    {
-                        playerController.ApplyStun(2f); // Gây choáng 2 giây
-                    }
-                }
-            }
-        }
+        if (attackHitbox2 != null) attackHitbox2.ActivateHitbox();
     }
 
-
-
-    // Gọi từ animation event
     public void ShootFireball()
     {
         if (fireballPrefab != null && firePoint != null)
         {
             GameObject fireball = Instantiate(fireballPrefab, firePoint.position, Quaternion.identity);
-
-            // Xác định hướng bay dựa vào flipX
-            Vector2 direction = spriteRenderer.flipX ? Vector2.left : Vector2.right;
-
+            Vector2 direction = (player.position.x < transform.position.x) ? Vector2.left : Vector2.right;
             fireball.GetComponent<Fireball>().SetDirection(direction);
         }
     }
@@ -184,8 +188,6 @@ public class EnemyFireWizard : MonoBehaviour
     public void TakeDamage(int damage)
     {
         if (isDead) return;
-
-        // Giả sử có hệ thống máu, ở đây ta chỉ xử lý chết
         Die();
     }
 
