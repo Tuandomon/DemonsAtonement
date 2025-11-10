@@ -20,6 +20,10 @@ public class WolfPatrolArea : MonoBehaviour
     public float attackRange = 1.2f;
     public float attackCooldown = 0.4f;
 
+    [Header("Audio Settings")]
+    public AudioClip attackSound;    // âm thanh tấn công
+    private AudioSource audioSource;
+
     [Header("References")]
     public Animator animator;
     public Transform player;
@@ -39,6 +43,7 @@ public class WolfPatrolArea : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         if (animator == null) animator = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
 
         nextHowlTime = Time.time + Random.Range(minHowlDelay, maxHowlDelay);
 
@@ -50,7 +55,7 @@ public class WolfPatrolArea : MonoBehaviour
             if (moveDirection > 0 && !facingRight) Flip();
         }
 
-        // 🧠 Bỏ qua va chạm giữa các sói và enemy khác
+        // Bỏ qua va chạm giữa các sói và enemy khác
         Collider2D myCol = GetComponent<Collider2D>();
         if (myCol != null)
         {
@@ -73,14 +78,12 @@ public class WolfPatrolArea : MonoBehaviour
         }
     }
 
-
     void Update()
     {
         if (player == null) return;
 
         float distanceToPlayer = Vector2.Distance(transform.position, player.position);
 
-        // 🧠 Nếu đang hú mà phát hiện người chơi trong phạm vi → dừng hú ngay
         if (isHowling && distanceToPlayer <= detectRange)
         {
             StopCoroutine("HowlRoutine");
@@ -88,7 +91,6 @@ public class WolfPatrolArea : MonoBehaviour
             isHowling = false;
         }
 
-        // 🧠 Xác định trạng thái ưu tiên
         if (distanceToPlayer <= attackRange && Time.time - lastAttackTime >= attackCooldown)
         {
             currentState = WolfState.Attack;
@@ -102,7 +104,6 @@ public class WolfPatrolArea : MonoBehaviour
             currentState = WolfState.Patrol;
         }
 
-        // 🔄 Gọi hành vi theo trạng thái
         switch (currentState)
         {
             case WolfState.Patrol:
@@ -117,7 +118,6 @@ public class WolfPatrolArea : MonoBehaviour
         }
     }
 
-    // 🐾 —————— TUẦN TRA ——————
     void PatrolState()
     {
         if (isWaiting || isHowling)
@@ -127,7 +127,6 @@ public class WolfPatrolArea : MonoBehaviour
             return;
         }
 
-        // 🐺 Thỉnh thoảng dừng lại để hú
         if (Time.time >= nextHowlTime)
         {
             StartCoroutine(HowlRoutine());
@@ -149,38 +148,12 @@ public class WolfPatrolArea : MonoBehaviour
         }
     }
 
-    IEnumerator WaitAndTurn()
-    {
-        isWaiting = true;
-        rb.velocity = Vector2.zero;
-        animator.SetFloat("Speed", 0);
-        yield return new WaitForSeconds(waitTime);
-        moveDirection *= -1;
-        Flip();
-        isWaiting = false;
-    }
-
-    IEnumerator HowlRoutine()
-    {
-        isHowling = true;
-        rb.velocity = Vector2.zero;
-        animator.SetFloat("Speed", 0);
-        animator.SetBool("IsHowling", true);
-
-        yield return new WaitForSeconds(howlDuration);
-
-        animator.SetBool("IsHowling", false);
-        isHowling = false;
-    }
-
-    // ⚡ —————— RƯỢT ĐUỔI ——————
     void ChaseState()
     {
-        if (isHowling) return; // khi hú thì không rượt
+        if (isHowling) return;
 
         float dir = Mathf.Sign(player.position.x - transform.position.x);
         rb.velocity = new Vector2(dir * chaseSpeed, rb.velocity.y);
-
         if ((dir > 0 && !facingRight) || (dir < 0 && facingRight))
             Flip();
 
@@ -188,7 +161,6 @@ public class WolfPatrolArea : MonoBehaviour
         animator.SetBool("IsHowling", false);
     }
 
-    // 💥 —————— TẤN CÔNG ——————
     void AttackState()
     {
         rb.velocity = Vector2.zero;
@@ -198,7 +170,6 @@ public class WolfPatrolArea : MonoBehaviour
         if ((dir > 0 && !facingRight) || (dir < 0 && facingRight))
             Flip();
 
-        // Nếu cooldown đã hết → tấn công
         if (Time.time - lastAttackTime >= attackCooldown)
         {
             animator.SetTrigger("Attack");
@@ -218,6 +189,30 @@ public class WolfPatrolArea : MonoBehaviour
         }
     }
 
+    IEnumerator WaitAndTurn()
+    {
+        isWaiting = true;
+        rb.velocity = Vector2.zero;
+        animator.SetFloat("Speed", 0);
+        yield return new WaitForSeconds(waitTime);
+        moveDirection *= -1;
+        Flip();
+        isWaiting = false;
+    }
+
+    IEnumerator HowlRoutine()
+    {
+        isHowling = true;
+        rb.velocity = Vector2.zero;
+        animator.SetFloat("Speed", 0);
+        animator.SetBool("IsHowling", true);
+
+        // 🔊 Xóa âm thanh hú ở đây
+        yield return new WaitForSeconds(howlDuration);
+
+        animator.SetBool("IsHowling", false);
+        isHowling = false;
+    }
 
     void Flip()
     {
@@ -225,6 +220,15 @@ public class WolfPatrolArea : MonoBehaviour
         Vector3 s = transform.localScale;
         s.x *= -1;
         transform.localScale = s;
+    }
+
+    // 🔊 Hàm này sẽ được gọi từ Animation Event trong clip Attack
+    public void PlayAttackSound()
+    {
+        if (attackSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(attackSound, 0.7f);
+        }
     }
 
     void OnDrawGizmosSelected()

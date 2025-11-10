@@ -25,6 +25,10 @@ public class EnemyFireWizard : MonoBehaviour
     [Header("Detection")]
     public float detectionRange = 8f;
 
+    [Header("Audio Settings")]
+    public AudioClip attackSound; // âm thanh tấn công
+    private AudioSource audioSource;
+
     [Header("References")]
     private Transform player;
     private Animator animator;
@@ -43,6 +47,8 @@ public class EnemyFireWizard : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         player = GameObject.FindGameObjectWithTag("Player")?.transform;
         lastFireballTime = Time.time - fireballCooldown;
+
+        audioSource = GetComponent<AudioSource>();
 
         // 🔹 Bỏ qua va chạm với các enemy khác và hitbox của chúng
         Collider2D myCollider = GetComponent<Collider2D>();
@@ -198,5 +204,14 @@ public class EnemyFireWizard : MonoBehaviour
         animator.SetTrigger("Death");
         GetComponent<Collider2D>().enabled = false;
         this.enabled = false;
+    }
+
+    // 🔊 Hàm phát âm thanh tấn công → gọi từ Animation Event
+    public void PlayAttackSound()
+    {
+        if (attackSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(attackSound, 0.7f);
+        }
     }
 }
