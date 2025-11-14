@@ -47,7 +47,7 @@ public class WildBoarPatrolArea : MonoBehaviour
         if (myCol != null)
         {
             GameObject[] allEnemies = GameObject.FindGameObjectsWithTag("Enemy");
-            GameObject[] allBoars = GameObject.FindGameObjectsWithTag("Enemy_Boar");
+            GameObject[] allBoars = GameObject.FindGameObjectsWithTag("Enemy_Boar");    
 
             foreach (GameObject e in allEnemies)
             {

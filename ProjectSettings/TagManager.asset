@@ -20,6 +20,7 @@ TagManager:
   - Door3
   - Door4
   - Wall
+  - Enemy_Boar
   layers:
   - Default
   - TransparentFX

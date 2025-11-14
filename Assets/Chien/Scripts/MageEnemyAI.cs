@@ -30,7 +30,7 @@ public class MageEnemyAI : MonoBehaviour
     [Header("Normal Attack Settings")]
     public GameObject lightPrefab;
     public Transform firePoint;
-
+     
     [Header("References")]
     public Animator animator;
     private Transform player;
