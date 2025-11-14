@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -24,7 +24,6 @@ public class PlayerHealth : MonoBehaviour
         currentHealth = maxHealth;
         animator = GetComponent<Animator>();
 
-        // Tự tìm UI nếu chưa gán
         if (healthFillImage == null)
         {
             GameObject healthBarObj = GameObject.Find("HealthBarFill");
@@ -39,16 +38,16 @@ public class PlayerHealth : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
+        if (currentHealth <= 0) return; // tránh gọi Die nhiều lần
+
         currentHealth -= damage;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 
         UpdateHealthUI();
 
-        // Gọi animation bị đánh
         if (animator != null)
             animator.SetTrigger("GotHit");
 
-        // Làm chậm hoặc choáng
         PlayerController controller = GetComponent<PlayerController>();
         if (controller != null)
             controller.Stun(1f);
@@ -59,13 +58,11 @@ public class PlayerHealth : MonoBehaviour
 
     public void AddHealth(int amount)
     {
-        // Thêm máu và cập nhật UI
         currentHealth += amount;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 
         UpdateHealthUI();
 
-        // Có thể thêm animation hoặc hiệu ứng hồi máu tại đây
         if (animator != null)
             animator.SetTrigger("Heal");
     }
@@ -85,9 +82,38 @@ public class PlayerHealth : MonoBehaviour
     void Die()
     {
         Debug.Log("Player đã chết!");
-        // Gợi ý: Gọi animation chết hoặc reload scene ở đây
+
         if (animator != null)
             animator.SetTrigger("Die");
+
+        StartCoroutine(DieAndRespawn());
+    }
+
+    IEnumerator DieAndRespawn()
+    {
+        // Tắt điều khiển nếu cần
+        PlayerController controller = GetComponent<PlayerController>();
+        if (controller != null)
+            controller.enabled = false;
+
+        yield return new WaitForSeconds(1f); // giữ animation Die trong 1 giây
+
+        currentHealth = maxHealth;
+        UpdateHealthUI();
+
+        // Hồi sinh tại checkpoint
+        RespawnManager.Instance.Respawn(gameObject);
+
+        // Reset animation Die
+        if (animator != null)
+            animator.ResetTrigger("Die");
+
+        // Bật lại điều khiển
+        if (controller != null)
+        {
+            controller.ResetState(); // nếu có
+            controller.enabled = true; // ✅ bật lại sau khi hồi sinh
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -100,22 +126,20 @@ public class PlayerHealth : MonoBehaviour
             if (playerControl != null)
                 playerControl.ApplySlow(defaultSlowPercent, defaultSlowDuration);
 
-            Debug.Log("Player bị Enemy đánh trúng (sát thương mặc định).");
+            Debug.Log("Player bị Enemy đánh trúng.");
         }
 
-        // 🩹 Thêm phần này để player ăn item hồi máu
         if (collision.CompareTag("HealthItem"))
         {
             HealthItem item = collision.GetComponent<HealthItem>();
             if (item != null)
             {
                 AddHealth(item.healAmount);
-                item.OnCollected(); // Gọi hàm xử lý biến mất / hiệu ứng
+                item.OnCollected();
             }
         }
     }
 
-    // Overload cho damage theo thời gian
     internal void TakeDamage(float damagePerTick)
     {
         int roundedDamage = Mathf.RoundToInt(damagePerTick);

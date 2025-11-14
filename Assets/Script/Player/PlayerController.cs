@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -219,5 +220,19 @@ public class PlayerController : MonoBehaviour
         animator.SetTrigger("Stunned");
         yield return new WaitForSeconds(duration);
         isStunned = false;
+    }
+
+    internal void ResetState()
+    {
+        isStunned = false;
+        isDashing = false;
+        isSlowed = false;
+        currentMoveSpeed = baseMoveSpeed;
+        rb.gravityScale = originalGravity;
+        jumpPressed = false;
+        moveInput = 0;
+
+        animator.SetBool("isRunning", false);
+        animator.SetBool("isJumping", false);
     }
 }
