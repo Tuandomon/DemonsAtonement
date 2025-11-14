@@ -47,7 +47,19 @@ public class BatAI : MonoBehaviour
     private void Update()
     {
         if (isAttackCooldown) return;  // ĐANG NGHỈ → ĐỨNG YÊN
+        if (player == null) return;
 
+        // Kiểm tra player có trong phạm vi Left–Right không
+        bool playerInBounds = player.position.x >= leftPoint.position.x && player.position.x <= rightPoint.position.x;
+
+        // Nếu player ra ngoài giới hạn → Patrol
+        if (!playerInBounds)
+        {
+            Patrol();
+            return;
+        }
+
+        // Kiểm tra phạm vi phát hiện và tấn công
         bool playerInDetect = Physics2D.OverlapCircle(transform.position, detectionRadius, playerLayer);
         bool playerInAttack = Physics2D.OverlapCircle(transform.position, attackRadius, playerLayer);
 
@@ -160,5 +172,13 @@ public class BatAI : MonoBehaviour
 
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, attackRadius);
+
+        // Hiển thị phạm vi Left–Right
+        if (leftPoint != null && rightPoint != null)
+        {
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawLine(new Vector3(leftPoint.position.x, transform.position.y, 0),
+                            new Vector3(rightPoint.position.x, transform.position.y, 0));
+        }
     }
 }
