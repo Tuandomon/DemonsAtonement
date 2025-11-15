@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 3372497610919508397}
   - component: {fileID: 1796328203405987231}
   - component: {fileID: 1309794355183270015}
+  - component: {fileID: 4047639864263550049}
   m_Layer: 0
   m_Name: Heo
   m_TagString: Enemy
@@ -204,6 +205,19 @@ MonoBehaviour:
   attackCooldown: 0.4
   animator: {fileID: 3961716696224522755}
   player: {fileID: 0}
+--- !u!114 &4047639864263550049
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 674570049035388801}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6abc8ccc31457c549a0950b471f2dbd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 50
 --- !u!1 &8888524472738842172
 GameObject:
   m_ObjectHideFlags: 0
