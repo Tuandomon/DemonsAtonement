@@ -121,5 +121,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fireDuration: 2
   cooldownDuration: 3
-  damage: 20
+  damage: 30
   fireEffect: {fileID: 0}
