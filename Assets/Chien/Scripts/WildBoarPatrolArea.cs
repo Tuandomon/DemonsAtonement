@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class WildBoarPatrolArea : MonoBehaviour
+public class PigPatrolArea : MonoBehaviour
 {
     [Header("Patrol Points")]
     public Transform leftPoint;
@@ -17,46 +17,49 @@ public class WildBoarPatrolArea : MonoBehaviour
     public float attackRange = 1.2f;
     public float attackCooldown = 0.4f;
 
+    [Header("Audio Settings")]
+    public AudioClip attackSound;
+
     [Header("References")]
     public Animator animator;
     public Transform player;
 
+    [Header("Distance Settings")]
+    public float tooCloseDistance = 0.4f;
+    public float idealAttackDistance = 1.2f;
+    public float backstepDistance = 1f;
+    public float backstepSpeed = 4f;
+    private bool isBackingUp = false;
+
     private Rigidbody2D rb;
+    private AudioSource audioSource;
+
     private bool isWaiting = false;
     private bool facingRight = true;
     private int moveDirection = 1;
     private float lastAttackTime = 0f;
 
-    private enum BoarState { Patrol, Chase, Attack }
-    private BoarState currentState = BoarState.Patrol;
+    private enum PigState { Patrol, Chase, Attack }
+    private PigState currentState = PigState.Patrol;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        if (animator == null) animator = GetComponent<Animator>();
+        animator = animator != null ? animator : GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
 
         if (leftPoint != null && rightPoint != null)
         {
             float mid = (leftPoint.position.x + rightPoint.position.x) * 0.5f;
-            moveDirection = (transform.position.x < mid) ? 1 : -1;
-            SetRotationByDirection(moveDirection);
+            moveDirection = transform.position.x < mid ? 1 : -1;
         }
 
-        // Bỏ qua va chạm giữa các heo rừng và enemy khác
+        // Ignore collision giữa các enemy
         Collider2D myCol = GetComponent<Collider2D>();
         if (myCol != null)
         {
             GameObject[] allEnemies = GameObject.FindGameObjectsWithTag("Enemy");
-            GameObject[] allBoars = GameObject.FindGameObjectsWithTag("Enemy_Boar");    
-
             foreach (GameObject e in allEnemies)
-            {
-                if (e == gameObject) continue;
-                Collider2D col = e.GetComponent<Collider2D>();
-                if (col != null) Physics2D.IgnoreCollision(myCol, col);
-            }
-
-            foreach (GameObject e in allBoars)
             {
                 if (e == gameObject) continue;
                 Collider2D col = e.GetComponent<Collider2D>();
@@ -69,34 +72,20 @@ public class WildBoarPatrolArea : MonoBehaviour
     {
         if (player == null) return;
 
-        float distanceToPlayer = Vector2.Distance(transform.position, player.position);
+        float dist = Vector2.Distance(transform.position, player.position);
 
-        // Xác định trạng thái ưu tiên
-        if (distanceToPlayer <= attackRange && Time.time - lastAttackTime >= attackCooldown)
-        {
-            currentState = BoarState.Attack;
-        }
-        else if (distanceToPlayer <= detectRange)
-        {
-            currentState = BoarState.Chase;
-        }
+        if (dist <= attackRange && Time.time - lastAttackTime >= attackCooldown)
+            currentState = PigState.Attack;
+        else if (dist <= detectRange)
+            currentState = PigState.Chase;
         else
-        {
-            currentState = BoarState.Patrol;
-        }
+            currentState = PigState.Patrol;
 
-        // Gọi hành vi theo trạng thái
         switch (currentState)
         {
-            case BoarState.Patrol:
-                PatrolState();
-                break;
-            case BoarState.Chase:
-                ChaseState();
-                break;
-            case BoarState.Attack:
-                AttackState();
-                break;
+            case PigState.Patrol: PatrolState(); break;
+            case PigState.Chase: ChaseState(); break;
+            case PigState.Attack: AttackState(); break;
         }
     }
 
@@ -114,14 +103,100 @@ public class WildBoarPatrolArea : MonoBehaviour
         rb.velocity = new Vector2(moveDirection * moveSpeed, rb.velocity.y);
         animator.SetFloat("Speed", Mathf.Abs(rb.velocity.x));
 
-        if (moveDirection > 0 && transform.position.x >= rightPoint.position.x)
+        UpdateFacingDirection(rb.velocity.x);
+
+        if ((moveDirection > 0 && transform.position.x >= rightPoint.position.x) ||
+            (moveDirection < 0 && transform.position.x <= leftPoint.position.x))
         {
             StartCoroutine(WaitAndTurn());
         }
-        else if (moveDirection < 0 && transform.position.x <= leftPoint.position.x)
+    }
+
+    void ChaseState()
+    {
+        if (isBackingUp) return;
+
+        float distance = Vector2.Distance(transform.position, player.position);
+        float dir = Mathf.Sign(player.position.x - transform.position.x);
+
+        if (distance < tooCloseDistance)
         {
-            StartCoroutine(WaitAndTurn());
+            if (!isBackingUp)
+                StartCoroutine(BackstepRoutine(-dir));
+            return;
         }
+
+        if (distance > idealAttackDistance)
+        {
+            rb.velocity = new Vector2(dir * chaseSpeed, rb.velocity.y);
+            animator.SetFloat("Speed", Mathf.Abs(rb.velocity.x));
+        }
+        else
+        {
+            rb.velocity = Vector2.zero;
+            animator.SetFloat("Speed", 0);
+        }
+
+        UpdateFacingDirection(rb.velocity.x);
+    }
+
+    void AttackState()
+    {
+        float distance = Vector2.Distance(transform.position, player.position);
+        float dir = Mathf.Sign(player.position.x - transform.position.x);
+
+        if (distance < tooCloseDistance && !isBackingUp)
+        {
+            StartCoroutine(BackstepRoutine(-dir));
+        }
+
+        if (distance <= attackRange && Time.time - lastAttackTime >= attackCooldown)
+        {
+            lastAttackTime = Time.time;
+            animator.SetTrigger("Attack");
+
+            PlayAttackSound();
+
+            PlayerHealth hp = player.GetComponent<PlayerHealth>();
+            if (hp != null) hp.TakeDamage(100);
+
+            rb.velocity = Vector2.zero;
+            return;
+        }
+
+        if (distance > idealAttackDistance && !isBackingUp)
+        {
+            rb.velocity = new Vector2(dir * chaseSpeed, rb.velocity.y);
+            animator.SetFloat("Speed", Mathf.Abs(rb.velocity.x));
+        }
+        else if (!isBackingUp)
+        {
+            rb.velocity = Vector2.zero;
+            animator.SetFloat("Speed", 0);
+        }
+
+        UpdateFacingDirection(rb.velocity.x);
+    }
+
+    IEnumerator BackstepRoutine(float dir)
+    {
+        isBackingUp = true;
+        animator.SetFloat("Speed", backstepSpeed);
+
+        float startX = transform.position.x;
+        float target = startX + dir * backstepDistance;
+
+        float t = 0;
+        while (t < 1f)
+        {
+            t += Time.deltaTime * backstepSpeed;
+            float newX = Mathf.Lerp(startX, target, t);
+            rb.MovePosition(new Vector2(newX, transform.position.y));
+            yield return null;
+        }
+
+        animator.SetFloat("Speed", 0);
+        isBackingUp = false;
     }
 
     IEnumerator WaitAndTurn()
@@ -129,57 +204,27 @@ public class WildBoarPatrolArea : MonoBehaviour
         isWaiting = true;
         rb.velocity = Vector2.zero;
         animator.SetFloat("Speed", 0);
+
         yield return new WaitForSeconds(waitTime);
+
         moveDirection *= -1;
-        SetRotationByDirection(moveDirection);
         isWaiting = false;
     }
 
-    void ChaseState()
+    // ---------------------- XOAY HƯỚNG THÔNG MINH ----------------------
+    // Rotation Y: 0 = trái, 180 = phải
+    void UpdateFacingDirection(float moveDir)
     {
-        float dir = Mathf.Sign(player.position.x - transform.position.x);
-        rb.velocity = new Vector2(dir * chaseSpeed, rb.velocity.y);
-
-        SetRotationByDirection(dir);
-
-        animator.SetFloat("Speed", Mathf.Abs(rb.velocity.x));
+        if (moveDir > 0.05f) transform.rotation = Quaternion.Euler(0, 180f, 0); // phải
+        else if (moveDir < -0.05f) transform.rotation = Quaternion.Euler(0, 0f, 0); // trái
     }
+    // ---------------------------------------------------------------------
 
-    void AttackState()
+    public void PlayAttackSound()
     {
-        rb.velocity = Vector2.zero;
-        animator.SetFloat("Speed", 0);
-
-        float dir = Mathf.Sign(player.position.x - transform.position.x);
-        SetRotationByDirection(dir);
-
-        if (Time.time - lastAttackTime >= attackCooldown)
-        {
-            animator.SetTrigger("Attack");
-            lastAttackTime = Time.time;
-
-            float distanceToPlayer = Vector2.Distance(transform.position, player.position);
-            if (distanceToPlayer <= attackRange)
-            {
-                PlayerHealth playerHealth = player.GetComponent<PlayerHealth>();
-                if (playerHealth != null)
-                {
-                    playerHealth.TakeDamage(50); // Sát thương heo rừng
-                    Debug.Log("🐗 Heo rừng tấn công trúng người chơi!");
-                }
-            }
-        }
+        if (attackSound != null && audioSource != null)
+            audioSource.PlayOneShot(attackSound, 0.7f);
     }
-
-    void SetRotationByDirection(float dir)
-    {
-        if (dir > 0)
-            transform.eulerAngles = new Vector3(0, 180, 0); // Sang phải
-        else
-            transform.eulerAngles = new Vector3(0, 0, 0);   // Sang trái
-        facingRight = dir > 0;
-    }
-
 
     void OnDrawGizmosSelected()
     {
@@ -191,6 +236,7 @@ public class WildBoarPatrolArea : MonoBehaviour
 
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, detectRange);
+
         Gizmos.color = Color.magenta;
         Gizmos.DrawWireSphere(transform.position, attackRange);
     }
