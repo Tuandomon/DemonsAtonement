@@ -21,14 +21,22 @@ public class WolfPatrolArea : MonoBehaviour
     public float attackCooldown = 0.4f;
 
     [Header("Audio Settings")]
-    public AudioClip attackSound;    // âm thanh tấn công
-    private AudioSource audioSource;
+    public AudioClip attackSound;
 
     [Header("References")]
     public Animator animator;
     public Transform player;
 
+    [Header("Distance Settings")]
+    public float tooCloseDistance = 0.4f;      // Nếu player quá gần → lùi
+    public float idealAttackDistance = 1.2f;   // Khoảng cách lý tưởng tấn công
+    public float backstepDistance = 1f;        // Lùi bao nhiêu
+    public float backstepSpeed = 4f;           // Tốc độ lùi
+    private bool isBackingUp = false;
+
     private Rigidbody2D rb;
+    private AudioSource audioSource;
+
     private bool isWaiting = false;
     private bool isHowling = false;
     private bool facingRight = true;
@@ -42,7 +50,7 @@ public class WolfPatrolArea : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        if (animator == null) animator = GetComponent<Animator>();
+        animator = animator != null ? animator : GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
 
         nextHowlTime = Time.time + Random.Range(minHowlDelay, maxHowlDelay);
@@ -50,12 +58,12 @@ public class WolfPatrolArea : MonoBehaviour
         if (leftPoint != null && rightPoint != null)
         {
             float mid = (leftPoint.position.x + rightPoint.position.x) * 0.5f;
-            moveDirection = (transform.position.x < mid) ? 1 : -1;
-            if (moveDirection < 0 && facingRight) Flip();
-            if (moveDirection > 0 && !facingRight) Flip();
+            moveDirection = transform.position.x < mid ? 1 : -1;
+            if ((moveDirection < 0 && facingRight) || (moveDirection > 0 && !facingRight))
+                Flip();
         }
 
-        // Bỏ qua va chạm giữa các sói và enemy khác
+        // Ignore collision giữa các enemy khác và các sói
         Collider2D myCol = GetComponent<Collider2D>();
         if (myCol != null)
         {
@@ -92,29 +100,17 @@ public class WolfPatrolArea : MonoBehaviour
         }
 
         if (distanceToPlayer <= attackRange && Time.time - lastAttackTime >= attackCooldown)
-        {
             currentState = WolfState.Attack;
-        }
         else if (distanceToPlayer <= detectRange)
-        {
             currentState = WolfState.Chase;
-        }
         else
-        {
             currentState = WolfState.Patrol;
-        }
 
         switch (currentState)
         {
-            case WolfState.Patrol:
-                PatrolState();
-                break;
-            case WolfState.Chase:
-                ChaseState();
-                break;
-            case WolfState.Attack:
-                AttackState();
-                break;
+            case WolfState.Patrol: PatrolState(); break;
+            case WolfState.Chase: ChaseState(); break;
+            case WolfState.Attack: AttackState(); break;
         }
     }
 
@@ -138,11 +134,10 @@ public class WolfPatrolArea : MonoBehaviour
         rb.velocity = new Vector2(moveDirection * moveSpeed, rb.velocity.y);
         animator.SetFloat("Speed", Mathf.Abs(rb.velocity.x));
 
-        if (moveDirection > 0 && transform.position.x >= rightPoint.position.x)
-        {
-            StartCoroutine(WaitAndTurn());
-        }
-        else if (moveDirection < 0 && transform.position.x <= leftPoint.position.x)
+        UpdateFacingDirection();
+
+        if ((moveDirection > 0 && transform.position.x >= rightPoint.position.x) ||
+            (moveDirection < 0 && transform.position.x <= leftPoint.position.x))
         {
             StartCoroutine(WaitAndTurn());
         }
@@ -150,43 +145,98 @@ public class WolfPatrolArea : MonoBehaviour
 
     void ChaseState()
     {
-        if (isHowling) return;
+        if (isHowling || isBackingUp) return;
 
+        float distance = Vector2.Distance(player.position, transform.position);
         float dir = Mathf.Sign(player.position.x - transform.position.x);
-        rb.velocity = new Vector2(dir * chaseSpeed, rb.velocity.y);
-        if ((dir > 0 && !facingRight) || (dir < 0 && facingRight))
-            Flip();
 
-        animator.SetFloat("Speed", Mathf.Abs(rb.velocity.x));
-        animator.SetBool("IsHowling", false);
+        // Player quá gần → lùi
+        if (distance < tooCloseDistance)
+        {
+            if (!isBackingUp)
+                StartCoroutine(BackstepRoutine(-dir));
+            return;
+        }
+
+        // Nếu xa hơn khoảng cách tấn công → chạy lại
+        if (distance > idealAttackDistance)
+        {
+            rb.velocity = new Vector2(dir * chaseSpeed, rb.velocity.y);
+            animator.SetFloat("Speed", Mathf.Abs(rb.velocity.x));
+        }
+        else
+        {
+            rb.velocity = Vector2.zero;
+            animator.SetFloat("Speed", 0);
+        }
+
+        UpdateFacingDirection();
     }
 
     void AttackState()
     {
-        rb.velocity = Vector2.zero;
-        animator.SetFloat("Speed", 0);
-
+        float distance = Vector2.Distance(player.position, transform.position);
         float dir = Mathf.Sign(player.position.x - transform.position.x);
-        if ((dir > 0 && !facingRight) || (dir < 0 && facingRight))
-            Flip();
 
-        if (Time.time - lastAttackTime >= attackCooldown)
+        // Player quá gần → lùi
+        if (distance < tooCloseDistance && !isBackingUp)
         {
-            animator.SetTrigger("Attack");
-            lastAttackTime = Time.time;
-
-            // 🔥 Gây sát thương trực tiếp nếu người chơi trong phạm vi tấn công
-            float distanceToPlayer = Vector2.Distance(transform.position, player.position);
-            if (distanceToPlayer <= attackRange)
-            {
-                PlayerHealth playerHealth = player.GetComponent<PlayerHealth>();
-                if (playerHealth != null)
-                {
-                    playerHealth.TakeDamage(100);
-                    Debug.Log("🐺 Sói tấn công trúng người chơi!");
-                }
-            }
+            StartCoroutine(BackstepRoutine(-dir));
         }
+
+        // Nếu player trong range tấn công → attack animation
+        if (distance <= attackRange && Time.time - lastAttackTime >= attackCooldown)
+        {
+            lastAttackTime = Time.time;
+            animator.SetTrigger("Attack"); // animation Sói tấn công
+            PlayAttackSound();
+
+            PlayerHealth playerHealth = player.GetComponent<PlayerHealth>();
+            if (playerHealth != null)
+            {
+                playerHealth.TakeDamage(100);
+                Debug.Log("🐺 Sói tấn công trúng người chơi!");
+            }
+
+            rb.velocity = Vector2.zero; // đứng yên khi attack
+            return; // không di chuyển khi attack
+        }
+
+        // Di chuyển tiến lại nếu xa hơn khoảng cách lý tưởng
+        if (distance > idealAttackDistance && !isBackingUp)
+        {
+            rb.velocity = new Vector2(dir * chaseSpeed, rb.velocity.y);
+            animator.SetFloat("Speed", Mathf.Abs(rb.velocity.x)); // animation Sói di chuyển
+        }
+        else if (!isBackingUp)
+        {
+            rb.velocity = Vector2.zero;
+            if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
+                animator.SetFloat("Speed", 0);
+        }
+
+        UpdateFacingDirection();
+    }
+
+    IEnumerator BackstepRoutine(float dir)
+    {
+        isBackingUp = true;
+        animator.SetFloat("Speed", backstepSpeed); // animation Sói di chuyển khi lùi
+
+        float startX = transform.position.x;
+        float targetX = startX + dir * backstepDistance;
+        float t = 0;
+
+        while (t < 1f)
+        {
+            t += Time.deltaTime * backstepSpeed;
+            float newX = Mathf.Lerp(startX, targetX, t);
+            rb.MovePosition(new Vector2(newX, transform.position.y));
+            yield return null;
+        }
+
+        animator.SetFloat("Speed", 0);
+        isBackingUp = false;
     }
 
     IEnumerator WaitAndTurn()
@@ -194,7 +244,9 @@ public class WolfPatrolArea : MonoBehaviour
         isWaiting = true;
         rb.velocity = Vector2.zero;
         animator.SetFloat("Speed", 0);
+
         yield return new WaitForSeconds(waitTime);
+
         moveDirection *= -1;
         Flip();
         isWaiting = false;
@@ -205,12 +257,11 @@ public class WolfPatrolArea : MonoBehaviour
         isHowling = true;
         rb.velocity = Vector2.zero;
         animator.SetFloat("Speed", 0);
+
         animator.SetBool("IsHowling", true);
-
-        // 🔊 Xóa âm thanh hú ở đây
         yield return new WaitForSeconds(howlDuration);
-
         animator.SetBool("IsHowling", false);
+
         isHowling = false;
     }
 
@@ -222,13 +273,19 @@ public class WolfPatrolArea : MonoBehaviour
         transform.localScale = s;
     }
 
-    // 🔊 Hàm này sẽ được gọi từ Animation Event trong clip Attack
+    void UpdateFacingDirection()
+    {
+        float vx = rb.velocity.x;
+        if (vx > 0 && !facingRight)
+            Flip();
+        else if (vx < 0 && facingRight)
+            Flip();
+    }
+
     public void PlayAttackSound()
     {
         if (attackSound != null && audioSource != null)
-        {
             audioSource.PlayOneShot(attackSound, 0.7f);
-        }
     }
 
     void OnDrawGizmosSelected()
@@ -241,6 +298,7 @@ public class WolfPatrolArea : MonoBehaviour
 
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, detectRange);
+
         Gizmos.color = Color.magenta;
         Gizmos.DrawWireSphere(transform.position, attackRange);
     }

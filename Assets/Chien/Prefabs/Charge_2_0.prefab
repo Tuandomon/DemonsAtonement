@@ -123,8 +123,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lifeTime: 4
-  damage: 100
-  lightningSkill: {fileID: 8300000, guid: d62641b672d548b41a470a61766c6115, type: 3}
+  damage: 40
 --- !u!50 &-2337788694314205793
 Rigidbody2D:
   serializedVersion: 4

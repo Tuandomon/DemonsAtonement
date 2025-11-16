@@ -16,6 +16,11 @@ TagManager:
   - Enemy_Wolf
   - Lightning
   - Spirit
+  - Door2
+  - Door3
+  - Door4
+  - Wall
+  - Enemy_Boar
   layers:
   - Default
   - TransparentFX
