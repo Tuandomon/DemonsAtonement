@@ -2,47 +2,46 @@
 
 public class Bullet : MonoBehaviour
 {
-    public float maxDistance = 10f;
     public float speed = 20f;
-    public int damage = 20;
+    public float lifeTime = 3f;
+    public int damage = 10; // ✅ Sát thương gây ra
 
-    private Vector2 startPosition;
+    private float direction;
     private Rigidbody2D rb;
 
     void Start()
     {
-        startPosition = transform.position;
         rb = GetComponent<Rigidbody2D>();
+        Destroy(gameObject, lifeTime);
     }
 
-    public void SetDirection(float direction)
+    public void SetDirection(float dir)
     {
-        direction = Mathf.Sign(direction); // -1 hoặc 1
-        transform.localScale = new Vector3(direction, 1f, 1f);
+        direction = dir;
+        if (rb == null)
+            rb = GetComponent<Rigidbody2D>();
 
-        if (rb == null) rb = GetComponent<Rigidbody2D>();
-        rb.velocity = new Vector2(direction * speed, 0f);
+        rb.velocity = new Vector2(direction * speed, 0);
+        transform.localScale = new Vector3(direction, 1, 1);
     }
 
-    void Update()
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        float distanceTraveled = Vector2.Distance(transform.position, startPosition);
-        if (distanceTraveled >= maxDistance)
-        {
-            Destroy(gameObject);
-        }
-    }
-
-    void OnTriggerEnter2D(Collider2D collision)
-    {
+        // ✅ Nếu trúng Enemy
         if (collision.CompareTag("Enemy"))
         {
-            EnemyHealth enemyHealth = collision.GetComponent<EnemyHealth>();
-            if (enemyHealth != null)
+            EnemyHealth enemy = collision.GetComponent<EnemyHealth>();
+            if (enemy != null)
             {
-                enemyHealth.TakeDamage(damage);
+                enemy.TakeDamage(damage);
             }
 
+            Destroy(gameObject); // Đạn biến mất sau khi trúng
+        }
+
+        // ✅ Nếu trúng tường hoặc vật thể khác
+        if (collision.CompareTag("Wall"))
+        {
             Destroy(gameObject);
         }
     }

@@ -60,8 +60,24 @@ public class BossMagicAttack : MonoBehaviour
     public AudioClip fireballSound;
     public AudioSource audioSource;
 
-    // 🌀 Thêm danh sách quản lý toàn bộ Spirit đang tồn tại
+    // 🌀 Danh sách quản lý toàn bộ Spirit đang tồn tại
     private List<GameObject> activeSpirits = new List<GameObject>();
+
+    // 🧩 Thêm hàm Start để bỏ qua va chạm giữa Boss và Player
+    void Start()
+    {
+        if (player != null)
+        {
+            Collider2D bossCollider = GetComponent<Collider2D>();
+            Collider2D playerCollider = player.GetComponent<Collider2D>();
+
+            if (bossCollider != null && playerCollider != null)
+            {
+                // 🟢 Bỏ qua va chạm vật lý giữa Boss và Player
+                Physics2D.IgnoreCollision(bossCollider, playerCollider, true);
+            }
+        }
+    }
 
     void Update()
     {
@@ -73,16 +89,13 @@ public class BossMagicAttack : MonoBehaviour
         {
             float healthPercent = bossHealthSlider.value / bossHealthSlider.maxValue;
 
-            // 🔒 Khóa skill khi máu đầy
             if (healthPercent >= 1f) skillsLocked = true;
-            // 🔓 Mở skill khi máu <= 50%
             else if (healthPercent <= 0.5f) skillsLocked = false;
 
-            // 💀 Khi máu Boss = 0 → Hủy toàn bộ Spirit
             if (bossHealthSlider.value <= 0f)
             {
                 DestroyAllSpirits();
-                return; // Dừng Update luôn để boss không còn hoạt động
+                return;
             }
         }
 
@@ -232,7 +245,7 @@ public class BossMagicAttack : MonoBehaviour
             if (spiritPrefab != null)
             {
                 GameObject spirit = Instantiate(spiritPrefab, summonPositions[i], Quaternion.identity);
-                activeSpirits.Add(spirit); // 🌀 thêm vào danh sách để quản lý
+                activeSpirits.Add(spirit);
 
                 SpiritFollowBoss follow = spirit.AddComponent<SpiritFollowBoss>();
                 follow.boss = this.transform;
