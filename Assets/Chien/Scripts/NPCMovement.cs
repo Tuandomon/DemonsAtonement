@@ -11,7 +11,10 @@ public class NPCMovement : MonoBehaviour
     [Header("Thời gian đứng im")]
     public float minIdleTime = 1f;
     public float maxIdleTime = 3f;
-    [Range(0f, 1f)] public float idleChance = 0.02f; // tỉ lệ tạm dừng (thấp = hiếm khi đứng)
+    [Range(0f, 1f)] public float idleChance = 0.02f;
+
+    [Header("Hiệu ứng cảnh báo")]
+    public GameObject exclamationMark;   // dấu chấm than (bật/tắt)
 
     private Animator animator;
     private bool movingRight;
@@ -21,6 +24,10 @@ public class NPCMovement : MonoBehaviour
     {
         animator = GetComponent<Animator>();
 
+        // Ẩn dấu chấm than lúc khởi động
+        if (exclamationMark != null)
+            exclamationMark.SetActive(false);
+
         if (leftPoint == null || rightPoint == null)
         {
             Debug.LogWarning($"{name} chưa gán LeftPoint hoặc RightPoint!");
@@ -28,7 +35,6 @@ public class NPCMovement : MonoBehaviour
             return;
         }
 
-        // Ngẫu nhiên hướng ban đầu
         movingRight = Random.value > 0.5f;
         UpdateFacingDirection();
     }
@@ -39,7 +45,6 @@ public class NPCMovement : MonoBehaviour
 
         Move();
 
-        // Thỉnh thoảng tạm dừng 1 chút
         if (Random.value < idleChance * Time.deltaTime)
         {
             StartCoroutine(IdleRoutine());
@@ -54,7 +59,6 @@ public class NPCMovement : MonoBehaviour
 
         animator.SetFloat("Speed", Mathf.Abs(moveSpeed));
 
-        // Kiểm tra và đảo hướng khi đến giới hạn
         if (movingRight && transform.position.x >= rightPoint.position.x)
         {
             transform.position = new Vector3(rightPoint.position.x, transform.position.y, transform.position.z);
@@ -77,7 +81,6 @@ public class NPCMovement : MonoBehaviour
 
         yield return new WaitForSeconds(Random.Range(minIdleTime, maxIdleTime));
 
-        // Đôi khi đổi hướng khi dừng
         if (Random.value > 0.5f)
         {
             movingRight = !movingRight;
@@ -90,11 +93,28 @@ public class NPCMovement : MonoBehaviour
 
     void UpdateFacingDirection()
     {
-        // Xoay NPC bằng rotation Y
         transform.rotation = Quaternion.Euler(0, movingRight ? -180 : 0, 0);
     }
 
-    // Vẽ phạm vi trong Scene để dễ kiểm tra
+    // ⚠️ Khi Player chạm vào vùng Trigger của NPC → hiện dấu chấm than
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Player") && exclamationMark != null)
+        {
+            exclamationMark.SetActive(true);
+        }
+    }
+
+    // ⚠️ Khi Player rời khỏi → tắt dấu chấm than
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.CompareTag("Player") && exclamationMark != null)
+        {
+            exclamationMark.SetActive(false);
+        }
+    }
+
+    // Gizmo
     void OnDrawGizmosSelected()
     {
         if (leftPoint != null && rightPoint != null)

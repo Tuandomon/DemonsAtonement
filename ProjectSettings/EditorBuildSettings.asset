@@ -8,4 +8,22 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SampleScene.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Map/Wecom.unity
+    guid: 1412b19b79aaf464a83be1c9e10008cd
+  - enabled: 1
+    path: Assets/Map/Map 1.unity
+    guid: fcba87a7b29af734db7770eba5b8e345
+  - enabled: 1
+    path: Assets/Map/Man_1.unity
+    guid: aa45099434c6e4a4a886b53013b1052a
+  - enabled: 1
+    path: Assets/Map/Map2.unity
+    guid: cf366ff621953fa4881404d9eff11bd7
+  - enabled: 1
+    path: Assets/Map/Map Hang.unity
+    guid: 4d9eadcb37ed8f64f81fbd2004fdfd05
+  - enabled: 1
+    path: Assets/Map/Boss1.unity
+    guid: 01784d32d8d067641883c4b9265d905b
   m_configObjects: {}
