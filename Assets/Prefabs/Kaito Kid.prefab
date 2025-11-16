@@ -763,8 +763,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad9d301d385367c418441ed9c68294aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  normalBulletPrefab: {fileID: 0}
-  buffedBulletPrefab: {fileID: 0}
+  normalBulletPrefab: {fileID: 8509040744687437586, guid: 769dbeec099b2514f93103ada7c67fcc, type: 3}
+  buffedBulletPrefab: {fileID: 8764043878647920493, guid: c4ed38c72957f2241ad144a1614956d9, type: 3}
   firePoint: {fileID: 8586308582791742117}
   bulletSpeed: 20
   shootCooldown: 2
