@@ -951,6 +951,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DarkEffect
       objectReference: {fileID: 0}
+    - target: {fileID: 5945917263455667049, guid: f1bae04970cf7454a9dff9a8f2361f77, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
