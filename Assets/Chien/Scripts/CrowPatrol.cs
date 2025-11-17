@@ -25,9 +25,9 @@ public class CrowPatrol : MonoBehaviour
     [Header("Attack Settings")]
     public int damage = 20;
     public AudioClip crowAttackSound;
-    public float attackCooldown = 3f;       // dừng 3 giây giữa các lần tấn công
+    public float attackCooldown = 3f;
     private AudioSource audioSource;
-    private float lastAttackTime = -Mathf.Infinity; // thời gian tấn công lần cuối
+    private float lastAttackTime = -Mathf.Infinity;
 
     [Header("Animation")]
     public Animator animator;
@@ -39,7 +39,9 @@ public class CrowPatrol : MonoBehaviour
     private bool isChasing = false;
     private bool lockYPosition = false;
     private float lockedYPosition;
+
     private bool returningToPatrol = false;
+    private float returnSpeed = 3f;
 
     void Start()
     {
@@ -48,10 +50,7 @@ public class CrowPatrol : MonoBehaviour
         initialHeight = transform.position.y;
 
         audioSource = GetComponent<AudioSource>();
-        if (audioSource == null)
-        {
-            audioSource = gameObject.AddComponent<AudioSource>();
-        }
+        if (audioSource == null) audioSource = gameObject.AddComponent<AudioSource>();
 
         if (leftPoint != null && rightPoint != null)
         {
@@ -63,33 +62,32 @@ public class CrowPatrol : MonoBehaviour
 
     void Update()
     {
-        if (returningToPatrol) return;
+        if (returningToPatrol)
+        {
+            ReturnToPatrolArea();
+            return;
+        }
 
         if (player == null || playerCheckPoint == null)
         {
-            Patrol();
+            PatrolWithHover();
             return;
         }
 
+        // Kiểm tra player nằm trong phạm vi Left-Right
+        bool playerInPatrolRange = IsWithinPatrolBounds(player.position.x);
         float distanceToPlayer = Vector2.Distance(transform.position, player.position);
 
-        // Nếu player ra ngoài patrol → bắt đầu quay về patrol
-        if (!IsWithinPatrolBounds())
+        // Nếu player chưa vào phạm vi → chỉ tuần tra
+        if (!playerInPatrolRange)
         {
-            if (!returningToPatrol)
-            {
-                StartCoroutine(ReturnToPatrol());
-            }
+            isChasing = false;
+            lockYPosition = false;
+            PatrolWithHover();
             return;
         }
 
-        // Nếu player cao hơn hoặc thấp hơn Y đã lock → mở khóa để quạ bay tới Y mới
-        if (lockYPosition && Mathf.Abs(playerCheckPoint.position.y - lockedYPosition) > 0.01f)
-        {
-            lockYPosition = false;
-        }
-
-        // Player vào attackRange → tấn công, khóa Y nhưng chỉ attack sau cooldown
+        // Player trong attackRange → tấn công
         if (distanceToPlayer <= attackRange)
         {
             isChasing = true;
@@ -102,46 +100,29 @@ public class CrowPatrol : MonoBehaviour
             if (Time.time - lastAttackTime >= attackCooldown)
             {
                 animator?.Play("Qua tan cong");
-                lastAttackTime = Time.time; // cập nhật thời gian tấn công mới
+                lastAttackTime = Time.time;
                 DealDamage();
             }
         }
-        // Player trong detectionRange → chase nhưng chưa vào attackRange
+        // Player trong detectionRange → chase
         else if (distanceToPlayer <= detectionRange)
         {
             isChasing = true;
             if (!lockYPosition)
-            {
                 ChasePlayer();
-            }
             else
-            {
                 ChasePlayerLockedY();
-            }
         }
         else
         {
             isChasing = false;
             lockYPosition = false;
-            Patrol();
+            PatrolWithHover();
         }
     }
 
-    void DealDamage()
-    {
-        var playerHealth = player.GetComponent<PlayerHealth>();
-        if (playerHealth != null)
-        {
-            playerHealth.TakeDamage(damage);
-        }
-
-        if (crowAttackSound != null && audioSource != null)
-        {
-            audioSource.PlayOneShot(crowAttackSound);
-        }
-    }
-
-    void Patrol()
+    // --- Patrol nhưng vừa di chuyển vừa bay lên xuống ---
+    void PatrolWithHover()
     {
         if (isWaiting || leftPoint == null || rightPoint == null)
         {
@@ -152,7 +133,10 @@ public class CrowPatrol : MonoBehaviour
         Vector3 move = new Vector3(moveDirection * moveSpeed * Time.deltaTime, 0, 0);
         transform.position += move;
 
-        float newY = initialHeight + Mathf.Sin(Time.time * floatFrequency) * floatAmplitude;
+        float newY = Mathf.MoveTowards(transform.position.y,
+            initialHeight + Mathf.Sin(Time.time * floatFrequency) * floatAmplitude,
+            descendSpeed * Time.deltaTime);
+
         transform.position = new Vector3(transform.position.x, newY, transform.position.z);
 
         animator?.Play("Qua di chuyen");
@@ -162,6 +146,37 @@ public class CrowPatrol : MonoBehaviour
             StartCoroutine(WaitAndTurn());
         else if (moveDirection < 0 && transform.position.x <= leftPoint.position.x)
             StartCoroutine(WaitAndTurn());
+    }
+
+    void ReturnToPatrolArea()
+    {
+        float centerX = (leftPoint.position.x + rightPoint.position.x) * 0.5f;
+
+        float newX = Mathf.MoveTowards(transform.position.x, centerX, returnSpeed * Time.deltaTime);
+
+        float targetY = initialHeight + Mathf.Sin(Time.time * floatFrequency) * floatAmplitude;
+        float newY = Mathf.MoveTowards(transform.position.y, targetY, descendSpeed * Time.deltaTime);
+
+        transform.position = new Vector3(newX, newY, transform.position.z);
+
+        animator?.Play("Qua di chuyen");
+        FaceDirection(centerX - transform.position.x);
+
+        if (Mathf.Abs(transform.position.x - centerX) < 0.01f)
+        {
+            returningToPatrol = false;
+            PatrolWithHover();
+        }
+    }
+
+    void DealDamage()
+    {
+        var playerHealth = player.GetComponent<PlayerHealth>();
+        if (playerHealth != null)
+            playerHealth.TakeDamage(damage);
+
+        if (crowAttackSound != null && audioSource != null)
+            audioSource.PlayOneShot(crowAttackSound);
     }
 
     void ChasePlayer()
@@ -188,33 +203,6 @@ public class CrowPatrol : MonoBehaviour
         FaceDirection(dir.x);
     }
 
-    IEnumerator ReturnToPatrol()
-    {
-        returningToPatrol = true;
-        isChasing = false;
-        lockYPosition = false;
-
-        animator?.SetFloat("Speed", 0);
-        yield return new WaitForSeconds(2f);
-
-        while (Mathf.Abs(transform.position.y - initialHeight) > 0.01f)
-        {
-            float newY = Mathf.MoveTowards(transform.position.y, initialHeight, descendSpeed * Time.deltaTime);
-            transform.position = new Vector3(transform.position.x, newY, transform.position.z);
-            animator?.Play("Qua di chuyen");
-            yield return null;
-        }
-
-        returningToPatrol = false;
-        Patrol();
-    }
-
-    bool IsWithinPatrolBounds()
-    {
-        if (leftPoint == null || rightPoint == null) return true;
-        return transform.position.x >= leftPoint.position.x && transform.position.x <= rightPoint.position.x;
-    }
-
     IEnumerator WaitAndTurn()
     {
         isWaiting = true;
@@ -237,6 +225,18 @@ public class CrowPatrol : MonoBehaviour
             transform.rotation = Quaternion.Euler(0, 0, 0);
             facingRight = false;
         }
+    }
+
+    bool IsWithinPatrolBounds()
+    {
+        if (leftPoint == null || rightPoint == null) return true;
+        return transform.position.x >= leftPoint.position.x && transform.position.x <= rightPoint.position.x;
+    }
+
+    bool IsWithinPatrolBounds(float xPos)
+    {
+        if (leftPoint == null || rightPoint == null) return true;
+        return xPos >= leftPoint.position.x && xPos <= rightPoint.position.x;
     }
 
     void OnDrawGizmosSelected()

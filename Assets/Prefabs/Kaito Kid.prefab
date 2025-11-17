@@ -90,7 +90,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f31556ed789366043a73b8ac8c3b7912, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 10
+  baseDamage: 10
 --- !u!1 &3088130585094352437
 GameObject:
   m_ObjectHideFlags: 0
@@ -212,7 +212,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f31556ed789366043a73b8ac8c3b7912, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 10
+  baseDamage: 10
 --- !u!1 &5663832589427900214
 GameObject:
   m_ObjectHideFlags: 0
@@ -303,7 +303,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17f0594543c144b4d868ba62559a1d6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 10
+  baseDamage: 10
 --- !u!1 &6145097906436486970
 GameObject:
   m_ObjectHideFlags: 0
@@ -456,7 +456,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17f0594543c144b4d868ba62559a1d6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 10
+  baseDamage: 10
 --- !u!1 &8385089636014069269
 GameObject:
   m_ObjectHideFlags: 0
@@ -505,6 +505,7 @@ Transform:
   - {fileID: 263629038113405506}
   - {fileID: 8517272303378945678}
   - {fileID: 1407905111700616830}
+  - {fileID: 696308153001661038}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &7797381423073600442
@@ -762,10 +763,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad9d301d385367c418441ed9c68294aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bulletPrefab: {fileID: 8509040744687437586, guid: 769dbeec099b2514f93103ada7c67fcc, type: 3}
+  normalBulletPrefab: {fileID: 8509040744687437586, guid: 769dbeec099b2514f93103ada7c67fcc, type: 3}
+  buffedBulletPrefab: {fileID: 8764043878647920493, guid: c4ed38c72957f2241ad144a1614956d9, type: 3}
   firePoint: {fileID: 8586308582791742117}
   bulletSpeed: 20
   shootCooldown: 2
+  isBuffed: 0
 --- !u!114 &5595126428760096320
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -896,3 +899,69 @@ MonoBehaviour:
   comboWindow: 1
   attackSound1: {fileID: 8300000, guid: 8169de52db1cc1841bb16fb70c5b9625, type: 3}
   attackSound2: {fileID: 8300000, guid: 63563fd013a7bcb428bb332ef4167492, type: 3}
+--- !u!1001 &4171543064251019245
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 9063983272750874712}
+    m_Modifications:
+    - target: {fileID: 3480584063775047043, guid: f1bae04970cf7454a9dff9a8f2361f77, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.08
+      objectReference: {fileID: 0}
+    - target: {fileID: 3480584063775047043, guid: f1bae04970cf7454a9dff9a8f2361f77, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.02
+      objectReference: {fileID: 0}
+    - target: {fileID: 3480584063775047043, guid: f1bae04970cf7454a9dff9a8f2361f77, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3480584063775047043, guid: f1bae04970cf7454a9dff9a8f2361f77, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3480584063775047043, guid: f1bae04970cf7454a9dff9a8f2361f77, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3480584063775047043, guid: f1bae04970cf7454a9dff9a8f2361f77, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3480584063775047043, guid: f1bae04970cf7454a9dff9a8f2361f77, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3480584063775047043, guid: f1bae04970cf7454a9dff9a8f2361f77, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3480584063775047043, guid: f1bae04970cf7454a9dff9a8f2361f77, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3480584063775047043, guid: f1bae04970cf7454a9dff9a8f2361f77, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5945917263455667049, guid: f1bae04970cf7454a9dff9a8f2361f77, type: 3}
+      propertyPath: m_Name
+      value: DarkEffect
+      objectReference: {fileID: 0}
+    - target: {fileID: 5945917263455667049, guid: f1bae04970cf7454a9dff9a8f2361f77, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f1bae04970cf7454a9dff9a8f2361f77, type: 3}
+--- !u!4 &696308153001661038 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3480584063775047043, guid: f1bae04970cf7454a9dff9a8f2361f77, type: 3}
+  m_PrefabInstance: {fileID: 4171543064251019245}
+  m_PrefabAsset: {fileID: 0}
