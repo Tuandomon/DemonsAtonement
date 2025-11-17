@@ -477,6 +477,7 @@ GameObject:
   - component: {fileID: 3729511954100794300}
   - component: {fileID: 5595126428760096320}
   - component: {fileID: 4154872490985558689}
+  - component: {fileID: 3270935678630968943}
   - component: {fileID: 2060726928173451157}
   m_Layer: 3
   m_Name: Kaito Kid
@@ -884,6 +885,22 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &3270935678630968943
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8385089636014069269}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37cbadabcad5dad49883744f3814ad0b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxPotionCount: 5
+  currentPotionCount: 0
+  healAmountPerPotion: 30
+  potionCountText: {fileID: 0}
 --- !u!114 &2060726928173451157
 MonoBehaviour:
   m_ObjectHideFlags: 0
