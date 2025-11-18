@@ -43,12 +43,12 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 16
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -108,7 +108,1183 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_0
+      rect:
+        serializedVersion: 2
+        x: 107
+        y: 0
+        width: 46
+        height: 96
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 367f1ca3aa1f6fd4eb06ff9dbfb1e989
+      internalID: 1706208624
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_1
+      rect:
+        serializedVersion: 2
+        x: 299
+        y: 0
+        width: 47
+        height: 96
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c9daee2b7f4e91f40b15f6dd8c8ded5d
+      internalID: 1226771179
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_2
+      rect:
+        serializedVersion: 2
+        x: 491
+        y: 0
+        width: 47
+        height: 96
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f67cb10f732ea714b81803ce51817b9d
+      internalID: -2038304042
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_3
+      rect:
+        serializedVersion: 2
+        x: 683
+        y: 0
+        width: 47
+        height: 96
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6d6ab59fefdbf874abc06d8e05c7347a
+      internalID: -228097790
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_4
+      rect:
+        serializedVersion: 2
+        x: 875
+        y: 0
+        width: 47
+        height: 96
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b40e419a35ee8224a94d09433a2aa4cc
+      internalID: -1914662691
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_5
+      rect:
+        serializedVersion: 2
+        x: 1068
+        y: 0
+        width: 46
+        height: 96
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7c15050fa2a313748877de0829f8a99b
+      internalID: 159217251
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_6
+      rect:
+        serializedVersion: 2
+        x: 1260
+        y: 0
+        width: 46
+        height: 96
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a41e041edf10b6541aef62997dd1e47e
+      internalID: -750731971
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_7
+      rect:
+        serializedVersion: 2
+        x: 1452
+        y: 0
+        width: 46
+        height: 96
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 73e627794078a1248a3b669668a5b767
+      internalID: -202303191
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_8
+      rect:
+        serializedVersion: 2
+        x: 1635
+        y: 0
+        width: 54
+        height: 96
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 286c2d64e19cbbf449ec0ae9590ef8ae
+      internalID: -87753419
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_9
+      rect:
+        serializedVersion: 2
+        x: 1796
+        y: 34
+        width: 85
+        height: 62
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d24736acad77036409e0f31f8a0b23a4
+      internalID: -1473159277
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_10
+      rect:
+        serializedVersion: 2
+        x: 2029
+        y: 0
+        width: 44
+        height: 96
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5e17510327b86104887fafa029dd6d8d
+      internalID: -121273311
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_11
+      rect:
+        serializedVersion: 2
+        x: 2228
+        y: 41
+        width: 422
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b2ba9815fee6ecf4c91e2b855529493a
+      internalID: -1899949447
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_12
+      rect:
+        serializedVersion: 2
+        x: 2722
+        y: 48
+        width: 120
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b8eb9cafe036b714dba9ad79e8478048
+      internalID: -764305282
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_13
+      rect:
+        serializedVersion: 2
+        x: 2905
+        y: 39
+        width: 129
+        height: 57
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9e4ad0aa212599c4d985436bf52ad7b6
+      internalID: -1357142383
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_14
+      rect:
+        serializedVersion: 2
+        x: 3189
+        y: 27
+        width: 229
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cb50c76f7267d4d46b683b568930d2fe
+      internalID: -445194787
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_15
+      rect:
+        serializedVersion: 2
+        x: 3463
+        y: 41
+        width: 147
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 41f9071c444e4bf46b34872868c384af
+      internalID: 71183352
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_16
+      rect:
+        serializedVersion: 2
+        x: 3654
+        y: 41
+        width: 148
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0c8c407a38f1fac4d940503147e38574
+      internalID: -1786053562
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_17
+      rect:
+        serializedVersion: 2
+        x: 3845
+        y: 0
+        width: 148
+        height: 96
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7df5223689b750742a6775fea34033f3
+      internalID: -1487067573
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_18
+      rect:
+        serializedVersion: 2
+        x: 3861
+        y: 74
+        width: 24
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 46cf5b12fddd38542a9ae599b5501a88
+      internalID: -1613795502
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_19
+      rect:
+        serializedVersion: 2
+        x: 3890
+        y: 74
+        width: 23
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 318903d59bd56724f9ef230f6eea6bb5
+      internalID: 1057112243
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_20
+      rect:
+        serializedVersion: 2
+        x: 4036
+        y: 43
+        width: 149
+        height: 53
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f4a95a6dd82b39b4f920fa002ad3a075
+      internalID: -631285449
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_21
+      rect:
+        serializedVersion: 2
+        x: 4054
+        y: 81
+        width: 16
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 41b28d1a5be678e47bc5bf45e8066b06
+      internalID: 515289036
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_22
+      rect:
+        serializedVersion: 2
+        x: 4092
+        y: 83
+        width: 14
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 560b33abd793e7e41af99668ff7bf4ab
+      internalID: 1426368598
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_23
+      rect:
+        serializedVersion: 2
+        x: 4229
+        y: 55
+        width: 148
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fc455908d4c3c42448694c7764586933
+      internalID: 1709505164
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_24
+      rect:
+        serializedVersion: 2
+        x: 4422
+        y: 57
+        width: 147
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bdabebf20df78e04a8372e05f7edaebd
+      internalID: -771129718
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_25
+      rect:
+        serializedVersion: 2
+        x: 4614
+        y: 62
+        width: 147
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6bbd38a967627054a8ff10ebfbb8728b
+      internalID: 365233669
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_26
+      rect:
+        serializedVersion: 2
+        x: 3095
+        y: 58
+        width: 22
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d8f1f1ff942e0d84994a4f6f5bf2de20
+      internalID: 1685543824
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_27
+      rect:
+        serializedVersion: 2
+        x: 3122
+        y: 60
+        width: 22
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 96849ceddceee0c42b5a14bd7b1c607f
+      internalID: 2052375477
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_28
+      rect:
+        serializedVersion: 2
+        x: 1956
+        y: 20
+        width: 28
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d9071b54b422ed848a97a9a7d5d30718
+      internalID: -519223577
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_29
+      rect:
+        serializedVersion: 2
+        x: 2139
+        y: 8
+        width: 42
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a29dc4e9836377a4b8249099189f861c
+      internalID: -275555580
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_30
+      rect:
+        serializedVersion: 2
+        x: 2218
+        y: 0
+        width: 47
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6b95e2f0ec80aee40aa3e785ae917a5f
+      internalID: 1583045050
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_31
+      rect:
+        serializedVersion: 2
+        x: 2326
+        y: 29
+        width: 23
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b5ce4264870c7074582bb230d85155ae
+      internalID: -1191797845
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_32
+      rect:
+        serializedVersion: 2
+        x: 2354
+        y: 32
+        width: 24
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b49ada2bb5a1aec4cb312f3d32feb0d5
+      internalID: -329764485
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_33
+      rect:
+        serializedVersion: 2
+        x: 2399
+        y: 32
+        width: 18
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bdd9cfc623844844b93a2d90c5233842
+      internalID: 605224694
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_34
+      rect:
+        serializedVersion: 2
+        x: 2516
+        y: 36
+        width: 19
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 665e57ff6c4c2044abe45603da0ed168
+      internalID: -1594025881
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_35
+      rect:
+        serializedVersion: 2
+        x: 2987
+        y: 0
+        width: 47
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d7b5d2163d04f464f8d59367a580cb71
+      internalID: 1960367731
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_36
+      rect:
+        serializedVersion: 2
+        x: 3079
+        y: 15
+        width: 84
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 48d1765cfb871544a8a8fe1bea756eda
+      internalID: 150977007
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_37
+      rect:
+        serializedVersion: 2
+        x: 3165
+        y: 34
+        width: 19
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cecbfda642e3d2145960f83f08d678d1
+      internalID: -1759764087
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_38
+      rect:
+        serializedVersion: 2
+        x: 3756
+        y: 0
+        width: 46
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 28adcd9935f5ead4190bfa2bb499e2b1
+      internalID: 1979305887
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_39
+      rect:
+        serializedVersion: 2
+        x: 3948
+        y: 0
+        width: 46
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4cbe60d0f1cc2204398a7c453cb87783
+      internalID: -351525105
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_40
+      rect:
+        serializedVersion: 2
+        x: 4059
+        y: 0
+        width: 126
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: acb6d1ff9c752e24c802dd40e0053b4e
+      internalID: -1409829207
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_41
+      rect:
+        serializedVersion: 2
+        x: 4330
+        y: 0
+        width: 47
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 177dcb41247d917439fac68746726849
+      internalID: -851539580
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_42
+      rect:
+        serializedVersion: 2
+        x: 4522
+        y: 0
+        width: 47
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e454e92ec0ea62c4b9a887d99b4a9533
+      internalID: -1137576148
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_43
+      rect:
+        serializedVersion: 2
+        x: 4715
+        y: 0
+        width: 46
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 12119cf748d68ff4089d90dd5e0cbca5
+      internalID: 591558132
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_44
+      rect:
+        serializedVersion: 2
+        x: 1839
+        y: 0
+        width: 42
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e86d6c4a3f92bf5408afc9173aa2c740
+      internalID: -2071494354
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_45
+      rect:
+        serializedVersion: 2
+        x: 2317
+        y: 0
+        width: 20
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 58b8cfae83bf3974c940c66a95828f6e
+      internalID: 1401620796
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_46
+      rect:
+        serializedVersion: 2
+        x: 2338
+        y: 0
+        width: 47
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8f7dbb109ead850459a33acf77531755
+      internalID: -717318145
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_47
+      rect:
+        serializedVersion: 2
+        x: 2415
+        y: 0
+        width: 42
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0a3171b0a2a8a964ea86835c8d9b3d02
+      internalID: -594475548
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_48
+      rect:
+        serializedVersion: 2
+        x: 2500
+        y: 0
+        width: 89
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 037c8b634c4d4bc4092bdccff51fdba6
+      internalID: -310938501
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_49
+      rect:
+        serializedVersion: 2
+        x: 2605
+        y: 0
+        width: 45
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 63e0a3e31eb91984698049c6dcabf94a
+      internalID: -309618612
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_50
+      rect:
+        serializedVersion: 2
+        x: 2694
+        y: 11
+        width: 85
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 43d8071832f1cfe418f72684bd0a5c02
+      internalID: -833883447
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_51
+      rect:
+        serializedVersion: 2
+        x: 2796
+        y: 0
+        width: 46
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7fb9a13e1fa191d4ab611f6cf956939b
+      internalID: -1407640329
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_52
+      rect:
+        serializedVersion: 2
+        x: 2886
+        y: 13
+        width: 85
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 355f39da1dcc09f46a97e8b694dd0480
+      internalID: -717580895
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_53
+      rect:
+        serializedVersion: 2
+        x: 3184
+        y: 0
+        width: 42
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a7befc4ae8badc84f9b1c48a243d85b6
+      internalID: 30371125
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_54
+      rect:
+        serializedVersion: 2
+        x: 3374
+        y: 0
+        width: 44
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 88ef833a243df7e4ca6bb0249f81e649
+      internalID: 1502170447
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Thrower Trap - Level 3_55
+      rect:
+        serializedVersion: 2
+        x: 3564
+        y: 0
+        width: 46
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9aa9e90953f929642b14f3205f86d152
+      internalID: 103754783
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -119,7 +1295,64 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Fire Thrower Trap - Level 3_0: 1706208624
+      Fire Thrower Trap - Level 3_1: 1226771179
+      Fire Thrower Trap - Level 3_10: -121273311
+      Fire Thrower Trap - Level 3_11: -1899949447
+      Fire Thrower Trap - Level 3_12: -764305282
+      Fire Thrower Trap - Level 3_13: -1357142383
+      Fire Thrower Trap - Level 3_14: -445194787
+      Fire Thrower Trap - Level 3_15: 71183352
+      Fire Thrower Trap - Level 3_16: -1786053562
+      Fire Thrower Trap - Level 3_17: -1487067573
+      Fire Thrower Trap - Level 3_18: -1613795502
+      Fire Thrower Trap - Level 3_19: 1057112243
+      Fire Thrower Trap - Level 3_2: -2038304042
+      Fire Thrower Trap - Level 3_20: -631285449
+      Fire Thrower Trap - Level 3_21: 515289036
+      Fire Thrower Trap - Level 3_22: 1426368598
+      Fire Thrower Trap - Level 3_23: 1709505164
+      Fire Thrower Trap - Level 3_24: -771129718
+      Fire Thrower Trap - Level 3_25: 365233669
+      Fire Thrower Trap - Level 3_26: 1685543824
+      Fire Thrower Trap - Level 3_27: 2052375477
+      Fire Thrower Trap - Level 3_28: -519223577
+      Fire Thrower Trap - Level 3_29: -275555580
+      Fire Thrower Trap - Level 3_3: -228097790
+      Fire Thrower Trap - Level 3_30: 1583045050
+      Fire Thrower Trap - Level 3_31: -1191797845
+      Fire Thrower Trap - Level 3_32: -329764485
+      Fire Thrower Trap - Level 3_33: 605224694
+      Fire Thrower Trap - Level 3_34: -1594025881
+      Fire Thrower Trap - Level 3_35: 1960367731
+      Fire Thrower Trap - Level 3_36: 150977007
+      Fire Thrower Trap - Level 3_37: -1759764087
+      Fire Thrower Trap - Level 3_38: 1979305887
+      Fire Thrower Trap - Level 3_39: -351525105
+      Fire Thrower Trap - Level 3_4: -1914662691
+      Fire Thrower Trap - Level 3_40: -1409829207
+      Fire Thrower Trap - Level 3_41: -851539580
+      Fire Thrower Trap - Level 3_42: -1137576148
+      Fire Thrower Trap - Level 3_43: 591558132
+      Fire Thrower Trap - Level 3_44: -2071494354
+      Fire Thrower Trap - Level 3_45: 1401620796
+      Fire Thrower Trap - Level 3_46: -717318145
+      Fire Thrower Trap - Level 3_47: -594475548
+      Fire Thrower Trap - Level 3_48: -310938501
+      Fire Thrower Trap - Level 3_49: -309618612
+      Fire Thrower Trap - Level 3_5: 159217251
+      Fire Thrower Trap - Level 3_50: -833883447
+      Fire Thrower Trap - Level 3_51: -1407640329
+      Fire Thrower Trap - Level 3_52: -717580895
+      Fire Thrower Trap - Level 3_53: 30371125
+      Fire Thrower Trap - Level 3_54: 1502170447
+      Fire Thrower Trap - Level 3_55: 103754783
+      Fire Thrower Trap - Level 3_56: -1294692192
+      Fire Thrower Trap - Level 3_6: -750731971
+      Fire Thrower Trap - Level 3_7: -202303191
+      Fire Thrower Trap - Level 3_8: -87753419
+      Fire Thrower Trap - Level 3_9: -1473159277
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

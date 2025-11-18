@@ -43,12 +43,12 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 16
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -108,7 +108,238 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: Fire Breather Trap - Level 1_13
+      rect:
+        serializedVersion: 2
+        x: 704
+        y: 0
+        width: 40
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8c5089e34184c17458244fe4aa4e9f0f
+      internalID: 1537186527
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Breather Trap - Level 1_16
+      rect:
+        serializedVersion: 2
+        x: 616
+        y: 0
+        width: 32
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0862f66ecfc06424abf1a3a35dc3185b
+      internalID: 235496619
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Breather Trap - Level 1_18
+      rect:
+        serializedVersion: 2
+        x: 44
+        y: 0
+        width: 28
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c14f34dbd929c3c46b20937a2c0a4db3
+      internalID: 79244749
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Breather Trap - Level 1_19
+      rect:
+        serializedVersion: 2
+        x: 140
+        y: 0
+        width: 28
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 77f528b0cdfc55e459e7e47ddb310bed
+      internalID: 1275323611
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Breather Trap - Level 1_20
+      rect:
+        serializedVersion: 2
+        x: 236
+        y: 0
+        width: 28
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d8f4ad15630dc484c97825f8cf42fc0c
+      internalID: -2053608513
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Breather Trap - Level 1_21
+      rect:
+        serializedVersion: 2
+        x: 332
+        y: 0
+        width: 28
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9fd4a6939a03f3b4d95493f4dd16fe9a
+      internalID: -1697382192
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Breather Trap - Level 1_22
+      rect:
+        serializedVersion: 2
+        x: 428
+        y: 0
+        width: 28
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1e62455fe194f9347b776a5e4f0b93dd
+      internalID: -185766892
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Breather Trap - Level 1_23
+      rect:
+        serializedVersion: 2
+        x: 524
+        y: 0
+        width: 28
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7c409d5d0058e7e4fa11c9e3a5b8fb57
+      internalID: -382781590
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Breather Trap - Level 1_24
+      rect:
+        serializedVersion: 2
+        x: 791
+        y: 0
+        width: 49
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d76f71921b5d42542aab80e239eb4276
+      internalID: 123826545
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Breather Trap - Level 1_25
+      rect:
+        serializedVersion: 2
+        x: 884
+        y: 0
+        width: 52
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e7feae7e0aeebd747ab1afd6f72961d4
+      internalID: -920152982
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fire Breather Trap - Level 1_26
+      rect:
+        serializedVersion: 2
+        x: 978
+        y: 0
+        width: 54
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b84ed80d1c09ec741927431489e5842e
+      internalID: -134971869
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -119,7 +350,34 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Fire Breather Trap - Level 1_0: 515288954
+      Fire Breather Trap - Level 1_1: 49909328
+      Fire Breather Trap - Level 1_10: 197349519
+      Fire Breather Trap - Level 1_11: -787390502
+      Fire Breather Trap - Level 1_12: 1936667864
+      Fire Breather Trap - Level 1_13: 1537186527
+      Fire Breather Trap - Level 1_14: 1415156754
+      Fire Breather Trap - Level 1_15: 2022622093
+      Fire Breather Trap - Level 1_16: 235496619
+      Fire Breather Trap - Level 1_17: -2094916078
+      Fire Breather Trap - Level 1_18: 79244749
+      Fire Breather Trap - Level 1_19: 1275323611
+      Fire Breather Trap - Level 1_2: -1857586579
+      Fire Breather Trap - Level 1_20: -2053608513
+      Fire Breather Trap - Level 1_21: -1697382192
+      Fire Breather Trap - Level 1_22: -185766892
+      Fire Breather Trap - Level 1_23: -382781590
+      Fire Breather Trap - Level 1_24: 123826545
+      Fire Breather Trap - Level 1_25: -920152982
+      Fire Breather Trap - Level 1_26: -134971869
+      Fire Breather Trap - Level 1_3: -1727702570
+      Fire Breather Trap - Level 1_4: 1649087894
+      Fire Breather Trap - Level 1_5: 672015740
+      Fire Breather Trap - Level 1_6: -438852256
+      Fire Breather Trap - Level 1_7: -1387588188
+      Fire Breather Trap - Level 1_8: 863837204
+      Fire Breather Trap - Level 1_9: 92592094
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
