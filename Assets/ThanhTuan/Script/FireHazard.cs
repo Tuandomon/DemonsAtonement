@@ -3,35 +3,24 @@
 public class FireHazard : MonoBehaviour
 {
     [Header("Damage Settings")]
-    public int damagePerSecond = 100;
+    // Đổi tên để phản ánh sát thương mỗi frame (nên đặt giá trị nhỏ)
+    public int damagePerHit = 5;
     public string targetTag = "Player";
 
-    private float nextDamageTime;
+    // Loại bỏ biến private float nextDamageTime;
+    // Loại bỏ hàm OnTriggerEnter2D
+
     private void OnTriggerStay2D(Collider2D other)
     {
-
         if (other.CompareTag(targetTag))
         {
+            PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
 
-            if (Time.time >= nextDamageTime)
+            if (playerHealth != null)
             {
-
-                PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
-
-                if (playerHealth != null)
-                {
-                    // Gây sát thương
-                    playerHealth.TakeDamage(damagePerSecond);
-                }
-                nextDamageTime = Time.time + 1f;
+                // Gây sát thương ngay lập tức mỗi frame
+                playerHealth.TakeDamage(damagePerHit);
             }
-        }
-    }
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.CompareTag(targetTag))
-        {
-            nextDamageTime = Time.time;
         }
     }
 }

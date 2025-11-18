@@ -146,7 +146,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7680a547fe164e84a9ff503bd128e74e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damagePerSecond: 5
+  damagePerHit: 2
   targetTag: Player
 --- !u!95 &2139118601176276763
 Animator:

@@ -2,6 +2,11 @@
 
 public class HealPotionItem : MonoBehaviour
 {
+    [Header("Audio Settings")]
+    public AudioClip pickupSound;
+    [Range(0f, 1f)]
+    public float volume = 1f;
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
@@ -12,6 +17,11 @@ public class HealPotionItem : MonoBehaviour
             {
                 if (playerInventory.AddPotion())
                 {
+                    if (pickupSound != null)
+                    {
+                        AudioSource.PlayClipAtPoint(pickupSound, transform.position, volume);
+                    }
+
                     Destroy(gameObject);
                 }
             }
@@ -20,10 +30,10 @@ public class HealPotionItem : MonoBehaviour
 
     void Start()
     {
-        Collider2D collider = GetComponent<Collider2D>();
-        if (collider != null && !collider.isTrigger)
+        Collider2D col = GetComponent<Collider2D>();
+        if (col != null && !col.isTrigger)
         {
-            Debug.LogWarning("HealPotionItem cần Collider2D được đặt là Is Trigger!");
+            Debug.LogWarning("HealPotionItem Collider2D needs to be Is Trigger!");
         }
     }
 }
