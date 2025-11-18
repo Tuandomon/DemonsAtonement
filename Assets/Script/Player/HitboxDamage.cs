@@ -1,27 +1,23 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class HitboxDamage : MonoBehaviour
 {
     public int baseDamage = 10;
 
-    void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (other.CompareTag("Enemy"))
+        EnemyHealth enemy = collision.GetComponent<EnemyHealth>();
+        if (enemy != null)
         {
             int finalDamage = baseDamage;
 
-            // Kiểm tra trạng thái buff từ PlayerShooting
-            PlayerShooting player = GetComponentInParent<PlayerShooting>();
-            if (player != null && player.isBuffed)
+            PlayerShooting playerShoot = GetComponentInParent<PlayerShooting>();
+            if (playerShoot != null && playerShoot.isBuffed)
             {
-                finalDamage = Mathf.RoundToInt(baseDamage * 1.5f); // tăng 50%
+                finalDamage = Mathf.RoundToInt(baseDamage * 1.5f);
             }
 
-            // Gọi hàm nhận sát thương bên enemy
-            other.GetComponent<EnemyHealth>()?.TakeDamage(finalDamage);
-
+            enemy.TakeDamage(finalDamage);
             Debug.Log($"Enemy trúng đòn từ {gameObject.name}, sát thương gây ra: {finalDamage}");
         }
     }
