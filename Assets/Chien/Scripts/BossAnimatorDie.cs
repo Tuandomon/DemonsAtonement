@@ -17,9 +17,12 @@ public class BossAnimatorDie : MonoBehaviour
     public GameObject deathEffect2;
 
     [Header("Vòng triệu hồi")]
-    public GameObject summonCirclePrefab; // 🔹 Prefab vòng triệu hồi
+    public GameObject summonCirclePrefab;
     private GameObject summonCircleInstance;
     private SpriteRenderer summonCircleSR;
+
+    [Header("Prefabs quả cầu linh hồn")]
+    public GameObject soulOrbPrefab;  // 🔹 Prefab quả cầu linh hồn
 
     [Header("Cài đặt spawn hiệu ứng")]
     public float spawnRadius = 2f;
@@ -27,6 +30,7 @@ public class BossAnimatorDie : MonoBehaviour
 
     private bool hasDied = false;
     private SpriteRenderer spriteRenderer;
+    private Vector3 bossDeathPosition; // vị trí spawn quả cầu linh hồn
 
     void Start()
     {
@@ -49,6 +53,7 @@ public class BossAnimatorDie : MonoBehaviour
         if (enemyHealth != null && enemyHealth.GetCurrentHealth() <= 0)
         {
             hasDied = true;
+            bossDeathPosition = transform.position; // lưu vị trí chết
             StartCoroutine(PlayDeathSequence());
         }
     }
@@ -73,15 +78,14 @@ public class BossAnimatorDie : MonoBehaviour
         // 🔹 Spawn vòng triệu hồi
         if (summonCirclePrefab != null)
         {
-            Vector3 footPosition = transform.position + new Vector3(0f, 0.3f, 0f); // +0.3f Y để lên cao hơn
+            Vector3 footPosition = transform.position + new Vector3(0f, 0.3f, 0f); // lên cao 0.3
             summonCircleInstance = Instantiate(summonCirclePrefab, footPosition, Quaternion.identity);
             summonCircleSR = summonCircleInstance.GetComponent<SpriteRenderer>();
             if (summonCircleSR != null)
             {
-                summonCircleSR.color = new Color(1f, 1f, 1f, 1f); // full alpha
+                summonCircleSR.color = new Color(1f, 1f, 1f, 1f);
             }
         }
-
 
         float elapsed = 0f;
 
@@ -89,7 +93,7 @@ public class BossAnimatorDie : MonoBehaviour
         {
             elapsed += spawnInterval;
 
-            // ⭐ Spawn effect chết
+            // ⭐ Spawn hiệu ứng chết
             SpawnDeathEffect(deathEffect1);
             SpawnDeathEffect(deathEffect2);
 
@@ -113,12 +117,18 @@ public class BossAnimatorDie : MonoBehaviour
             yield return new WaitForSeconds(spawnInterval);
         }
 
-        // Destroy vòng triệu hồi sau khi boss chết
+        // Destroy vòng triệu hồi
         if (summonCircleInstance != null)
             Destroy(summonCircleInstance);
 
         // Destroy boss
         Destroy(gameObject);
+
+        // 🔹 Spawn quả cầu linh hồn tại vị trí boss
+        if (soulOrbPrefab != null)
+        {
+            Instantiate(soulOrbPrefab, bossDeathPosition, Quaternion.identity);
+        }
     }
 
     void SpawnDeathEffect(GameObject effectPrefab)
