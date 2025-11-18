@@ -154,7 +154,7 @@ public class BossAI_RangeAndCircle : MonoBehaviour
         {
             timer += Time.deltaTime;
 
-            // ✅ Nếu boss chết giữa chừng thì dừng coroutine
+            // Dừng nếu boss chết
             if (enemyHealth != null && enemyHealth.GetCurrentHealth() <= 0)
             {
                 rb.velocity = Vector2.zero;
@@ -165,6 +165,7 @@ public class BossAI_RangeAndCircle : MonoBehaviour
 
             FlipSprite(player.position.x - transform.position.x);
 
+            // Gây sát thương đúng frame giữa animation
             if (!damageDealt && timer >= attackAnimDuration / 2f)
             {
                 float dist = Vector2.Distance(transform.position, player.position);
@@ -181,12 +182,24 @@ public class BossAI_RangeAndCircle : MonoBehaviour
         anim.SetBool("isAttacking", false);
         isAttacking = false;
 
-        attackTimer = attackCooldown;
+        // ⭐ Cập nhật cooldown riêng biệt
         if (useAttack3)
+            attackTimer = 1.5f;   // Attack3 cooldown 1.5 giây
+        else
+            attackTimer = 1f;     // Attack thường cooldown 1 giây
+
+        if (!useAttack3)
+        {
+            // check Attack3 interval
+            if (attack3Timer >= attack3Interval)
+                nextAttack3 = true;
+        }
+        else
+        {
             attack3Timer = 0f;
-        else if (attack3Timer >= attack3Interval)
-            nextAttack3 = true;
+        }
     }
+
 
     void DealDamage(int amount)
     {
