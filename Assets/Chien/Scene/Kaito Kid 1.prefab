@@ -115,7 +115,6 @@ GameObject:
   - component: {fileID: 1728761744154738087}
   - component: {fileID: 2290587593700776187}
   - component: {fileID: 3470800402293656756}
-  - component: {fileID: 8722715024980485251}
   - component: {fileID: 5383162576601283225}
   m_Layer: 3
   m_Name: Kaito Kid 1
@@ -401,11 +400,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad9d301d385367c418441ed9c68294aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bulletPrefab: {fileID: 8509040744687437586, guid: 769dbeec099b2514f93103ada7c67fcc, type: 3}
+  normalBulletPrefab: {fileID: 0}
+  buffedBulletPrefab: {fileID: 0}
   firePoint: {fileID: 6302682259920822398}
   bulletSpeed: 20
   shootCooldown: 2
-  shootSound: {fileID: 0}
+  isBuffed: 0
 --- !u!114 &7614857839734932095
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -551,21 +551,6 @@ MonoBehaviour:
   climbSpeed: 3
   moveSpeed: 5
   jumpForce: 7
---- !u!114 &8722715024980485251
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3154664515196227011}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 526ee0eda14a7f94ca90b2e195a43b3b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  headEffectPrefab: {fileID: 6243032851005936973, guid: e15e43acbfb880c40b02e5fd48764718, type: 3}
-  thunderEffectPrefab: {fileID: 3576152613229490879, guid: c3ffba284bf12fd42b90c66380b8926e, type: 3}
-  stunDuration: 5
 --- !u!82 &5383162576601283225
 AudioSource:
   m_ObjectHideFlags: 0
@@ -752,7 +737,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f31556ed789366043a73b8ac8c3b7912, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 10
+  baseDamage: 10
 --- !u!1 &8121499842858018721
 GameObject:
   m_ObjectHideFlags: 0
@@ -843,7 +828,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17f0594543c144b4d868ba62559a1d6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 10
+  baseDamage: 10
 --- !u!1 &8416680873831600392
 GameObject:
   m_ObjectHideFlags: 0
@@ -934,7 +919,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17f0594543c144b4d868ba62559a1d6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 10
+  baseDamage: 10
 --- !u!1 &9040617361391644756
 GameObject:
   m_ObjectHideFlags: 0
@@ -1025,4 +1010,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f31556ed789366043a73b8ac8c3b7912, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 10
+  baseDamage: 10
