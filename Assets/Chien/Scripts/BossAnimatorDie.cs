@@ -22,7 +22,7 @@ public class BossAnimatorDie : MonoBehaviour
     private SpriteRenderer summonCircleSR;
 
     [Header("Prefabs quả cầu linh hồn")]
-    public GameObject soulOrbPrefab;  // 🔹 Prefab quả cầu linh hồn
+    public GameObject soulOrbPrefab;
 
     [Header("Cài đặt spawn hiệu ứng")]
     public float spawnRadius = 2f;
@@ -30,7 +30,7 @@ public class BossAnimatorDie : MonoBehaviour
 
     private bool hasDied = false;
     private SpriteRenderer spriteRenderer;
-    private Vector3 bossDeathPosition; // vị trí spawn quả cầu linh hồn
+    private Vector3 bossDeathPosition;
 
     void Start()
     {
@@ -53,21 +53,28 @@ public class BossAnimatorDie : MonoBehaviour
         if (enemyHealth != null && enemyHealth.GetCurrentHealth() <= 0)
         {
             hasDied = true;
-            bossDeathPosition = transform.position; // lưu vị trí chết
+            bossDeathPosition = transform.position;
+
+            // ⭐ Hủy tất cả quái triệu hồi
+            BossMagicSimple bossMagic = GetComponent<BossMagicSimple>();
+            if (bossMagic != null)
+            {
+                bossMagic.DespawnAllSummoned();
+            }
+
             StartCoroutine(PlayDeathSequence());
         }
     }
 
     IEnumerator PlayDeathSequence()
     {
-        // ⭐ Chạy animation chết
         if (!deathAnimPlayed && anim != null)
         {
             anim.SetTrigger("Die");
             deathAnimPlayed = true;
         }
 
-        // ❗ Tắt các script khác
+        // Tắt các script khác
         MonoBehaviour[] scripts = GetComponents<MonoBehaviour>();
         foreach (var script in scripts)
         {
@@ -75,16 +82,14 @@ public class BossAnimatorDie : MonoBehaviour
                 script.enabled = false;
         }
 
-        // 🔹 Spawn vòng triệu hồi
+        // Spawn vòng triệu hồi
         if (summonCirclePrefab != null)
         {
-            Vector3 footPosition = transform.position + new Vector3(0f, 0.3f, 0f); // lên cao 0.3
+            Vector3 footPosition = transform.position + new Vector3(0f, 0.3f, 0f);
             summonCircleInstance = Instantiate(summonCirclePrefab, footPosition, Quaternion.identity);
             summonCircleSR = summonCircleInstance.GetComponent<SpriteRenderer>();
             if (summonCircleSR != null)
-            {
                 summonCircleSR.color = new Color(1f, 1f, 1f, 1f);
-            }
         }
 
         float elapsed = 0f;
@@ -93,11 +98,11 @@ public class BossAnimatorDie : MonoBehaviour
         {
             elapsed += spawnInterval;
 
-            // ⭐ Spawn hiệu ứng chết
+            // Spawn hiệu ứng chết
             SpawnDeathEffect(deathEffect1);
             SpawnDeathEffect(deathEffect2);
 
-            // ⭐ Fade boss
+            // Fade boss
             if (spriteRenderer != null && elapsed >= fadeStartTime)
             {
                 float fadeElapsed = elapsed - fadeStartTime;
@@ -106,7 +111,7 @@ public class BossAnimatorDie : MonoBehaviour
                 Color c = spriteRenderer.color;
                 spriteRenderer.color = new Color(c.r, c.g, c.b, alpha);
 
-                // 🔹 Fade vòng triệu hồi theo boss
+                // Fade vòng triệu hồi theo boss
                 if (summonCircleSR != null)
                 {
                     Color c2 = summonCircleSR.color;
@@ -124,10 +129,17 @@ public class BossAnimatorDie : MonoBehaviour
         // Destroy boss
         Destroy(gameObject);
 
-        // 🔹 Spawn quả cầu linh hồn tại vị trí boss
+        // Spawn quả cầu linh hồn tại vị trí boss và gán Player
         if (soulOrbPrefab != null)
         {
-            Instantiate(soulOrbPrefab, bossDeathPosition, Quaternion.identity);
+            GameObject orb = Instantiate(soulOrbPrefab, bossDeathPosition, Quaternion.identity);
+            PlayerHealth playerObj = FindObjectOfType<PlayerHealth>();
+            if (playerObj != null)
+            {
+                SoulOrbBehavior orbScript = orb.GetComponent<SoulOrbBehavior>();
+                if (orbScript != null)
+                    orbScript.player = playerObj.transform;
+            }
         }
     }
 
@@ -148,7 +160,7 @@ public class BossAnimatorDie : MonoBehaviour
     }
 }
 
-// ⭐ Script cho hiệu ứng bay lên + fade
+// Script hiệu ứng bay lên + fade
 public class DeathEffectBehavior : MonoBehaviour
 {
     public float floatSpeed = 1f;
