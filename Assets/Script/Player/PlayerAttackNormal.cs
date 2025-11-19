@@ -5,6 +5,7 @@ public class PlayerAttackNormal : MonoBehaviour
 {
     private Animator animator;
     private AudioSource audioSource;
+    private PlayerController playerController; // Thêm tham chiếu tới PlayerController
 
     private float lastAttackTime = 0f;
     private bool waitingForSecondAttack = false;
@@ -22,6 +23,7 @@ public class PlayerAttackNormal : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
+        playerController = GetComponent<PlayerController>(); // Lấy script PlayerController
 
         // Tắt hitbox ban đầu
         if (hitbox1 != null) hitbox1.SetActive(false);
@@ -48,6 +50,8 @@ public class PlayerAttackNormal : MonoBehaviour
                 lastAttackTime = currentTime;
 
                 PlaySound(attackSound1);
+
+                LockMovement(); // Khóa di chuyển khi bắt đầu Attack 1
             }
             else if (state.IsName("WaitForInput") && waitingForSecondAttack)
             {
@@ -55,6 +59,8 @@ public class PlayerAttackNormal : MonoBehaviour
                 waitingForSecondAttack = false;
 
                 PlaySound(attackSound2);
+
+                LockMovement(); // Khóa di chuyển khi bắt đầu Attack 2
             }
         }
     }
@@ -75,4 +81,18 @@ public class PlayerAttackNormal : MonoBehaviour
     // 🥊 Bật/tắt hitbox cho đòn 2
     public void EnableHitbox2() => hitbox2?.SetActive(true);
     public void DisableHitbox2() => hitbox2?.SetActive(false);
+
+    // 🚫 Khóa di chuyển
+    public void LockMovement()
+    {
+        if (playerController != null)
+            playerController.enabled = false;
+    }
+
+    // ✅ Mở lại di chuyển (gọi ở cuối animation bằng Animation Event)
+    public void UnlockMovement()
+    {
+        if (playerController != null)
+            playerController.enabled = true;
+    }
 }
