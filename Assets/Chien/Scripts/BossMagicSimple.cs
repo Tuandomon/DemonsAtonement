@@ -1,5 +1,6 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 public class BossMagicSimple : MonoBehaviour
 {
@@ -20,6 +21,16 @@ public class BossMagicSimple : MonoBehaviour
     public float magicCooldown = 4f;
     private float magicTimer = 0f;
 
+    [Header("Summon Settings")]
+    public GameObject summonedPrefab;           // Prefab BossSummonedSpirit
+    public Transform summonPoint;               // Vị trí spawn
+    public float summonCooldown = 30f;
+    private float summonTimer = 0f;
+    public float summonedLifeTime = 20f;
+
+    // ⭐ Lưu tất cả quái đã spawn
+    private List<GameObject> summonedSpirits = new List<GameObject>();
+
     private bool isPlayerDetected = false;
     private bool isCasting = false;
 
@@ -37,17 +48,26 @@ public class BossMagicSimple : MonoBehaviour
         if (!isPlayerDetected)
             return;
 
+        // Timer
         magicTimer += Time.deltaTime;
+        summonTimer += Time.deltaTime;
 
+        // Magic attack
         if (distanceToPlayer <= magicRadius)
         {
             TryCastMagic();
+        }
+
+        // Summon BossSummonedSpirit
+        if (summonTimer >= summonCooldown)
+        {
+            SummonSpirit();
         }
     }
 
     void TryCastMagic()
     {
-        if (isCasting) return;                     // tránh spam animation
+        if (isCasting) return;
         if (magicTimer < magicCooldown) return;
 
         StartCoroutine(CastMagic());
@@ -58,45 +78,56 @@ public class BossMagicSimple : MonoBehaviour
         isCasting = true;
         magicTimer = 0f;
 
-        // đứng yên
-        if (rb != null)
-            rb.velocity = Vector2.zero;
+        if (rb != null) rb.velocity = Vector2.zero;
 
-        // chạy animation cast
         if (anim != null)
         {
             anim.SetBool("isRunning", false);
             anim.SetTrigger("MagicAttack");
         }
 
-        // chờ animation bắt đầu rồi mới spawn
         yield return new WaitForSeconds(0.3f);
 
-        // Spawn Magic Ball
         if (magicPrefab != null && magicSpawnPoint != null)
-        {
             Instantiate(magicPrefab, magicSpawnPoint.position, Quaternion.identity);
-        }
 
-        // đợi animation cast kết thúc
         yield return new WaitForSeconds(0.5f);
 
         isCasting = false;
     }
 
-    void OnDrawGizmosSelected()
+    void SummonSpirit()
     {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, detectionRadius);
+        if (summonedPrefab == null || summonPoint == null) return;
 
-        Gizmos.color = Color.cyan;
-        Gizmos.DrawWireSphere(transform.position, magicRadius);
+        GameObject spirit = Instantiate(summonedPrefab, summonPoint.position, Quaternion.identity);
 
-        if (leftPoint != null && rightPoint != null)
+        // Thiết lập phạm vi di chuyển giống Boss
+        BossSummonedSpirit spiritScript = spirit.GetComponent<BossSummonedSpirit>();
+        if (spiritScript != null)
         {
-            Gizmos.color = Color.green;
-            Gizmos.DrawLine(leftPoint.position + Vector3.up, leftPoint.position + Vector3.down);
-            Gizmos.DrawLine(rightPoint.position + Vector3.up, rightPoint.position + Vector3.down);
+            spiritScript.leftPoint = leftPoint;
+            spiritScript.rightPoint = rightPoint;
+            spiritScript.player = player;
         }
+
+        // Destroy sau thời gian sống
+        Destroy(spirit, summonedLifeTime);
+
+        // ⭐ Lưu spirit vào danh sách
+        summonedSpirits.Add(spirit);
+
+        summonTimer = 0f;
+    }
+
+    // ⭐ Hàm hủy tất cả quái khi Boss chết
+    public void DespawnAllSummoned()
+    {
+        foreach (var spirit in summonedSpirits)
+        {
+            if (spirit != null)
+                Destroy(spirit);
+        }
+        summonedSpirits.Clear();
     }
 }
