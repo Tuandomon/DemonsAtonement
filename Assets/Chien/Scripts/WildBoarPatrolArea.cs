@@ -29,13 +29,11 @@ public class PigPatrolArea : MonoBehaviour
     public float idealAttackDistance = 1.2f;
     public float backstepDistance = 1f;
     public float backstepSpeed = 4f;
-    private bool isBackingUp = false;
 
+    private bool isBackingUp = false;
     private Rigidbody2D rb;
     private AudioSource audioSource;
-
     private bool isWaiting = false;
-    private bool facingRight = true;
     private int moveDirection = 1;
     private float lastAttackTime = 0f;
 
@@ -54,7 +52,7 @@ public class PigPatrolArea : MonoBehaviour
             moveDirection = transform.position.x < mid ? 1 : -1;
         }
 
-        // Ignore collision giữa các enemy
+        // Ignore collision giữa enemy
         Collider2D myCol = GetComponent<Collider2D>();
         if (myCol != null)
         {
@@ -63,7 +61,8 @@ public class PigPatrolArea : MonoBehaviour
             {
                 if (e == gameObject) continue;
                 Collider2D col = e.GetComponent<Collider2D>();
-                if (col != null) Physics2D.IgnoreCollision(myCol, col);
+                if (col != null)
+                    Physics2D.IgnoreCollision(myCol, col);
             }
         }
     }
@@ -74,12 +73,25 @@ public class PigPatrolArea : MonoBehaviour
 
         float dist = Vector2.Distance(transform.position, player.position);
 
-        if (dist <= attackRange && Time.time - lastAttackTime >= attackCooldown)
-            currentState = PigState.Attack;
-        else if (dist <= detectRange)
-            currentState = PigState.Chase;
+        // Kiểm tra player có nằm trong phạm vi patrol không
+        bool playerInPatrolRange = (leftPoint != null && rightPoint != null) &&
+                                   player.position.x >= leftPoint.position.x &&
+                                   player.position.x <= rightPoint.position.x;
+
+        // ⭐ Chỉ chase/attack khi player trong phạm vi patrol
+        if (playerInPatrolRange)
+        {
+            if (dist <= attackRange && Time.time - lastAttackTime >= attackCooldown)
+                currentState = PigState.Attack;
+            else if (dist <= detectRange)
+                currentState = PigState.Chase;
+            else
+                currentState = PigState.Patrol;
+        }
         else
-            currentState = PigState.Patrol;
+        {
+            currentState = PigState.Patrol; // ngoài phạm vi patrol thì luôn quay về patrol
+        }
 
         switch (currentState)
         {
@@ -88,6 +100,7 @@ public class PigPatrolArea : MonoBehaviour
             case PigState.Attack: AttackState(); break;
         }
     }
+
 
     void PatrolState()
     {
@@ -102,7 +115,6 @@ public class PigPatrolArea : MonoBehaviour
 
         rb.velocity = new Vector2(moveDirection * moveSpeed, rb.velocity.y);
         animator.SetFloat("Speed", Mathf.Abs(rb.velocity.x));
-
         UpdateFacingDirection(rb.velocity.x);
 
         if ((moveDirection > 0 && transform.position.x >= rightPoint.position.x) ||
@@ -121,8 +133,7 @@ public class PigPatrolArea : MonoBehaviour
 
         if (distance < tooCloseDistance)
         {
-            if (!isBackingUp)
-                StartCoroutine(BackstepRoutine(-dir));
+            if (!isBackingUp) StartCoroutine(BackstepRoutine(-dir));
             return;
         }
 
@@ -146,20 +157,13 @@ public class PigPatrolArea : MonoBehaviour
         float dir = Mathf.Sign(player.position.x - transform.position.x);
 
         if (distance < tooCloseDistance && !isBackingUp)
-        {
             StartCoroutine(BackstepRoutine(-dir));
-        }
 
+        // ⭐ Chỉ chạy animation — KHÔNG gây sát thương ở đây nữa
         if (distance <= attackRange && Time.time - lastAttackTime >= attackCooldown)
         {
             lastAttackTime = Time.time;
             animator.SetTrigger("Attack");
-
-            PlayAttackSound();
-
-            PlayerHealth hp = player.GetComponent<PlayerHealth>();
-            if (hp != null) hp.TakeDamage(100);
-
             rb.velocity = Vector2.zero;
             return;
         }
@@ -178,15 +182,26 @@ public class PigPatrolArea : MonoBehaviour
         UpdateFacingDirection(rb.velocity.x);
     }
 
+    // ⭐⭐⭐ Animation Event sẽ gọi hàm này tại frame đánh trúng
+    public void DealDamage()
+    {
+        float distance = Vector2.Distance(transform.position, player.position);
+        if (distance <= attackRange)
+        {
+            PlayAttackSound();
+            PlayerHealth hp = player.GetComponent<PlayerHealth>();
+            if (hp != null) hp.TakeDamage(100);
+        }
+    }
+
     IEnumerator BackstepRoutine(float dir)
     {
         isBackingUp = true;
         animator.SetFloat("Speed", backstepSpeed);
-
         float startX = transform.position.x;
         float target = startX + dir * backstepDistance;
-
         float t = 0;
+
         while (t < 1f)
         {
             t += Time.deltaTime * backstepSpeed;
@@ -204,21 +219,16 @@ public class PigPatrolArea : MonoBehaviour
         isWaiting = true;
         rb.velocity = Vector2.zero;
         animator.SetFloat("Speed", 0);
-
         yield return new WaitForSeconds(waitTime);
-
         moveDirection *= -1;
         isWaiting = false;
     }
 
-    // ---------------------- XOAY HƯỚNG THÔNG MINH ----------------------
-    // Rotation Y: 0 = trái, 180 = phải
     void UpdateFacingDirection(float moveDir)
     {
-        if (moveDir > 0.05f) transform.rotation = Quaternion.Euler(0, 180f, 0); // phải
-        else if (moveDir < -0.05f) transform.rotation = Quaternion.Euler(0, 0f, 0); // trái
+        if (moveDir > 0.05f) transform.rotation = Quaternion.Euler(0, 180f, 0);
+        else if (moveDir < -0.05f) transform.rotation = Quaternion.Euler(0, 0f, 0);
     }
-    // ---------------------------------------------------------------------
 
     public void PlayAttackSound()
     {
