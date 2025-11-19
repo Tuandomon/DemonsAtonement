@@ -4,83 +4,52 @@ using UnityEngine;
 
 public class CeilingTrapLevel3 : MonoBehaviour
 {
-    [Header("Thiết lập Trap")]
-    public float dropSpeed = 15f;           // tốc độ rơi
-    public float returnSpeed = 5f;          // tốc độ nâng lại
-    public float dropDelay = 1.5f;          // thời gian chờ trước khi rơi
-    public float resetDelay = 1f;           // thời gian chờ trước khi nâng lên
+    [Header("Damage Settings")]
+    public int damage = 25;
 
-    [Header("Damage")]
-    public int damage = 30;
-    public float stunDuration = 0.5f;
+    [Header("Raycast Settings")]
+    public Transform hitPoint;        // điểm ở đầu bẫy
+    public float hitRange = 0.3f;     // khoảng kiểm tra
+    public LayerMask playerLayer;
 
-    [Header("Âm thanh")]
-    public AudioClip dropSound;
-    public AudioClip hitGroundSound;
+    private bool canDamage = false;
 
-    [Header("Điểm")]
-    public Transform startPos;     // vị trí ban đầu (trên)
-    public Transform endPos;       // vị trí đập xuống (dưới)
-
-    private bool isDropping = false;
-
-    void Start()
+    // Gọi từ Animation Event khi đập xuống
+    public void StartDamage()
     {
-        transform.position = startPos.position;
-        StartCoroutine(TrapRoutine());
+        canDamage = true;
+        CheckDamage();
     }
 
-    IEnumerator TrapRoutine()
+    // Gọi từ Animation Event khi rút lên
+    public void StopDamage()
     {
-        while (true)
+        canDamage = false;
+    }
+
+    private void CheckDamage()
+    {
+        if (!canDamage) return;
+
+        // Raycast kiểm tra player ngay tại vị trí trap đập xuống
+        Collider2D hit = Physics2D.OverlapCircle(hitPoint.position, hitRange, playerLayer);
+
+        if (hit != null)
         {
-            yield return new WaitForSeconds(dropDelay);
-
-            // 🔻 Rơi xuống
-            isDropping = true;
-            if (dropSound) AudioSource.PlayClipAtPoint(dropSound, transform.position);
-
-            while (Vector2.Distance(transform.position, endPos.position) > 0.05f)
+            PlayerHealth player = hit.GetComponent<PlayerHealth>();
+            if (player != null)
             {
-                transform.position = Vector2.MoveTowards(
-                    transform.position,
-                    endPos.position,
-                    dropSpeed * Time.deltaTime
-                );
-                yield return null;
-            }
-
-            isDropping = false;
-
-            // ⏳ chạm đất
-            if (hitGroundSound) AudioSource.PlayClipAtPoint(hitGroundSound, transform.position);
-            yield return new WaitForSeconds(resetDelay);
-
-            // 🔼 Nâng trap lên lại
-            while (Vector2.Distance(transform.position, startPos.position) > 0.05f)
-            {
-                transform.position = Vector2.MoveTowards(
-                    transform.position,
-                    startPos.position,
-                    returnSpeed * Time.deltaTime
-                );
-                yield return null;
+                player.TakeDamage(damage);
             }
         }
     }
 
-    // 🎯 Gây damage khi đập trúng Player
-    private void OnTriggerStay2D(Collider2D collision)
+    private void OnDrawGizmosSelected()
     {
-        if (isDropping && collision.CompareTag("Player"))
-        {
-            PlayerHealth hp = collision.GetComponent<PlayerHealth>();
-            if (hp != null)
-            {
-                hp.TakeDamage(damage);
-            }
+        if (hitPoint == null) return;
 
-        }
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(hitPoint.position, hitRange);
     }
 }
 
