@@ -2,7 +2,7 @@
 
 public class PlayerAttack : MonoBehaviour
 {
-    [Header("Phím S + J")]
+    [Header("Phím I")]
     public float attackCooldown = 1f;
     private float lastAttackTime = -Mathf.Infinity;
 
@@ -44,7 +44,7 @@ public class PlayerAttack : MonoBehaviour
             rb.velocity = new Vector2(0f, rb.velocity.y);
         }
 
-        if (Input.GetKey(KeyCode.S) && Input.GetKeyDown(KeyCode.J) && Time.time >= lastAttackTime + attackCooldown)
+        if (Input.GetKeyDown(KeyCode.I) && Time.time >= lastAttackTime + attackCooldown)
         {
             FlipToMoveDirection(); // thay vì FlipToMouse
             Attack();
