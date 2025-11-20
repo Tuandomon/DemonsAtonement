@@ -1278,75 +1278,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 936ce394d8a7fad49ab9957bd1c0cadc, type: 3}
---- !u!1001 &1667555160
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 3729511954100794300, guid: a8766f8e190a7cd4599ae5132bb81389, type: 3}
-      propertyPath: bulletPrefab
-      value: 
-      objectReference: {fileID: 8509040744687437586, guid: 769dbeec099b2514f93103ada7c67fcc, type: 3}
-    - target: {fileID: 3729511954100794300, guid: a8766f8e190a7cd4599ae5132bb81389, type: 3}
-      propertyPath: buffedBulletPrefab
-      value: 
-      objectReference: {fileID: 8764043878647920493, guid: c4ed38c72957f2241ad144a1614956d9, type: 3}
-    - target: {fileID: 3729511954100794300, guid: a8766f8e190a7cd4599ae5132bb81389, type: 3}
-      propertyPath: normalBulletPrefab
-      value: 
-      objectReference: {fileID: 8509040744687437586, guid: 769dbeec099b2514f93103ada7c67fcc, type: 3}
-    - target: {fileID: 8385089636014069269, guid: a8766f8e190a7cd4599ae5132bb81389, type: 3}
-      propertyPath: m_Name
-      value: Kaito Kid
-      objectReference: {fileID: 0}
-    - target: {fileID: 9063983272750874712, guid: a8766f8e190a7cd4599ae5132bb81389, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9063983272750874712, guid: a8766f8e190a7cd4599ae5132bb81389, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -1.74
-      objectReference: {fileID: 0}
-    - target: {fileID: 9063983272750874712, guid: a8766f8e190a7cd4599ae5132bb81389, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9063983272750874712, guid: a8766f8e190a7cd4599ae5132bb81389, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 9063983272750874712, guid: a8766f8e190a7cd4599ae5132bb81389, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9063983272750874712, guid: a8766f8e190a7cd4599ae5132bb81389, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9063983272750874712, guid: a8766f8e190a7cd4599ae5132bb81389, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9063983272750874712, guid: a8766f8e190a7cd4599ae5132bb81389, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9063983272750874712, guid: a8766f8e190a7cd4599ae5132bb81389, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9063983272750874712, guid: a8766f8e190a7cd4599ae5132bb81389, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: a8766f8e190a7cd4599ae5132bb81389, type: 3}
 --- !u!1 &1681632679
 GameObject:
   m_ObjectHideFlags: 0
@@ -1942,6 +1873,63 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 981b6a9dd80a1264aa291622094b9f70, type: 3}
+--- !u!1001 &8451850525009861280
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4028403847404495858, guid: 7f69df903a362ee4bbf29c7c3922b33a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4028403847404495858, guid: 7f69df903a362ee4bbf29c7c3922b33a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.74
+      objectReference: {fileID: 0}
+    - target: {fileID: 4028403847404495858, guid: 7f69df903a362ee4bbf29c7c3922b33a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4028403847404495858, guid: 7f69df903a362ee4bbf29c7c3922b33a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4028403847404495858, guid: 7f69df903a362ee4bbf29c7c3922b33a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4028403847404495858, guid: 7f69df903a362ee4bbf29c7c3922b33a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4028403847404495858, guid: 7f69df903a362ee4bbf29c7c3922b33a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4028403847404495858, guid: 7f69df903a362ee4bbf29c7c3922b33a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4028403847404495858, guid: 7f69df903a362ee4bbf29c7c3922b33a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4028403847404495858, guid: 7f69df903a362ee4bbf29c7c3922b33a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5999881354442684633, guid: 7f69df903a362ee4bbf29c7c3922b33a, type: 3}
+      propertyPath: m_Name
+      value: Kaito Kid
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 7f69df903a362ee4bbf29c7c3922b33a, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -1952,7 +1940,7 @@ SceneRoots:
   - {fileID: 1681632683}
   - {fileID: 1778165739}
   - {fileID: 212118243}
-  - {fileID: 1667555160}
+  - {fileID: 8451850525009861280}
   - {fileID: 576546}
   - {fileID: 7894931589168139709}
   - {fileID: 1146602364}
