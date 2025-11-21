@@ -160,6 +160,8 @@ GameObject:
   - component: {fileID: 1560810666669041440}
   - component: {fileID: 1181025211648437347}
   - component: {fileID: 7965168258186823490}
+  - component: {fileID: 3897477637515670253}
+  - component: {fileID: 6454009707322790238}
   m_Layer: 3
   m_Name: Kaito Kid
   m_TagString: Player
@@ -599,6 +601,36 @@ MonoBehaviour:
   attackSound2: {fileID: 8300000, guid: 63563fd013a7bcb428bb332ef4167492, type: 3}
   hitbox1: {fileID: 3810395063635089698}
   hitbox2: {fileID: 6313963261871807481}
+--- !u!114 &3897477637515670253
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5999881354442684633}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57481bbd40da7b442ae6271bdb3010b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  keyImages:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+--- !u!114 &6454009707322790238
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5999881354442684633}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 614c8cf3266ac044299727dd20d942ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  coinText: {fileID: 0}
 --- !u!1 &6043081351873683092
 GameObject:
   m_ObjectHideFlags: 0
