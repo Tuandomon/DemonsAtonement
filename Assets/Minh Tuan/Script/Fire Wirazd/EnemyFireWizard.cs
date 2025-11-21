@@ -3,11 +3,14 @@ using System.Collections;
 
 public class EnemyFireWizard : MonoBehaviour
 {
+    [Header("Player Settings")]
+    public Transform targetPlayer;  // <-- Player chỉ định thủ công
+
     [Header("Movement Settings")]
     public float moveSpeed = 3f;
     public Transform leftPoint;
     public Transform rightPoint;
-    public float idleWaitTime = 3f; // Thời gian đứng im
+    public float idleWaitTime = 3f;
     private bool movingRight = true;
     private bool isIdle = false;
 
@@ -26,7 +29,7 @@ public class EnemyFireWizard : MonoBehaviour
     public float detectionRange = 8f;
 
     [Header("Audio Settings")]
-    public AudioClip attackSound; // âm thanh tấn công
+    public AudioClip attackSound;
     private AudioSource audioSource;
 
     [Header("References")]
@@ -45,12 +48,18 @@ public class EnemyFireWizard : MonoBehaviour
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        player = GameObject.FindGameObjectWithTag("Player")?.transform;
-        lastFireballTime = Time.time - fireballCooldown;
 
         audioSource = GetComponent<AudioSource>();
 
-        // 🔹 Bỏ qua va chạm với các enemy khác và hitbox của chúng
+        // ✔ Ưu tiên dùng player được gán thủ công
+        if (targetPlayer != null)
+            player = targetPlayer;
+        else
+            player = GameObject.FindGameObjectWithTag("Player")?.transform;
+
+        lastFireballTime = Time.time - fireballCooldown;
+
+        // Ignore collision với enemy
         Collider2D myCollider = GetComponent<Collider2D>();
         Collider2D[] allColliders = FindObjectsOfType<Collider2D>();
         foreach (Collider2D col in allColliders)
@@ -65,20 +74,30 @@ public class EnemyFireWizard : MonoBehaviour
 
     void Update()
     {
-        if (isDead || player == null) return;
+        if (isDead) return;
+
+        // ✔ Auto tìm player lại nếu null (vd: Player respawn scene khác)
+        if (player == null)
+        {
+            if (targetPlayer != null)
+                player = targetPlayer;
+            else
+                player = GameObject.FindGameObjectWithTag("Player")?.transform;
+
+            if (player == null) return; // Vẫn không tìm thấy
+        }
 
         float distance = Vector2.Distance(transform.position, player.position);
 
         if (distance <= attackRange && distance <= detectionRange)
         {
-            // Player trong tầm tấn công → Attack
             rb.velocity = Vector2.zero;
             TryAttack();
         }
         else if (distance <= detectionRange)
         {
-            // Player trong tầm phát hiện → Chase
             MoveTowardsPlayerWithinBounds();
+
             if (Time.time >= lastFireballTime + fireballCooldown)
             {
                 rb.velocity = Vector2.zero;
@@ -88,7 +107,6 @@ public class EnemyFireWizard : MonoBehaviour
         }
         else
         {
-            // Player ra khỏi phạm vi phát hiện → Patrol
             Patrol();
         }
 
@@ -183,7 +201,7 @@ public class EnemyFireWizard : MonoBehaviour
 
     public void ShootFireball()
     {
-        if (fireballPrefab != null && firePoint != null)
+        if (fireballPrefab != null && firePoint != null && player != null)
         {
             GameObject fireball = Instantiate(fireballPrefab, firePoint.position, Quaternion.identity);
             Vector2 direction = (player.position.x < transform.position.x) ? Vector2.left : Vector2.right;
@@ -206,7 +224,6 @@ public class EnemyFireWizard : MonoBehaviour
         this.enabled = false;
     }
 
-    // 🔊 Hàm phát âm thanh tấn công → gọi từ Animation Event
     public void PlayAttackSound()
     {
         if (attackSound != null && audioSource != null)
