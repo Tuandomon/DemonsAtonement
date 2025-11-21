@@ -223,7 +223,8 @@ GameObject:
   m_Component:
   - component: {fileID: 8517272303378945678}
   - component: {fileID: 3145998827263092753}
-  - component: {fileID: 8498764059303264495}
+  - component: {fileID: 8650344240203867996}
+  - component: {fileID: 2331592646201694915}
   m_Layer: 3
   m_Name: AttackNormalBox2
   m_TagString: Untagged
@@ -239,8 +240,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5663832589427900214}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 1.64, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -278,7 +279,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 2.058041, y: 0.21537703}
+  m_Offset: {x: 0.72832143, y: 0.21537709}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -289,9 +290,9 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 2.3879805, y: 3.1537638}
+  m_Size: {x: 2.3879795, y: 3.1537638}
   m_EdgeRadius: 0
---- !u!114 &8498764059303264495
+--- !u!114 &8650344240203867996
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -304,6 +305,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   baseDamage: 10
+--- !u!114 &2331592646201694915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5663832589427900214}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce4cd03b6d37d4a41bcc0375e3b22219, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 5420079336873478932}
+  offsetRight: {x: 1, y: 0, z: 0}
+  offsetLeft: {x: -2.4, y: 0, z: 0}
 --- !u!1 &6145097906436486970
 GameObject:
   m_ObjectHideFlags: 0
@@ -376,7 +392,8 @@ GameObject:
   m_Component:
   - component: {fileID: 263629038113405506}
   - component: {fileID: 5244704441728988094}
-  - component: {fileID: 3962236511110489371}
+  - component: {fileID: 7745775421584158502}
+  - component: {fileID: 8381316423066637052}
   m_Layer: 3
   m_Name: AttackNormalBox1
   m_TagString: Untagged
@@ -392,7 +409,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7390621636471258498}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 1.32, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -444,7 +461,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 4.3981605, y: 1.5025448}
   m_EdgeRadius: 0
---- !u!114 &3962236511110489371
+--- !u!114 &7745775421584158502
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -457,6 +474,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   baseDamage: 10
+--- !u!114 &8381316423066637052
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7390621636471258498}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce4cd03b6d37d4a41bcc0375e3b22219, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 5420079336873478932}
+  offsetRight: {x: 1, y: 0, z: 0}
+  offsetLeft: {x: -3.5, y: 0, z: 0}
 --- !u!1 &8385089636014069269
 GameObject:
   m_ObjectHideFlags: 0
@@ -916,6 +948,8 @@ MonoBehaviour:
   comboWindow: 1
   attackSound1: {fileID: 8300000, guid: 8169de52db1cc1841bb16fb70c5b9625, type: 3}
   attackSound2: {fileID: 8300000, guid: 63563fd013a7bcb428bb332ef4167492, type: 3}
+  hitbox1: {fileID: 7390621636471258498}
+  hitbox2: {fileID: 5663832589427900214}
 --- !u!1001 &4171543064251019245
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -26,4 +26,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Map/Boss1.unity
     guid: 01784d32d8d067641883c4b9265d905b
+  - enabled: 1
+    path: Assets/Kien/CaroAsset/prefab/Caro.unity
+    guid: 2e88fee5a6263894a867343159ff52f5
   m_configObjects: {}
