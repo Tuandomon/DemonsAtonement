@@ -74,12 +74,25 @@ public class ScorpionPatrolArea : MonoBehaviour
 
         float dist = Vector2.Distance(transform.position, player.position);
 
-        if (dist <= attackRange && Time.time - lastAttackTime >= attackCooldown)
-            currentState = ScorpionState.Attack;
-        else if (dist <= detectRange)
-            currentState = ScorpionState.Chase;
+        // Kiểm tra player có nằm trong phạm vi patrol không
+        bool playerInPatrolRange = (leftPoint != null && rightPoint != null) &&
+                                   player.position.x >= leftPoint.position.x &&
+                                   player.position.x <= rightPoint.position.x;
+
+        // ⭐ Chỉ chase/attack khi player trong phạm vi patrol
+        if (playerInPatrolRange)
+        {
+            if (dist <= attackRange && Time.time - lastAttackTime >= attackCooldown)
+                currentState = ScorpionState.Attack;
+            else if (dist <= detectRange)
+                currentState = ScorpionState.Chase;
+            else
+                currentState = ScorpionState.Patrol;
+        }
         else
-            currentState = ScorpionState.Patrol;
+        {
+            currentState = ScorpionState.Patrol; // ngoài phạm vi patrol thì luôn quay về patrol
+        }
 
         switch (currentState)
         {
@@ -88,6 +101,7 @@ public class ScorpionPatrolArea : MonoBehaviour
             case ScorpionState.Attack: AttackState(); break;
         }
     }
+
 
     void PatrolState()
     {

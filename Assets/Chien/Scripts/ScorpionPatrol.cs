@@ -1,6 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using System.Collections;
 
 public class ScorpionPatrol : MonoBehaviour
 {
@@ -13,61 +12,53 @@ public class ScorpionPatrol : MonoBehaviour
     public float waitTime = 2f;
 
     [Header("Attack Settings")]
-    public float chaseSpeed = 4f;
+    public float chaseSpeed = 3.5f;
     public float detectRange = 6f;
-    public float attackRange = 1.5f;
-    public float attackCooldown = 1f;
+    public float attackRange = 1.2f;
+    public float attackCooldown = 0.4f;
+
+    [Header("Audio Settings")]
+    public AudioClip attackSound;
 
     [Header("References")]
     public Animator animator;
     public Transform player;
-    public AudioClip attackSound;
+
+    [Header("Distance Settings")]
+    public float tooCloseDistance = 0.4f;
+    public float idealAttackDistance = 1.2f;
+    public float backstepDistance = 1f;
+    public float backstepSpeed = 4f;
+    private bool isBackingUp = false;
 
     private Rigidbody2D rb;
     private AudioSource audioSource;
+
     private bool isWaiting = false;
-
-    // ⭐ Sprite mặc định quay TRÁI
-    private bool facingRight = false;
-
     private int moveDirection = 1;
     private float lastAttackTime = 0f;
 
-    private enum ScorpionState { Patrol, Chase, Attack }
-    private ScorpionState currentState = ScorpionState.Patrol;
+    private enum PigState { Patrol, Chase, Attack }
+    private PigState currentState = PigState.Patrol;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        animator = animator != null ? animator : GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
-        if (animator == null) animator = GetComponent<Animator>();
-
-        // Sprite mặc định quay trái
-        facingRight = false;
 
         if (leftPoint != null && rightPoint != null)
         {
             float mid = (leftPoint.position.x + rightPoint.position.x) * 0.5f;
-            moveDirection = (transform.position.x < mid) ? 1 : -1;
-
-            if ((moveDirection > 0 && !facingRight) || (moveDirection < 0 && facingRight))
-                Flip();
+            moveDirection = transform.position.x < mid ? 1 : -1;
         }
 
+        // Ignore collision giữa enemy
         Collider2D myCol = GetComponent<Collider2D>();
         if (myCol != null)
         {
             GameObject[] allEnemies = GameObject.FindGameObjectsWithTag("Enemy");
-            GameObject[] allWolfs = GameObject.FindGameObjectsWithTag("Enemy_Wolf");
-
             foreach (GameObject e in allEnemies)
-            {
-                if (e == gameObject) continue;
-                Collider2D col = e.GetComponent<Collider2D>();
-                if (col != null) Physics2D.IgnoreCollision(myCol, col);
-            }
-
-            foreach (GameObject e in allWolfs)
             {
                 if (e == gameObject) continue;
                 Collider2D col = e.GetComponent<Collider2D>();
@@ -78,31 +69,38 @@ public class ScorpionPatrol : MonoBehaviour
 
     void Update()
     {
-        if (player == null || leftPoint == null || rightPoint == null) return;
+        if (player == null) return;
 
-        float distanceToPlayer = Vector2.Distance(transform.position, player.position);
-        bool playerWithinPatrol = player.position.x >= leftPoint.position.x && player.position.x <= rightPoint.position.x;
+        float dist = Vector2.Distance(transform.position, player.position);
 
-        if (distanceToPlayer <= attackRange && Time.time - lastAttackTime >= attackCooldown)
-            currentState = ScorpionState.Attack;
-        else if (distanceToPlayer <= detectRange && playerWithinPatrol)
-            currentState = ScorpionState.Chase;
+        // Kiểm tra player có nằm trong phạm vi patrol không
+        bool playerInPatrolRange = (leftPoint != null && rightPoint != null) &&
+                                   player.position.x >= leftPoint.position.x &&
+                                   player.position.x <= rightPoint.position.x;
+
+        // ⭐ Chỉ chase/attack khi player trong phạm vi patrol
+        if (playerInPatrolRange)
+        {
+            if (dist <= attackRange && Time.time - lastAttackTime >= attackCooldown)
+                currentState = PigState.Attack;
+            else if (dist <= detectRange)
+                currentState = PigState.Chase;
+            else
+                currentState = PigState.Patrol;
+        }
         else
-            currentState = ScorpionState.Patrol;
+        {
+            currentState = PigState.Patrol; // ngoài phạm vi patrol thì luôn quay về patrol
+        }
 
         switch (currentState)
         {
-            case ScorpionState.Patrol:
-                PatrolState();
-                break;
-            case ScorpionState.Chase:
-                ChaseState();
-                break;
-            case ScorpionState.Attack:
-                AttackState();
-                break;
+            case PigState.Patrol: PatrolState(); break;
+            case PigState.Chase: ChaseState(); break;
+            case PigState.Attack: AttackState(); break;
         }
     }
+
 
     void PatrolState()
     {
@@ -113,90 +111,135 @@ public class ScorpionPatrol : MonoBehaviour
             return;
         }
 
+        if (leftPoint == null || rightPoint == null) return;
+
         rb.velocity = new Vector2(moveDirection * moveSpeed, rb.velocity.y);
         animator.SetFloat("Speed", Mathf.Abs(rb.velocity.x));
 
-        if ((moveDirection > 0 && !facingRight) || (moveDirection < 0 && facingRight))
-            Flip();
+        UpdateFacingDirection(rb.velocity.x);
 
-        if (moveDirection > 0 && transform.position.x >= rightPoint.position.x)
+        if ((moveDirection > 0 && transform.position.x >= rightPoint.position.x) ||
+            (moveDirection < 0 && transform.position.x <= leftPoint.position.x))
+        {
             StartCoroutine(WaitAndTurn());
-        else if (moveDirection < 0 && transform.position.x <= leftPoint.position.x)
-            StartCoroutine(WaitAndTurn());
+        }
     }
 
     void ChaseState()
     {
-        if (player.position.x < leftPoint.position.x || player.position.x > rightPoint.position.x)
+        if (isBackingUp) return;
+
+        float distance = Vector2.Distance(transform.position, player.position);
+        float dir = Mathf.Sign(player.position.x - transform.position.x);
+
+        if (distance < tooCloseDistance)
         {
-            currentState = ScorpionState.Patrol;
+            if (!isBackingUp)
+                StartCoroutine(BackstepRoutine(-dir));
             return;
         }
 
-        float dir = Mathf.Sign(player.position.x - transform.position.x);
-        rb.velocity = new Vector2(dir * chaseSpeed, rb.velocity.y);
-        animator.SetFloat("Speed", Mathf.Abs(rb.velocity.x));
+        if (distance > idealAttackDistance)
+        {
+            rb.velocity = new Vector2(dir * chaseSpeed, rb.velocity.y);
+            animator.SetFloat("Speed", Mathf.Abs(rb.velocity.x));
+        }
+        else
+        {
+            rb.velocity = Vector2.zero;
+            animator.SetFloat("Speed", 0);
+        }
 
-        if ((dir > 0 && !facingRight) || (dir < 0 && facingRight))
-            Flip();
+        UpdateFacingDirection(rb.velocity.x);
     }
 
     void AttackState()
     {
-        // Đứng yên
-        rb.velocity = Vector2.zero;
-        animator.SetFloat("Speed", 0);
-
-        // Xoay mặt theo player
+        float distance = Vector2.Distance(transform.position, player.position);
         float dir = Mathf.Sign(player.position.x - transform.position.x);
-        if ((dir > 0 && !facingRight) || (dir < 0 && facingRight))
-            Flip();
 
-        // Nếu còn cooldown → KHÔNG chạy tiếp attack
-        if (Time.time - lastAttackTime < attackCooldown)
-            return;
-
-        // ⭐ CHẠY ANIMATION TẤN CÔNG MỖI KHI ĐỦ COOLDOWN
-        animator.SetTrigger("Attack");
-
-        lastAttackTime = Time.time;
-
-        // ⭐ Gây damage nếu player còn trong phạm vi
-        if (Vector2.Distance(transform.position, player.position) <= attackRange)
+        if (distance < tooCloseDistance && !isBackingUp)
         {
-            PlayerHealth playerHealth = player.GetComponent<PlayerHealth>();
-            if (playerHealth != null)
-            {
-                playerHealth.TakeDamage(50);
+            StartCoroutine(BackstepRoutine(-dir));
+        }
 
-                // Âm thanh tấn công
-                if (audioSource != null && attackSound != null)
-                    audioSource.PlayOneShot(attackSound);
-            }
+        if (distance <= attackRange && Time.time - lastAttackTime >= attackCooldown)
+        {
+            lastAttackTime = Time.time;
+            animator.SetTrigger("Attack");
+            rb.velocity = Vector2.zero;
+            return;
+        }
+
+        if (distance > idealAttackDistance && !isBackingUp)
+        {
+            rb.velocity = new Vector2(dir * chaseSpeed, rb.velocity.y);
+            animator.SetFloat("Speed", Mathf.Abs(rb.velocity.x));
+        }
+        else if (!isBackingUp)
+        {
+            rb.velocity = Vector2.zero;
+            animator.SetFloat("Speed", 0);
+        }
+
+        UpdateFacingDirection(rb.velocity.x);
+    }
+
+    public void DealDamage()
+    {
+        float distance = Vector2.Distance(transform.position, player.position);
+        if (distance <= attackRange)
+        {
+            PlayAttackSound();
+
+            PlayerHealth hp = player.GetComponent<PlayerHealth>();
+            if (hp != null) hp.TakeDamage(100);
         }
     }
 
+    IEnumerator BackstepRoutine(float dir)
+    {
+        isBackingUp = true;
+        animator.SetFloat("Speed", backstepSpeed);
+
+        float startX = transform.position.x;
+        float target = startX + dir * backstepDistance;
+
+        float t = 0;
+        while (t < 1f)
+        {
+            t += Time.deltaTime * backstepSpeed;
+            float newX = Mathf.Lerp(startX, target, t);
+            rb.MovePosition(new Vector2(newX, transform.position.y));
+            yield return null;
+        }
+
+        animator.SetFloat("Speed", 0);
+        isBackingUp = false;
+    }
 
     IEnumerator WaitAndTurn()
     {
         isWaiting = true;
         rb.velocity = Vector2.zero;
         animator.SetFloat("Speed", 0);
+
         yield return new WaitForSeconds(waitTime);
+
         moveDirection *= -1;
-        Flip();
         isWaiting = false;
     }
 
-    // ⭐ Sprite gốc quay TRÁI → scale.x dương = trái  
-    // Khi quay phải → scale.x âm
-    void Flip()
+    void UpdateFacingDirection(float moveDir)
     {
-        facingRight = !facingRight;
+        if (moveDir > 0.05f) transform.rotation = Quaternion.Euler(0, 180f, 0);
+        else if (moveDir < -0.05f) transform.rotation = Quaternion.Euler(0, 0f, 0);
+    }
 
-        Vector3 s = transform.localScale;
-        s.x = Mathf.Abs(s.x) * (facingRight ? -1 : 1);
-        transform.localScale = s;
+    public void PlayAttackSound()
+    {
+        if (attackSound != null && audioSource != null)
+            audioSource.PlayOneShot(attackSound, 0.7f);
     }
 
     void OnDrawGizmosSelected()
@@ -209,6 +252,7 @@ public class ScorpionPatrol : MonoBehaviour
 
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, detectRange);
+
         Gizmos.color = Color.magenta;
         Gizmos.DrawWireSphere(transform.position, attackRange);
     }

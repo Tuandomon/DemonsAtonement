@@ -25,13 +25,13 @@ public class BatAI : MonoBehaviour
     public Rigidbody2D rb;
 
     [Header("Damage Settings")]
-    public int attackDamage = 20; // 💥 Sát thương
+    public int attackDamage = 20;
 
     private void Start()
     {
         currentSpeed = normalSpeed;
 
-        // 🔹 Bỏ qua va chạm với các enemy khác
+        // Ignore collision with other enemies
         Collider2D myCollider = GetComponent<Collider2D>();
         Collider2D[] allColliders = FindObjectsOfType<Collider2D>();
         foreach (Collider2D col in allColliders)
@@ -46,20 +46,21 @@ public class BatAI : MonoBehaviour
 
     private void Update()
     {
-        if (isAttackCooldown) return;  // ĐANG NGHỈ → ĐỨNG YÊN
+        if (isAttackCooldown) return;
         if (player == null) return;
 
-        // Kiểm tra player có trong phạm vi Left–Right không
-        bool playerInBounds = player.position.x >= leftPoint.position.x && player.position.x <= rightPoint.position.x;
+        // Luôn xoay hướng theo player khi tấn công
+        // Không cần rotate trong patrol/chase vì đã xoay theo hướng di chuyển
+        bool playerInBounds = (leftPoint != null && rightPoint != null) &&
+                              player.position.x >= leftPoint.position.x &&
+                              player.position.x <= rightPoint.position.x;
 
-        // Nếu player ra ngoài giới hạn → Patrol
         if (!playerInBounds)
         {
             Patrol();
             return;
         }
 
-        // Kiểm tra phạm vi phát hiện và tấn công
         bool playerInDetect = Physics2D.OverlapCircle(transform.position, detectionRadius, playerLayer);
         bool playerInAttack = Physics2D.OverlapCircle(transform.position, attackRadius, playerLayer);
 
@@ -88,7 +89,7 @@ public class BatAI : MonoBehaviour
         if (movingRight)
         {
             rb.velocity = new Vector2(currentSpeed, 0);
-            transform.rotation = Quaternion.Euler(0, 180, 0);
+            UpdateFacingDirection(1); // đi phải → xoay phải
 
             if (transform.position.x >= rightPoint.position.x)
                 movingRight = false;
@@ -96,7 +97,7 @@ public class BatAI : MonoBehaviour
         else
         {
             rb.velocity = new Vector2(-currentSpeed, 0);
-            transform.rotation = Quaternion.Euler(0, 0, 0);
+            UpdateFacingDirection(-1); // đi trái → xoay trái
 
             if (transform.position.x <= leftPoint.position.x)
                 movingRight = true;
@@ -111,16 +112,10 @@ public class BatAI : MonoBehaviour
         anim.Play("Bat_Fly");
         currentSpeed = chaseSpeed;
 
-        if (player.position.x > transform.position.x)
-        {
-            rb.velocity = new Vector2(currentSpeed, 0);
-            transform.rotation = Quaternion.Euler(0, 180, 0);
-        }
-        else
-        {
-            rb.velocity = new Vector2(-currentSpeed, 0);
-            transform.rotation = Quaternion.Euler(0, 0, 0);
-        }
+        float dir = (player.position.x > transform.position.x) ? 1 : -1;
+        rb.velocity = new Vector2(dir * currentSpeed, 0);
+
+        UpdateFacingDirection(dir); // luôn xoay theo hướng di chuyển
     }
 
     // ==========================
@@ -130,11 +125,11 @@ public class BatAI : MonoBehaviour
     {
         isAttackCooldown = true;
 
-        rb.velocity = Vector2.zero; // ĐỨNG YÊN
+        rb.velocity = Vector2.zero; // đứng yên
+        RotateToPlayer();           // xoay theo player khi tấn công
 
         anim.Play("Bat_Tan cong");
 
-        // 💥 Gây damage ngay khi tấn công
         if (player != null)
         {
             PlayerHealth ph = player.GetComponent<PlayerHealth>();
@@ -144,22 +139,41 @@ public class BatAI : MonoBehaviour
             }
         }
 
-        // Sau khi animation đánh xong → chuyển sang Fly nhưng vẫn đứng yên
         Invoke(nameof(IdleFly), 0.6f);
-
-        // Sau 2 giây cho phép tấn công tiếp
         Invoke(nameof(ResetAttack), 2f);
     }
 
     void IdleFly()
     {
-        rb.velocity = Vector2.zero;       // GIỮ ĐỨNG YÊN
-        anim.Play("Bat_Fly");            // Animation bay nhưng KHÔNG di chuyển
+        rb.velocity = Vector2.zero;
+        anim.Play("Bat_Fly");
     }
 
     void ResetAttack()
     {
         isAttackCooldown = false;
+    }
+
+    // ==========================
+    // XOAY THEO HƯỚNG DI CHUYỂN
+    // ==========================
+    void UpdateFacingDirection(float moveDir)
+    {
+        if (moveDir > 0.05f)
+            transform.rotation = Quaternion.Euler(0, 180f, 0); // đi phải
+        else if (moveDir < -0.05f)
+            transform.rotation = Quaternion.Euler(0, 0f, 0);   // đi trái
+    }
+
+    // Xoay theo hướng player khi tấn công
+    void RotateToPlayer()
+    {
+        if (player == null) return;
+
+        if (player.position.x > transform.position.x)
+            transform.rotation = Quaternion.Euler(0, 180, 0); // nhìn phải
+        else
+            transform.rotation = Quaternion.Euler(0, 0, 0);   // nhìn trái
     }
 
     // ==========================
@@ -173,7 +187,6 @@ public class BatAI : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, attackRadius);
 
-        // Hiển thị phạm vi Left–Right
         if (leftPoint != null && rightPoint != null)
         {
             Gizmos.color = Color.cyan;

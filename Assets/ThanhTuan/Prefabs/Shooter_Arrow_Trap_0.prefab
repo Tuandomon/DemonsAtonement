@@ -10,10 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 3674506025470093417}
   - component: {fileID: 3377419635269427528}
-  - component: {fileID: 5776109313351784605}
   - component: {fileID: 7506184472909729006}
   - component: {fileID: 2346041847326459997}
   - component: {fileID: 6624769503910522741}
+  - component: {fileID: -3014245496363233000}
   m_Layer: 0
   m_Name: Shooter_Arrow_Trap_0
   m_TagString: Untagged
@@ -88,20 +88,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &5776109313351784605
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7608911009246268668}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b95da6239d2a23d4db06fae96f155d57, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damageAmount: 20
-  targetTag: Player
 --- !u!61 &7506184472909729006
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -270,3 +256,17 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &-3014245496363233000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7608911009246268668}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b95da6239d2a23d4db06fae96f155d57, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageAmount: 20
+  targetTag: Player
