@@ -7,7 +7,7 @@ public class BossMagicSimple : MonoBehaviour
     [Header("Player Settings")]
     public Transform player;
     public float detectionRadius = 12f;
-    public float magicRadius = 25f;
+    public float magicRadius = 10f;
     public Transform leftPoint;
     public Transform rightPoint;
 
@@ -18,17 +18,17 @@ public class BossMagicSimple : MonoBehaviour
     [Header("Magic Attack Settings")]
     public GameObject magicPrefab;
     public Transform magicSpawnPoint;
-    public float magicCooldown = 4f;
+
+    public float magicCooldown = 6f;
     private float magicTimer = 0f;
 
     [Header("Summon Settings")]
-    public GameObject summonedPrefab;           // Prefab BossSummonedSpirit
-    public Transform summonPoint;               // Vị trí spawn
+    public GameObject summonedPrefab;
+    public Transform summonPoint;
     public float summonCooldown = 30f;
     private float summonTimer = 0f;
     public float summonedLifeTime = 20f;
 
-    // ⭐ Lưu tất cả quái đã spawn
     private List<GameObject> summonedSpirits = new List<GameObject>();
 
     private bool isPlayerDetected = false;
@@ -40,11 +40,14 @@ public class BossMagicSimple : MonoBehaviour
 
         float distanceToPlayer = Vector2.Distance(transform.position, player.position);
 
+        // Player trong vùng trái/phải
         bool inArea = player.position.x > leftPoint.position.x &&
                       player.position.x < rightPoint.position.x;
 
-        isPlayerDetected = (distanceToPlayer <= detectionRadius && inArea);
+        // ⭐ CHỈ phát hiện khi vào đúng vùng + khoảng cách đúng
+        isPlayerDetected = inArea && distanceToPlayer <= detectionRadius;
 
+        // ⛔ Nếu chưa vào phạm vi phát hiện: không bắn, không summon
         if (!isPlayerDetected)
             return;
 
@@ -52,13 +55,13 @@ public class BossMagicSimple : MonoBehaviour
         magicTimer += Time.deltaTime;
         summonTimer += Time.deltaTime;
 
-        // Magic attack
+        // ⭐ Chỉ bắn khi đã phát hiện player + đang nằm trong magicRadius
         if (distanceToPlayer <= magicRadius)
         {
             TryCastMagic();
         }
 
-        // Summon BossSummonedSpirit
+        // Summon
         if (summonTimer >= summonCooldown)
         {
             SummonSpirit();
@@ -67,6 +70,7 @@ public class BossMagicSimple : MonoBehaviour
 
     void TryCastMagic()
     {
+        if (!isPlayerDetected) return;       // CHẶN 100% nếu player chưa detect
         if (isCasting) return;
         if (magicTimer < magicCooldown) return;
 
@@ -92,7 +96,6 @@ public class BossMagicSimple : MonoBehaviour
             Instantiate(magicPrefab, magicSpawnPoint.position, Quaternion.identity);
 
         yield return new WaitForSeconds(0.5f);
-
         isCasting = false;
     }
 
@@ -102,7 +105,6 @@ public class BossMagicSimple : MonoBehaviour
 
         GameObject spirit = Instantiate(summonedPrefab, summonPoint.position, Quaternion.identity);
 
-        // Thiết lập phạm vi di chuyển giống Boss
         BossSummonedSpirit spiritScript = spirit.GetComponent<BossSummonedSpirit>();
         if (spiritScript != null)
         {
@@ -111,16 +113,11 @@ public class BossMagicSimple : MonoBehaviour
             spiritScript.player = player;
         }
 
-        // Destroy sau thời gian sống
         Destroy(spirit, summonedLifeTime);
-
-        // ⭐ Lưu spirit vào danh sách
         summonedSpirits.Add(spirit);
-
         summonTimer = 0f;
     }
 
-    // ⭐ Hàm hủy tất cả quái khi Boss chết
     public void DespawnAllSummoned()
     {
         foreach (var spirit in summonedSpirits)
@@ -129,5 +126,23 @@ public class BossMagicSimple : MonoBehaviour
                 Destroy(spirit);
         }
         summonedSpirits.Clear();
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        // Vòng phát hiện
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, detectionRadius);
+
+        // Vòng bắn skill
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, magicRadius);
+
+        // Left - Right
+        if (leftPoint != null && rightPoint != null)
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawLine(leftPoint.position, rightPoint.position);
+        }
     }
 }
