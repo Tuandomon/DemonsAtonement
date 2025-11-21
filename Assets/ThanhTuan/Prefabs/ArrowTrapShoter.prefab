@@ -41,9 +41,9 @@ GameObject:
   m_Component:
   - component: {fileID: 3028908012253714155}
   - component: {fileID: 8588869949699621873}
-  - component: {fileID: 5261794290706051330}
   - component: {fileID: 226140515819237895}
   - component: {fileID: 4497691719325473383}
+  - component: {fileID: 5261794290706051330}
   - component: {fileID: 8028663233672783820}
   m_Layer: 0
   m_Name: ArrowTrapShoter
@@ -120,25 +120,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &5261794290706051330
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1130097883159896795}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68f8ec45326e0104ca70b8fd195d4592, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  arrowPrefab: {fileID: 1383517308576390735, guid: f0d6c9ecc3a45d548bc03a3fdb3ee524, type: 3}
-  firePoint: {fileID: 2306660694506066981}
-  audioSource: {fileID: 4497691719325473383}
-  shootSound: {fileID: 8300000, guid: 046456c4537a53d4db51680d5c400b46, type: 3}
-  minFireDelay: 3
-  maxFireDelay: 5
-  arrowSpeed: 20
 --- !u!61 &226140515819237895
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -280,6 +261,25 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &5261794290706051330
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1130097883159896795}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68f8ec45326e0104ca70b8fd195d4592, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  arrowPrefab: {fileID: 1383517308576390735, guid: f0d6c9ecc3a45d548bc03a3fdb3ee524, type: 3}
+  firePoint: {fileID: 2306660694506066981}
+  audioSource: {fileID: 4497691719325473383}
+  shootSound: {fileID: 8300000, guid: 046456c4537a53d4db51680d5c400b46, type: 3}
+  minFireDelay: 3
+  maxFireDelay: 5
+  arrowSpeed: 20
 --- !u!114 &8028663233672783820
 MonoBehaviour:
   m_ObjectHideFlags: 0
