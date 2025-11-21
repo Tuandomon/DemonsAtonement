@@ -21,6 +21,8 @@ TagManager:
   - Door4
   - Wall
   - Enemy_Boar
+  - Key
+  - Coin
   layers:
   - Default
   - TransparentFX
