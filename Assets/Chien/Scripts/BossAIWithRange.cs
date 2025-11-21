@@ -27,10 +27,9 @@ public class BossAI_RangeAndCircle : MonoBehaviour
     private bool isAttacking = false;
 
     [Header("Attack Variables")]
-    private float attackCooldown = 1.2f;
     private float attackTimer = 0f;
-    private float attack3Interval = 4f;
     private float attack3Timer = 0f;
+    private float attack3Interval = 4f;
     private bool nextAttack3 = false;
 
     [Header("Attack Damage")]
@@ -55,13 +54,12 @@ public class BossAI_RangeAndCircle : MonoBehaviour
 
     void Update()
     {
-        // ✅ Dừng mọi hành động ngay khi HP <= 0
         if (enemyHealth != null && enemyHealth.GetCurrentHealth() <= 0)
         {
             rb.velocity = Vector2.zero;
             anim.SetBool("isRunning", false);
             anim.SetBool("isAttacking", false);
-            return; // bỏ qua chase/attack/return
+            return;
         }
 
         if (player == null || leftPoint == null || rightPoint == null)
@@ -78,17 +76,11 @@ public class BossAI_RangeAndCircle : MonoBehaviour
 
         if (isAttacking)
         {
-            // Trong lúc attack vẫn được phép xoay
             FlipSprite(player.position.x - transform.position.x);
             return;
         }
 
         if (playerInRange && distanceToPlayer <= detectionRadius)
-        {
-            isChasing = true;
-            isReturning = false;
-        }
-        else if (playerInRange && isChasing)
         {
             isChasing = true;
             isReturning = false;
@@ -127,8 +119,8 @@ public class BossAI_RangeAndCircle : MonoBehaviour
 
     void TryAttack()
     {
-        if (attackTimer > 0f) return;
-
+        // ✅ Không spam attack, chỉ chạy 1 lần animation
+        if (attackTimer > 0f || isAttacking) return;
         StartCoroutine(AttackRoutine());
     }
 
@@ -146,15 +138,14 @@ public class BossAI_RangeAndCircle : MonoBehaviour
         anim.SetTrigger(useAttack3 ? "Attack3" : "Attack");
         PlaySlashSound();
 
-        float attackAnimDuration = 1f; // chỉnh theo Animator
+        // Chỉ chờ animation chạy xong, không gây damage ở đây nữa
+        float attackAnimDuration = 1f; // set đúng thời lượng animation
         float timer = 0f;
-        bool damageDealt = false;
 
         while (timer < attackAnimDuration)
         {
             timer += Time.deltaTime;
 
-            // Dừng nếu boss chết
             if (enemyHealth != null && enemyHealth.GetCurrentHealth() <= 0)
             {
                 rb.velocity = Vector2.zero;
@@ -164,42 +155,32 @@ public class BossAI_RangeAndCircle : MonoBehaviour
             }
 
             FlipSprite(player.position.x - transform.position.x);
-
-            // Gây sát thương đúng frame giữa animation
-            if (!damageDealt && timer >= attackAnimDuration / 2f)
-            {
-                float dist = Vector2.Distance(transform.position, player.position);
-                if (dist <= attackRadius)
-                {
-                    DealDamage(useAttack3 ? attack3Damage : attackDamage);
-                }
-                damageDealt = true;
-            }
-
             yield return null;
         }
 
         anim.SetBool("isAttacking", false);
         isAttacking = false;
 
-        // ⭐ Cập nhật cooldown riêng biệt
-        if (useAttack3)
-            attackTimer = 1.5f;   // Attack3 cooldown 1.5 giây
-        else
-            attackTimer = 1f;     // Attack thường cooldown 1 giây
+        // ⭐ Sau khi đánh xong, cooldown 1 giây mới được đánh tiếp
+        attackTimer = 1f;
 
-        if (!useAttack3)
-        {
-            // check Attack3 interval
-            if (attack3Timer >= attack3Interval)
-                nextAttack3 = true;
-        }
-        else
-        {
+        if (!useAttack3 && attack3Timer >= attack3Interval)
+            nextAttack3 = true;
+        else if (useAttack3)
             attack3Timer = 0f;
-        }
     }
 
+    // Animation Event gọi
+    public void AE_DealDamage()
+    {
+        if (player == null) return;
+
+        float dist = Vector2.Distance(transform.position, player.position);
+        if (dist > attackRadius) return;
+
+        int dmg = anim.GetCurrentAnimatorStateInfo(0).IsName("Attack3") ? attack3Damage : attackDamage;
+        DealDamage(dmg);
+    }
 
     void DealDamage(int amount)
     {
