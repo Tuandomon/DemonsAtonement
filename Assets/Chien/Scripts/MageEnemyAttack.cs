@@ -2,6 +2,9 @@
 
 public class MageEnemyAttack : MonoBehaviour
 {
+    [Header("Player Settings")]
+    public Transform player;   // 👈 Thêm manual assign
+
     [Header("Normal Attack Settings")]
     public GameObject lightPrefab;
     public Transform firePoint;
@@ -22,22 +25,25 @@ public class MageEnemyAttack : MonoBehaviour
 
     [Header("References")]
     public Animator animator;
-    private Transform player;
+
     private float nextAttackTime;
     private Rigidbody2D rb;
     private Vector2 fixedPosition;
 
     private void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player")?.transform;
+        // ✔ Nếu player chưa được gán thì tự tìm theo Tag
+        if (player == null)
+            player = GameObject.FindGameObjectWithTag("Player")?.transform;
 
-        // 🧱 Lấy Rigidbody2D
         rb = GetComponent<Rigidbody2D>();
+
+        // 🧱 GIỮ MAGE ĐỨNG YÊN
         if (rb != null)
         {
-            rb.gravityScale = 0f; // Không bị rơi
-            rb.constraints = RigidbodyConstraints2D.FreezeRotation; // Không xoay
-            fixedPosition = transform.position; // Ghi lại vị trí ban đầu để giữ Mage đứng yên
+            rb.gravityScale = 0f;
+            rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+            fixedPosition = transform.position;
         }
 
         nextFireBallTime = Time.time + fireBallCooldown;
@@ -48,7 +54,7 @@ public class MageEnemyAttack : MonoBehaviour
     {
         if (player == null) return;
 
-        // 🧲 Giữ vị trí cố định, tránh bị đẩy
+        // 🧲 Không cho di chuyển
         if (rb != null)
         {
             rb.velocity = Vector2.zero;
@@ -59,16 +65,16 @@ public class MageEnemyAttack : MonoBehaviour
 
         if (distance <= attackRange)
         {
-            // 🔄 Quay mặt về phía Player
+            // 🔄 Quay hướng về player
             if (player.position.x < transform.position.x)
                 transform.localScale = new Vector3(-0.8f, 0.8f, 1f);
             else
                 transform.localScale = new Vector3(0.8f, 0.8f, 1f);
 
-            // 🚫 Nếu đang dùng skill đặc biệt thì không bắn gì khác
+            // Nếu đang dùng skill đặc biệt → không bắn khác
             if (isUsingTripleSkill || isUsingFireBall) return;
 
-            // 🔥 Ưu tiên dùng FireBall nếu hồi xong
+            // 🔥 Ưu tiên FireBall
             if (Time.time >= nextFireBallTime)
             {
                 isUsingFireBall = true;
@@ -78,17 +84,17 @@ public class MageEnemyAttack : MonoBehaviour
                 return;
             }
 
-            // ⚡ Dùng skill 3 tia nếu hồi xong
+            // ⚡ Skill 3 tia
             if (Time.time >= nextTripleSkillTime)
             {
                 isUsingTripleSkill = true;
                 animator.SetTrigger("Attack");
-                nextTripleSkillTime = Time.time + tripleSkillCooldown;
                 Invoke(nameof(ShootTriple), 0.4f);
+                nextTripleSkillTime = Time.time + tripleSkillCooldown;
                 return;
             }
 
-            // 🏹 Bắn thường
+            // 🏹 Tấn công thường
             if (Time.time >= nextAttackTime)
             {
                 animator.SetTrigger("Attack");
@@ -109,9 +115,9 @@ public class MageEnemyAttack : MonoBehaviour
         if (lightPrefab == null || firePoint == null || player == null) return;
 
         GameObject light = Instantiate(lightPrefab, firePoint.position, Quaternion.identity);
-
         Vector3 dir = (player.position - firePoint.position).normalized;
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+
         light.transform.rotation = Quaternion.Euler(0, 0, angle);
 
         Rigidbody2D rbLight = light.GetComponent<Rigidbody2D>();
@@ -119,18 +125,21 @@ public class MageEnemyAttack : MonoBehaviour
             rbLight.velocity = dir * 6f;
     }
 
-    // ⚡ Skill bắn 3 tia
+    // ⚡ Bắn 3 tia
     private void ShootTriple()
     {
         if (lightPrefab == null || firePoint == null || player == null) return;
 
         Vector3 baseDir = (player.position - firePoint.position).normalized;
         float baseAngle = Mathf.Atan2(baseDir.y, baseDir.x) * Mathf.Rad2Deg;
+
         float[] spreadAngles = { -angleSpread, 0f, angleSpread };
 
         foreach (float spread in spreadAngles)
         {
-            GameObject light = Instantiate(lightPrefab, firePoint.position, Quaternion.Euler(0, 0, baseAngle + spread));
+            GameObject light = Instantiate(lightPrefab, firePoint.position,
+                Quaternion.Euler(0, 0, baseAngle + spread));
+
             Rigidbody2D rbLight = light.GetComponent<Rigidbody2D>();
             if (rbLight != null)
             {
@@ -140,19 +149,18 @@ public class MageEnemyAttack : MonoBehaviour
         }
 
         Invoke(nameof(ResetTripleSkill), 1f);
-        Debug.Log("Mage used Triple Light Skill!");
     }
 
     private void ResetTripleSkill() => isUsingTripleSkill = false;
 
-    // 🔥 Bắn FireBall
+    // 🔥 FireBall
     private void ShootFireBall()
     {
         if (fireBallPrefab == null || firePoint == null || player == null) return;
 
         GameObject fireBall = Instantiate(fireBallPrefab, firePoint.position, Quaternion.identity);
-
         Vector3 dir = (player.position - firePoint.position).normalized;
+
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
         fireBall.transform.rotation = Quaternion.Euler(0, 0, angle);
 
@@ -161,7 +169,6 @@ public class MageEnemyAttack : MonoBehaviour
             rbFire.velocity = dir * 8f;
 
         Invoke(nameof(ResetFireBallSkill), 1f);
-        Debug.Log("Mage used FireBall!");
     }
 
     private void ResetFireBallSkill() => isUsingFireBall = false;

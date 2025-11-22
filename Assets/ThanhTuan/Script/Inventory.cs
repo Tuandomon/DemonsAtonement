@@ -5,7 +5,7 @@ public class Inventory : MonoBehaviour
 {
     public int maxPotionCount = 5;
     public int currentPotionCount = 0;
-    public int healAmountPerPotion = 30;
+    public int healAmountPerPotion = 1000;
 
     private PlayerHealth playerHealth;
 

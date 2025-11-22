@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 public class PlayerAttackNormal : MonoBehaviour
 {
     private Animator animator;
     private AudioSource audioSource;
+    private PlayerController playerController; // Thêm tham chiếu tới PlayerController
 
     private float lastAttackTime = 0f;
     private bool waitingForSecondAttack = false;
@@ -13,21 +15,19 @@ public class PlayerAttackNormal : MonoBehaviour
     public AudioClip attackSound1;
     public AudioClip attackSound2;
 
-    public class PlayerAttackHitbox : MonoBehaviour
-    {
-        public GameObject hitbox1;
-        public GameObject hitbox2;
-
-        public void EnableHitbox1() => hitbox1.SetActive(true);
-        public void DisableHitbox1() => hitbox1.SetActive(false);
-        public void EnableHitbox2() => hitbox2.SetActive(true);
-        public void DisableHitbox2() => hitbox2.SetActive(false);
-    }
+    [Header("Hitbox")]
+    public GameObject hitbox1;
+    public GameObject hitbox2;
 
     void Start()
     {
         animator = GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
+        playerController = GetComponent<PlayerController>(); // Lấy script PlayerController
+
+        // Tắt hitbox ban đầu
+        if (hitbox1 != null) hitbox1.SetActive(false);
+        if (hitbox2 != null) hitbox2.SetActive(false);
     }
 
     void Update()
@@ -49,25 +49,50 @@ public class PlayerAttackNormal : MonoBehaviour
                 waitingForSecondAttack = true;
                 lastAttackTime = currentTime;
 
-                // Phát âm thanh đòn 1 với âm lượng SFXVolume
-                if (attackSound1 != null)
-                {
-                    audioSource.volume = PlayerPrefs.GetFloat("SFXVolume", 1f);
-                    audioSource.PlayOneShot(attackSound1);
-                }
+                PlaySound(attackSound1);
+
+                LockMovement(); // Khóa di chuyển khi bắt đầu Attack 1
             }
             else if (state.IsName("WaitForInput") && waitingForSecondAttack)
             {
                 animator.SetTrigger("AttackNormalTrigger");
                 waitingForSecondAttack = false;
 
-                // Phát âm thanh đòn 2 với âm lượng SFXVolume
-                if (attackSound2 != null)
-                {
-                    audioSource.volume = PlayerPrefs.GetFloat("SFXVolume", 1f);
-                    audioSource.PlayOneShot(attackSound2);
-                }
+                PlaySound(attackSound2);
+
+                LockMovement(); // Khóa di chuyển khi bắt đầu Attack 2
             }
         }
+    }
+
+    private void PlaySound(AudioClip clip)
+    {
+        if (clip != null)
+        {
+            audioSource.volume = PlayerPrefs.GetFloat("SFXVolume", 1f);
+            audioSource.PlayOneShot(clip);
+        }
+    }
+
+    // 🥊 Bật/tắt hitbox cho đòn 1
+    public void EnableHitbox1() => hitbox1?.SetActive(true);
+    public void DisableHitbox1() => hitbox1?.SetActive(false);
+
+    // 🥊 Bật/tắt hitbox cho đòn 2
+    public void EnableHitbox2() => hitbox2?.SetActive(true);
+    public void DisableHitbox2() => hitbox2?.SetActive(false);
+
+    // 🚫 Khóa di chuyển
+    public void LockMovement()
+    {
+        if (playerController != null)
+            playerController.enabled = false;
+    }
+
+    // ✅ Mở lại di chuyển (gọi ở cuối animation bằng Animation Event)
+    public void UnlockMovement()
+    {
+        if (playerController != null)
+            playerController.enabled = true;
     }
 }

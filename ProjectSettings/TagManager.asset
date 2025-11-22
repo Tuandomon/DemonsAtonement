@@ -8,6 +8,21 @@ TagManager:
   - Enemy
   - DashItem
   - Trap
+  - EnemyAttack
+  - Ladder
+  - Door
+  - Boss
+  - HealthItem
+  - Enemy_Wolf
+  - Lightning
+  - Spirit
+  - Door2
+  - Door3
+  - Door4
+  - Wall
+  - Enemy_Boar
+  - Key
+  - Coin
   layers:
   - Default
   - TransparentFX
@@ -45,8 +60,14 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Enemy
+    uniqueID: 362621823
+    locked: 0
   - name: Player
     uniqueID: 2735738555
+    locked: 0
+  - name: Skill
+    uniqueID: 3543308315
     locked: 0
   - name: UI
     uniqueID: 3516051077
