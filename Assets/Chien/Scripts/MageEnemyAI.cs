@@ -3,6 +3,9 @@ using System.Collections;
 
 public class MageEnemyAI : MonoBehaviour
 {
+    [Header("Player Settings")]
+    public Transform targetPlayer;   // <-- Player chỉ định thủ công
+
     [Header("Movement Settings")]
     public float moveSpeed = 2f;
     public Transform leftPoint;
@@ -30,7 +33,7 @@ public class MageEnemyAI : MonoBehaviour
     [Header("Normal Attack Settings")]
     public GameObject lightPrefab;
     public Transform firePoint;
-     
+
     [Header("References")]
     public Animator animator;
     private Transform player;
@@ -41,8 +44,13 @@ public class MageEnemyAI : MonoBehaviour
 
     void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player")?.transform;
         rb = GetComponent<Rigidbody2D>();
+
+        // Ưu tiên dùng Player được kéo vào Inspector
+        if (targetPlayer != null)
+            player = targetPlayer;
+        else
+            player = GameObject.FindGameObjectWithTag("Player")?.transform;
 
         if (rb != null)
         {
@@ -53,9 +61,10 @@ public class MageEnemyAI : MonoBehaviour
         nextFireBallTime = Time.time + fireBallCooldown;
         nextTripleSkillTime = Time.time + tripleSkillCooldown;
 
-        // Bỏ qua va chạm với các tag Enemy, EnemyAttack, Enemy_Wolf
+        // Bỏ qua va chạm với Enemy, EnemyAttack, Enemy_Wolf
         Collider2D myCollider = GetComponent<Collider2D>();
         Collider2D[] allColliders = FindObjectsOfType<Collider2D>();
+
         foreach (Collider2D col in allColliders)
         {
             if (col == myCollider) continue;
@@ -70,15 +79,12 @@ public class MageEnemyAI : MonoBehaviour
 
         float distance = Vector2.Distance(transform.position, player.position);
 
-        // Di chuyển chỉ khi player ngoài attackRange
         if (!isIdle && distance > attackRange)
             Patrol();
 
-        // Quay mặt về player
         if (distance <= attackRange)
             FacePlayer();
 
-        // Attack hoặc skill
         if (distance <= attackRange)
         {
             rb.velocity = Vector2.zero;
@@ -94,7 +100,6 @@ public class MageEnemyAI : MonoBehaviour
         float step = moveSpeed * Time.deltaTime;
         transform.position = new Vector3(Mathf.MoveTowards(transform.position.x, targetX, step), transform.position.y, transform.position.z);
 
-        // Xoay Y
         transform.eulerAngles = new Vector3(0, movingRight ? 0f : 180f, 0);
 
         if ((movingRight && transform.position.x >= targetX) || (!movingRight && transform.position.x <= targetX))
@@ -121,7 +126,6 @@ public class MageEnemyAI : MonoBehaviour
     {
         if (isUsingTripleSkill || isUsingFireBall) return;
 
-        // FireBall Skill
         if (Time.time >= nextFireBallTime)
         {
             isUsingFireBall = true;
@@ -131,7 +135,6 @@ public class MageEnemyAI : MonoBehaviour
             return;
         }
 
-        // Triple Skill
         if (Time.time >= nextTripleSkillTime)
         {
             isUsingTripleSkill = true;
@@ -141,21 +144,22 @@ public class MageEnemyAI : MonoBehaviour
             return;
         }
 
-        // Normal Attack
         if (Time.time >= nextAttackTime)
         {
             animator.SetTrigger("Attack");
-            Invoke(nameof(ShootNormal), 0.3f);
+            Invoke(nameof(Shoot), 0.3f);   // ✔ Đã đổi từ ShootNormal → Shoot
             nextAttackTime = Time.time + attackCooldown;
         }
     }
 
-    void ShootNormal()
+    // ✔ Hàm bắn thường đổi tên thành Shoot()
+    void Shoot()
     {
         if (!lightPrefab || !firePoint || !player) return;
 
         GameObject light = Instantiate(lightPrefab, firePoint.position, Quaternion.identity);
         Vector2 dir = (player.position - firePoint.position).normalized;
+
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
         light.transform.rotation = Quaternion.Euler(0, 0, angle);
 
@@ -169,12 +173,14 @@ public class MageEnemyAI : MonoBehaviour
 
         Vector2 baseDir = (player.position - firePoint.position).normalized;
         float baseAngle = Mathf.Atan2(baseDir.y, baseDir.x) * Mathf.Rad2Deg;
+
         float[] spreadAngles = { -angleSpread, 0f, angleSpread };
 
         foreach (float spread in spreadAngles)
         {
             GameObject light = Instantiate(lightPrefab, firePoint.position, Quaternion.Euler(0, 0, baseAngle + spread));
             Rigidbody2D rbLight = light.GetComponent<Rigidbody2D>();
+
             if (rbLight != null)
             {
                 Vector2 shootDir = Quaternion.Euler(0, 0, spread) * baseDir;
@@ -192,7 +198,9 @@ public class MageEnemyAI : MonoBehaviour
         if (!fireBallPrefab || !firePoint || !player) return;
 
         Vector2 dir = (player.position - firePoint.position).normalized;
+
         GameObject fireBall = Instantiate(fireBallPrefab, firePoint.position, Quaternion.identity);
+
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
         fireBall.transform.rotation = Quaternion.Euler(0, 0, angle);
 
