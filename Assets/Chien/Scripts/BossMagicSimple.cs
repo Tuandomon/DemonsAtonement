@@ -25,9 +25,9 @@ public class BossMagicSimple : MonoBehaviour
     [Header("Summon Settings")]
     public GameObject summonedPrefab;
     public Transform summonPoint;
-    public float summonCooldown = 30f;
+    public float summonCooldown = 10f;
     private float summonTimer = 0f;
-    public float summonedLifeTime = 20f;
+    public float summonedLifeTime = 5f;
 
     private List<GameObject> summonedSpirits = new List<GameObject>();
 
