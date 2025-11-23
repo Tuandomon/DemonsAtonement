@@ -330,8 +330,8 @@ MonoBehaviour:
   magicCooldown: 4
   summonedPrefab: {fileID: 3622666506297908453, guid: 3137571b80041f74eb0e24740c10cee7, type: 3}
   summonPoint: {fileID: 2780263513800380533}
-  summonCooldown: 30
-  summonedLifeTime: 20
+  summonCooldown: 10
+  summonedLifeTime: 5
 --- !u!114 &6997256922713862918
 MonoBehaviour:
   m_ObjectHideFlags: 0
