@@ -15,9 +15,17 @@ public class PlayerAttack : MonoBehaviour
 
     private PlayerController playerController;
 
-    // 🔥 Thêm 2 box gây damage
+    // 🔥 Hitbox cho đánh thường
     public GameObject attackBox1;
     public GameObject attackBox2;
+
+    // ---------------- Buff đổi skill ----------------
+    private bool starBoomActive = false;
+    private float starBoomTimer = 0f;
+    public GameObject starBoomPrefab;   // Prefab skill đặc biệt
+    public Transform firePoint;         // Điểm bắn skill
+    public float skillSpeed = 20f;
+    // ------------------------------------------------
 
     void Start()
     {
@@ -26,9 +34,15 @@ public class PlayerAttack : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         playerController = GetComponent<PlayerController>();
 
-        // 🔒 Tắt box ban đầu
         attackBox1.SetActive(false);
         attackBox2.SetActive(false);
+
+        if (firePoint == null)
+        {
+            GameObject found = GameObject.Find("FirePoint");
+            if (found != null) firePoint = found.transform;
+            else Debug.LogWarning("Không tìm thấy GameObject tên 'FirePoint'.");
+        }
     }
 
     void Update()
@@ -44,10 +58,21 @@ public class PlayerAttack : MonoBehaviour
             rb.velocity = new Vector2(0f, rb.velocity.y);
         }
 
+        // Đếm ngược buff
+        if (starBoomActive)
+        {
+            starBoomTimer -= Time.deltaTime;
+            if (starBoomTimer <= 0) starBoomActive = false;
+        }
+
         if (Input.GetKeyDown(KeyCode.I) && Time.time >= lastAttackTime + attackCooldown)
         {
-            FlipToMoveDirection(); // thay vì FlipToMouse
-            Attack();
+            FlipToMoveDirection();
+
+            if (starBoomActive)
+                StarBoomAttack(); // bắn skill prefab
+            else
+                Attack();         // đánh thường
         }
     }
 
@@ -63,23 +88,46 @@ public class PlayerAttack : MonoBehaviour
         lastAttackTime = Time.time;
         isAttacking = true;
         playerController.enabled = false;
-        Invoke("EndAttack", 1f); // hoặc dùng Animation Event
+        Invoke("EndAttack", 1f);
+    }
+
+    void StarBoomAttack()
+    {
+        lastAttackTime = Time.time;
+
+        if (firePoint != null && starBoomPrefab != null)
+        {
+            GameObject skill = Instantiate(starBoomPrefab, firePoint.position, Quaternion.identity);
+
+            // Xác định hướng Player đang nhìn
+            float direction = spriteRenderer.flipX ? -1f : 1f;
+
+            Rigidbody2D rbSkill = skill.GetComponent<Rigidbody2D>();
+            if (rbSkill != null)
+            {
+                rbSkill.velocity = new Vector2(direction * skillSpeed, 0f);
+            }
+        }
     }
 
     public void EndAttack()
     {
-        Debug.Log("EndAttack được gọi");
         isAttacking = false;
         playerController.enabled = true;
         attackBox1.SetActive(false);
         attackBox2.SetActive(false);
     }
 
-    // 🥊 Gọi từ Animation Event để kích hoạt box 1
     public void EnableAttackBox1() => attackBox1.SetActive(true);
     public void DisableAttackBox1() => attackBox1.SetActive(false);
 
-    // 🥊 Gọi từ Animation Event để kích hoạt box 2
     public void EnableAttackBox2() => attackBox2.SetActive(true);
     public void DisableAttackBox2() => attackBox2.SetActive(false);
+
+    // ---------------- API cho ItemChangeStarBoom ----------------
+    public void ActivateStarBoom(float duration)
+    {
+        starBoomActive = true;
+        starBoomTimer = duration;
+    }
 }
