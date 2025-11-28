@@ -23,6 +23,7 @@ TagManager:
   - Enemy_Boar
   - Key
   - Coin
+  - Object
   layers:
   - Default
   - TransparentFX
