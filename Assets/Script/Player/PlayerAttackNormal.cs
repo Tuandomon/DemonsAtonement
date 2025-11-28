@@ -5,7 +5,7 @@ public class PlayerAttackNormal : MonoBehaviour
 {
     private Animator animator;
     private AudioSource audioSource;
-    private PlayerController playerController; // Thêm tham chiếu tới PlayerController
+    private PlayerController playerController; // Tham chiếu tới PlayerController
 
     private float lastAttackTime = 0f;
     private bool waitingForSecondAttack = false;
@@ -23,7 +23,7 @@ public class PlayerAttackNormal : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
-        playerController = GetComponent<PlayerController>(); // Lấy script PlayerController
+        playerController = GetComponent<PlayerController>();
 
         // Tắt hitbox ban đầu
         if (hitbox1 != null) hitbox1.SetActive(false);
@@ -34,15 +34,18 @@ public class PlayerAttackNormal : MonoBehaviour
     {
         float currentTime = Time.time;
 
+        // Reset combo nếu quá thời gian
         if (waitingForSecondAttack && currentTime - lastAttackTime > comboWindow)
         {
             waitingForSecondAttack = false;
         }
 
+        // Nhấn J để tấn công
         if (Input.GetKeyDown(KeyCode.J) && !Input.GetKey(KeyCode.S))
         {
             AnimatorStateInfo state = animator.GetCurrentAnimatorStateInfo(0);
 
+            // Đòn đánh 1
             if (state.IsName("Idle"))
             {
                 animator.SetTrigger("AttackNormalTrigger");
@@ -50,17 +53,16 @@ public class PlayerAttackNormal : MonoBehaviour
                 lastAttackTime = currentTime;
 
                 PlaySound(attackSound1);
-
-                LockMovement(); // Khóa di chuyển khi bắt đầu Attack 1
+                LockMovement();
             }
+            // Đòn đánh 2
             else if (state.IsName("WaitForInput") && waitingForSecondAttack)
             {
                 animator.SetTrigger("AttackNormalTrigger");
                 waitingForSecondAttack = false;
 
                 PlaySound(attackSound2);
-
-                LockMovement(); // Khóa di chuyển khi bắt đầu Attack 2
+                LockMovement();
             }
         }
     }

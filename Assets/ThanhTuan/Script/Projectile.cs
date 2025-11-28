@@ -8,14 +8,12 @@ public class Projectile : MonoBehaviour
 
     void Start()
     {
-        // Hủy đạn sau 2 giây nếu không va chạm với gì
         Destroy(gameObject, lifetime);
     }
 
-    // Xử lý va chạm
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // ... Logic gây sát thương ...
+        // 1. Check for Player collision and apply damage
         if (other.CompareTag("Player"))
         {
             PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
@@ -23,10 +21,21 @@ public class Projectile : MonoBehaviour
             {
                 playerHealth.TakeDamage(damageAmount);
             }
+
+            // Destroy after hitting Player
+            Destroy(gameObject);
+            return;
         }
 
-        // Dòng lệnh này đảm bảo đạn bị hủy sau khi va chạm với BẤT KỲ THỨ GÌ
-        // (bao gồm cả Player và Tường/Đất).
-        Destroy(gameObject);
+        // 2. Check for Environment/Tilemap collision
+        // Use the tags you assigned to your Tilemap or static obstacles
+        else if (other.CompareTag("Ground") || other.CompareTag("Wall"))
+        {
+            // Destroy after hitting environment
+            Destroy(gameObject);
+        }
+
+        // If it hits anything else (like the shooter itself), nothing happens, 
+        // and the projectile continues to travel until its 'lifetime' expires.
     }
 }

@@ -435,6 +435,9 @@ MonoBehaviour:
   attackCooldown: 1.5
   attackBox1: {fileID: 8360425844673920149}
   attackBox2: {fileID: 6439896021689023925}
+  starBoomPrefab: {fileID: 6746501830386056440, guid: 98031869c1f6d5b4298acf87522e1d71, type: 3}
+  firePoint: {fileID: 8262192158584465952}
+  skillSpeed: 20
 --- !u!114 &5675518937920076319
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -613,11 +616,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57481bbd40da7b442ae6271bdb3010b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  keyImages:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
 --- !u!114 &6454009707322790238
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -630,7 +628,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 614c8cf3266ac044299727dd20d942ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  coinText: {fileID: 0}
 --- !u!1 &6043081351873683092
 GameObject:
   m_ObjectHideFlags: 0

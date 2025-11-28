@@ -142,7 +142,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -166,7 +166,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4769111931378351180}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -197,22 +197,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64f34ec924d513345b52a42665c1c150, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  detectionRange: 15
-  attackRange: 2
-  playerLayer:
-    serializedVersion: 2
-    m_Bits: 8
+  targetPlayer: {fileID: 0}
   moveSpeed: 4
+  leftPoint: {fileID: 0}
+  rightPoint: {fileID: 0}
+  idleWaitTime: 3
+  attackRange: 2
   attackCooldown: 3
   firePoint: {fileID: 4391218226934166176}
   fireballPrefab: {fileID: 5752830178372674550, guid: e3e2107c269da7940ba949932e7d514f, type: 3}
+  fireballCooldown: 10
+  detectionRange: 15
+  attackSound: {fileID: 0}
   attackHitbox1: {fileID: 3801106365209241270}
   attackHitbox2: {fileID: 2372819464915298014}
-  attackHitboxTransform1: {fileID: 5143376791524109379}
-  attackHitboxTransform2: {fileID: 5950710268023637959}
-  firePointOffsetRight: {x: 1, y: 0, z: 0}
-  firePointOffsetLeft: {x: -1, y: 0, z: 0}
-  fireballCooldown: 10
 --- !u!114 &868417986031111769
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -226,6 +224,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 20
+  allowDestroy: 1
 --- !u!1 &7741265369329060207
 GameObject:
   m_ObjectHideFlags: 0
