@@ -123,6 +123,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lifeTime: 4
   damage: 100
+  explosionEffect: {fileID: 7345955735948568543, guid: d238b052875c57f4e932c59d084ca249, type: 3}
 --- !u!50 &2817143819459268438
 Rigidbody2D:
   serializedVersion: 4

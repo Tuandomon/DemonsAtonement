@@ -2,12 +2,14 @@
 
 public class Fire : MonoBehaviour
 {
-    public float lifeTime = 4f;  // Tự hủy sau thời gian
-    public int damage = 100;     // Sát thương gây ra cho Player
+    public float lifeTime = 4f;      // Tự hủy sau thời gian
+    public int damage = 100;         // Sát thương gây ra cho Player
+
+    [Header("Explosion Effect")]
+    public GameObject explosionEffect;   // 👈 Gán prefab hiệu ứng ở đây
 
     private void Start()
     {
-        // Tự huỷ sau lifeTime giây nếu không trúng gì
         Destroy(gameObject, lifeTime);
     }
 
@@ -22,13 +24,24 @@ public class Fire : MonoBehaviour
                 playerHealth.TakeDamage(damage);
             }
 
+            SpawnExplosion();
             Destroy(gameObject);
         }
 
-        // Nếu trúng vật có tag Ground → tự hủy
+        // Nếu trúng Ground
         if (collision.CompareTag("Ground"))
         {
+            SpawnExplosion();
             Destroy(gameObject);
+        }
+    }
+
+    // Hàm tạo hiệu ứng Explosion
+    private void SpawnExplosion()
+    {
+        if (explosionEffect != null)
+        {
+            Instantiate(explosionEffect, transform.position, Quaternion.identity);
         }
     }
 }
