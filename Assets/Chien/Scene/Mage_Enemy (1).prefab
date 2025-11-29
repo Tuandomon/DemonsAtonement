@@ -126,14 +126,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
-  lightPrefab: {fileID: 3499559720188089592, guid: 5fdff1c80244a7645a1e621cac090492, type: 3}
+  lightPrefab: {fileID: 3252379860203268021, guid: a07e544a5a0fa5b4f8dd9c2f915538f5, type: 3}
   firePoint: {fileID: 5813457889493157584}
   attackRange: 11.34
   attackCooldown: 2
   tripleSkillCooldown: 5
   angleSpread: 15
-  fireBallPrefab: {fileID: 3511151460980922237, guid: 894ee6fc1cb671c468146e1cfc0d3ea4, type: 3}
-  fireBallCooldown: 5
   animator: {fileID: 5059248311032025327}
 --- !u!61 &6113238677189553197
 BoxCollider2D:
