@@ -11,6 +11,8 @@ public class PlayerShooting : MonoBehaviour
 
     [Header("Trạng thái buff")]
     public bool isBuffed = false;
+    public bool isShootingKeyWActive = false;
+    public bool isBuffActive = false;
 
     private float lastShootTime = -Mathf.Infinity;
 
@@ -32,13 +34,28 @@ public class PlayerShooting : MonoBehaviour
 
     void Update()
     {
-        if (!Input.GetKey(KeyCode.W) && Input.GetKeyDown(KeyCode.U))
+        if (isShootingKeyWActive)
         {
-            if (firePoint != null && Time.time >= lastShootTime + shootCooldown)
+            if (Input.GetKeyDown(KeyCode.W))
             {
-                Shoot();
-                lastShootTime = Time.time;
+                TryShoot();
             }
+        }
+        else
+        {
+            if (Input.GetKeyDown(KeyCode.U))
+            {
+                TryShoot();
+            }
+        }
+    }
+
+    void TryShoot()
+    {
+        if (firePoint != null && Time.time >= lastShootTime + shootCooldown)
+        {
+            Shoot();
+            lastShootTime = Time.time;
         }
     }
 
@@ -51,19 +68,33 @@ public class PlayerShooting : MonoBehaviour
         float direction = GetComponent<SpriteRenderer>().flipX ? -1f : 1f;
 
         Bullet bulletScript = bullet.GetComponent<Bullet>();
-        bulletScript.SetDirection(direction);
+        if (bulletScript != null)
+        {
+            bulletScript.SetDirection(direction);
+        }
     }
 
-    // Gọi hàm này từ script buff để kích hoạt trạng thái buff
-    public void ActivateBuff(float duration)
+    public void ActivateBuff(float duration, bool changeShootKey)
     {
-        StartCoroutine(BuffCoroutine(duration));
+        StartCoroutine(BuffCoroutine(duration, changeShootKey));
     }
 
-    private System.Collections.IEnumerator BuffCoroutine(float duration)
+    private System.Collections.IEnumerator BuffCoroutine(float duration, bool changeShootKey)
     {
+        isBuffActive = true;
         isBuffed = true;
+        if (changeShootKey)
+        {
+            isShootingKeyWActive = true;
+        }
+
         yield return new WaitForSeconds(duration);
+
         isBuffed = false;
+        if (changeShootKey)
+        {
+            isShootingKeyWActive = false;
+        }
+        isBuffActive = false;
     }
 }
