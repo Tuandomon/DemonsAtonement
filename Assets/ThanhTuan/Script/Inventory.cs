@@ -15,6 +15,13 @@ public class Inventory : MonoBehaviour
     public GameObject buffEffectPrefab;
     public float buffDuration = 30f;
 
+    [Header("Summon Item Setup")]
+    public int maxSummonItemCount = 1;
+    public int currentSummonItemCount = 0;
+    public TMPro.TextMeshProUGUI summonItemCountText;
+    public GameObject petPrefab;
+    public float petSummonDuration = 30f;
+
     private PlayerHealth playerHealth;
     private PlayerShooting playerShooting;
 
@@ -24,6 +31,7 @@ public class Inventory : MonoBehaviour
         playerShooting = GetComponent<PlayerShooting>();
         UpdatePotionUI();
         UpdateBuffItemUI();
+        UpdateSummonItemUI();
     }
 
     void Update()
@@ -36,6 +44,11 @@ public class Inventory : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.W))
         {
             UseBuffItem();
+        }
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            UseSummonItem();
         }
     }
 
@@ -70,9 +83,7 @@ public class Inventory : MonoBehaviour
     {
         if (currentBuffItemCount < maxBuffItemCount)
         {
-            // === DÒNG ĐÃ SỬA LỖI: Tăng đúng biến đếm item buff ===
             currentBuffItemCount++;
-            // =======================================================
             UpdateBuffItemUI();
             return true;
         }
@@ -82,13 +93,11 @@ public class Inventory : MonoBehaviour
     public void UseBuffItem()
     {
         if (playerShooting == null) return;
-
         if (playerShooting.isBuffActive) return;
 
         if (currentBuffItemCount > 0)
         {
             currentBuffItemCount--;
-
             if (buffEffectPrefab != null)
             {
                 GameObject player = playerShooting.gameObject;
@@ -96,10 +105,33 @@ public class Inventory : MonoBehaviour
                 effectInstance.transform.SetParent(player.transform);
                 Destroy(effectInstance, buffDuration);
             }
-
             playerShooting.ActivateBuff(buffDuration, true);
-
             UpdateBuffItemUI();
+        }
+    }
+
+    public bool AddSummonItem()
+    {
+        if (currentSummonItemCount < maxSummonItemCount)
+        {
+            currentSummonItemCount++;
+            UpdateSummonItemUI();
+            return true;
+        }
+        return false;
+    }
+
+    public void UseSummonItem()
+    {
+        if (currentSummonItemCount > 0)
+        {
+            if (petPrefab != null)
+            {
+                currentSummonItemCount--;
+                GameObject pet = Instantiate(petPrefab, transform.position, Quaternion.identity);
+                Destroy(pet, petSummonDuration);
+                UpdateSummonItemUI();
+            }
         }
     }
 
@@ -116,6 +148,14 @@ public class Inventory : MonoBehaviour
         if (buffItemCountText != null)
         {
             buffItemCountText.text = currentBuffItemCount + " / " + maxBuffItemCount;
+        }
+    }
+
+    void UpdateSummonItemUI()
+    {
+        if (summonItemCountText != null)
+        {
+            summonItemCountText.text = currentSummonItemCount + " / " + maxSummonItemCount;
         }
     }
 }
