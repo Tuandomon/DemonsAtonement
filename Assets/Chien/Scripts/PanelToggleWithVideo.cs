@@ -13,20 +13,38 @@ public class PanelToggleWithVideo : MonoBehaviour
 
     void Start()
     {
+        // Kiểm tra Button_instruct
         if (Button_instruct != null)
         {
+            // Xóa listener cũ để tránh lỗi khi reload scene
+            Button_instruct.onClick.RemoveAllListeners();
             Button_instruct.onClick.AddListener(TogglePanel);
         }
+        else
+        {
+            Debug.LogWarning("PanelToggleWithVideo: Button_instruct chưa được gán!");
+        }
 
+        // Đảm bảo panel khởi tạo đúng trạng thái
         if (Panel_ins != null)
         {
             Panel_ins.SetActive(isPanelActive);
+        }
+        else
+        {
+            Debug.LogWarning("PanelToggleWithVideo: Panel_ins chưa được gán!");
+        }
+
+        // Kiểm tra VideoPlayer
+        if (videoPlayer == null)
+        {
+            Debug.LogWarning("PanelToggleWithVideo: VideoPlayer chưa được gán!");
         }
     }
 
     void Update()
     {
-        // Nhấn phím L cũng toggle
+        // Nhấn phím B cũng toggle
         if (Input.GetKeyDown(KeyCode.B))
         {
             TogglePanel();
