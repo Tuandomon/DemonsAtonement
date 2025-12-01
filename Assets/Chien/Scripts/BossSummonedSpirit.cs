@@ -54,7 +54,6 @@ public class BossSummonedSpirit : MonoBehaviour
             moveDirection = transform.position.x < mid ? 1 : -1;
         }
 
-        // Ignore collision giữa các enemy và Boss
         Collider2D myCol = GetComponent<Collider2D>();
         if (myCol != null)
         {
@@ -111,7 +110,7 @@ public class BossSummonedSpirit : MonoBehaviour
         rb.velocity = new Vector2(moveDirection * moveSpeed, rb.velocity.y);
         animator.SetFloat("Speed", Mathf.Abs(rb.velocity.x));
 
-        UpdateFacingDirection(rb.velocity.x);
+        UpdateFacingDirection(moveDirection);
 
         if ((moveDirection > 0 && transform.position.x >= rightPoint.position.x) ||
             (moveDirection < 0 && transform.position.x <= leftPoint.position.x))
@@ -145,7 +144,7 @@ public class BossSummonedSpirit : MonoBehaviour
             animator.SetFloat("Speed", 0);
         }
 
-        UpdateFacingDirection(rb.velocity.x);
+        UpdateFacingDirection(dir);
     }
 
     void AttackState()
@@ -153,22 +152,19 @@ public class BossSummonedSpirit : MonoBehaviour
         float distance = Vector2.Distance(transform.position, player.position);
         float dir = Mathf.Sign(player.position.x - transform.position.x);
 
-        // Backstep nếu quá gần
         if (distance < tooCloseDistance && !isBackingUp)
         {
             StartCoroutine(BackstepRoutine(-dir));
         }
 
-        // Kiểm tra cooldown trước khi attack
         if (distance <= attackRange && Time.time - lastAttackTime >= attackCooldown)
         {
-            lastAttackTime = Time.time;       // ⭐ cập nhật cooldown
-            animator.SetTrigger("Attack");    // chạy animation attack
-            rb.velocity = Vector2.zero;       // đứng yên khi đánh
+            lastAttackTime = Time.time;
+            animator.SetTrigger("Attack");
+            rb.velocity = Vector2.zero;
             return;
         }
 
-        // Di chuyển tới hoặc đứng yên nếu ở khoảng idealAttackDistance
         if (distance > idealAttackDistance && !isBackingUp)
         {
             rb.velocity = new Vector2(dir * chaseSpeed, rb.velocity.y);
@@ -180,10 +176,45 @@ public class BossSummonedSpirit : MonoBehaviour
             animator.SetFloat("Speed", 0);
         }
 
-        UpdateFacingDirection(rb.velocity.x);
+        UpdateFacingDirection(dir);
     }
 
-    // ---------- Animation Event sẽ gọi hàm này ----------
+    // ============================
+    //  XOAY BẰNG ROTATION Y
+    // ============================
+
+    void SetFacingDirection(float dir)
+    {
+        if (dir > 0)
+        {
+            facingRight = true;
+            transform.rotation = Quaternion.Euler(0, 180, 0);
+        }
+        else if (dir < 0)
+        {
+            facingRight = false;
+            transform.rotation = Quaternion.Euler(0, 0, 0);
+        }
+    }
+
+    void UpdateFacingDirection(float moveDir)
+    {
+        if (player == null) return;
+
+        if (Mathf.Abs(moveDir) > 0.05f)
+        {
+            SetFacingDirection(moveDir);
+            return;
+        }
+
+        float dist = Mathf.Abs(player.position.x - transform.position.x);
+        if (dist < tooCloseDistance) return;
+
+        float dirToPlayer = player.position.x - transform.position.x;
+        SetFacingDirection(dirToPlayer);
+    }
+
+    // Animation Event
     public void DealDamage()
     {
         if (player == null) return;
@@ -197,8 +228,6 @@ public class BossSummonedSpirit : MonoBehaviour
             PlayAttackSound();
         }
     }
-
-
 
     IEnumerator BackstepRoutine(float dir)
     {
@@ -231,12 +260,6 @@ public class BossSummonedSpirit : MonoBehaviour
 
         moveDirection *= -1;
         isWaiting = false;
-    }
-
-    void UpdateFacingDirection(float moveDir)
-    {
-        if (moveDir > 0.05f) transform.rotation = Quaternion.Euler(0, 180f, 0);
-        else if (moveDir < -0.05f) transform.rotation = Quaternion.Euler(0, 0f, 0);
     }
 
     public void PlayAttackSound()
