@@ -2,34 +2,31 @@
 
 public class BuffEffectTrigger2D : MonoBehaviour
 {
-    [Tooltip("Prefab hiệu ứng cường hóa (2D/3D Effect Prefab)")]
-    public GameObject buffEffectPrefab;
+    // Thời gian tồn tại tối đa của vật phẩm trên map
+    public float lifetime = 0.5f;
 
-    [Tooltip("Thời gian tồn tại của hiệu ứng (giây)")]
-    public float effectDuration = 10f;
+    void Start()
+    {
+        // Tự hủy GameObject này sau 'lifetime' giây
+        Destroy(gameObject, lifetime);
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
         {
-            // Tạo hiệu ứng tại vị trí của player
-            GameObject effectInstance = Instantiate(buffEffectPrefab, collision.transform.position, Quaternion.identity);
+            Inventory inventory = collision.GetComponent<Inventory>();
 
-            // Gắn hiệu ứng vào player để nó di chuyển theo
-            effectInstance.transform.SetParent(collision.transform);
-
-            // Hủy hiệu ứng sau một khoảng thời gian
-            Destroy(effectInstance, effectDuration);
-
-            // Gọi hàm kích hoạt buff trong PlayerShooting
-            PlayerShooting shooter = collision.GetComponent<PlayerShooting>();
-            if (shooter != null)
+            if (inventory != null)
             {
-                shooter.ActivateBuff(effectDuration);
-            }
+                bool added = inventory.AddBuffItem();
 
-            // Hủy item sau khi đã được nhặt
-            Destroy(gameObject);
+                // Nếu nhặt thành công, hủy ngay lập tức
+                if (added)
+                {
+                    Destroy(gameObject);
+                }
+            }
         }
     }
 }

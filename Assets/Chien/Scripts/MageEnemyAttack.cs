@@ -3,25 +3,13 @@
 public class MageEnemyAttack : MonoBehaviour
 {
     [Header("Player Settings")]
-    public Transform player;   // 👈 Thêm manual assign
+    public Transform player;   // 👈 Manual assign
 
     [Header("Normal Attack Settings")]
     public GameObject lightPrefab;
     public Transform firePoint;
     public float attackRange = 6f;
     public float attackCooldown = 2f;
-
-    [Header("Triple Skill Settings")]
-    public float tripleSkillCooldown = 5f;
-    public float angleSpread = 15f;
-    private float nextTripleSkillTime = 0f;
-    private bool isUsingTripleSkill = false;
-
-    [Header("FireBall Skill Settings")]
-    public GameObject fireBallPrefab;
-    public float fireBallCooldown = 10f;
-    private float nextFireBallTime = 0f;
-    private bool isUsingFireBall = false;
 
     [Header("References")]
     public Animator animator;
@@ -32,29 +20,25 @@ public class MageEnemyAttack : MonoBehaviour
 
     private void Start()
     {
-        // ✔ Nếu player chưa được gán thì tự tìm theo Tag
         if (player == null)
             player = GameObject.FindGameObjectWithTag("Player")?.transform;
 
         rb = GetComponent<Rigidbody2D>();
 
-        // 🧱 GIỮ MAGE ĐỨNG YÊN
+        // GIỮ MAGE ĐỨNG YÊN
         if (rb != null)
         {
             rb.gravityScale = 0f;
             rb.constraints = RigidbodyConstraints2D.FreezeRotation;
             fixedPosition = transform.position;
         }
-
-        nextFireBallTime = Time.time + fireBallCooldown;
-        nextTripleSkillTime = Time.time + tripleSkillCooldown;
     }
 
     private void Update()
     {
         if (player == null) return;
 
-        // 🧲 Không cho di chuyển
+        // Không cho di chuyển
         if (rb != null)
         {
             rb.velocity = Vector2.zero;
@@ -65,36 +49,13 @@ public class MageEnemyAttack : MonoBehaviour
 
         if (distance <= attackRange)
         {
-            // 🔄 Quay hướng về player
+            // Quay hướng
             if (player.position.x < transform.position.x)
                 transform.localScale = new Vector3(-0.8f, 0.8f, 1f);
             else
                 transform.localScale = new Vector3(0.8f, 0.8f, 1f);
 
-            // Nếu đang dùng skill đặc biệt → không bắn khác
-            if (isUsingTripleSkill || isUsingFireBall) return;
-
-            // 🔥 Ưu tiên FireBall
-            if (Time.time >= nextFireBallTime)
-            {
-                isUsingFireBall = true;
-                animator.SetTrigger("Attack");
-                Invoke(nameof(ShootFireBall), 0.6f);
-                nextFireBallTime = Time.time + fireBallCooldown;
-                return;
-            }
-
-            // ⚡ Skill 3 tia
-            if (Time.time >= nextTripleSkillTime)
-            {
-                isUsingTripleSkill = true;
-                animator.SetTrigger("Attack");
-                Invoke(nameof(ShootTriple), 0.4f);
-                nextTripleSkillTime = Time.time + tripleSkillCooldown;
-                return;
-            }
-
-            // 🏹 Tấn công thường
+            // Tấn công thường
             if (Time.time >= nextAttackTime)
             {
                 animator.SetTrigger("Attack");
@@ -108,10 +69,9 @@ public class MageEnemyAttack : MonoBehaviour
         }
     }
 
-    // 🏹 Bắn thường
+    // *** Bắn thường ***
     public void Shoot()
     {
-        if (isUsingTripleSkill || isUsingFireBall) return;
         if (lightPrefab == null || firePoint == null || player == null) return;
 
         GameObject light = Instantiate(lightPrefab, firePoint.position, Quaternion.identity);
@@ -124,54 +84,6 @@ public class MageEnemyAttack : MonoBehaviour
         if (rbLight != null)
             rbLight.velocity = dir * 6f;
     }
-
-    // ⚡ Bắn 3 tia
-    private void ShootTriple()
-    {
-        if (lightPrefab == null || firePoint == null || player == null) return;
-
-        Vector3 baseDir = (player.position - firePoint.position).normalized;
-        float baseAngle = Mathf.Atan2(baseDir.y, baseDir.x) * Mathf.Rad2Deg;
-
-        float[] spreadAngles = { -angleSpread, 0f, angleSpread };
-
-        foreach (float spread in spreadAngles)
-        {
-            GameObject light = Instantiate(lightPrefab, firePoint.position,
-                Quaternion.Euler(0, 0, baseAngle + spread));
-
-            Rigidbody2D rbLight = light.GetComponent<Rigidbody2D>();
-            if (rbLight != null)
-            {
-                Vector2 shootDir = Quaternion.Euler(0, 0, spread) * baseDir;
-                rbLight.velocity = shootDir * 6f;
-            }
-        }
-
-        Invoke(nameof(ResetTripleSkill), 1f);
-    }
-
-    private void ResetTripleSkill() => isUsingTripleSkill = false;
-
-    // 🔥 FireBall
-    private void ShootFireBall()
-    {
-        if (fireBallPrefab == null || firePoint == null || player == null) return;
-
-        GameObject fireBall = Instantiate(fireBallPrefab, firePoint.position, Quaternion.identity);
-        Vector3 dir = (player.position - firePoint.position).normalized;
-
-        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-        fireBall.transform.rotation = Quaternion.Euler(0, 0, angle);
-
-        Rigidbody2D rbFire = fireBall.GetComponent<Rigidbody2D>();
-        if (rbFire != null)
-            rbFire.velocity = dir * 8f;
-
-        Invoke(nameof(ResetFireBallSkill), 1f);
-    }
-
-    private void ResetFireBallSkill() => isUsingFireBall = false;
 
     private void OnDrawGizmosSelected()
     {
