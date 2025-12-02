@@ -1939,6 +1939,14 @@ PrefabInstance:
       propertyPath: healAmountPerPotion
       value: 100
       objectReference: {fileID: 0}
+    - target: {fileID: 5447334006549467230, guid: a8766f8e190a7cd4599ae5132bb81389, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6799377964068775182, guid: a8766f8e190a7cd4599ae5132bb81389, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8385089636014069269, guid: a8766f8e190a7cd4599ae5132bb81389, type: 3}
       propertyPath: m_Name
       value: Kaito Kid
