@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 3758000768739594076}
   - component: {fileID: 3818434649748697434}
   - component: {fileID: 5527537184161481645}
+  - component: {fileID: -8299583199925639295}
+  - component: {fileID: 4859567861657107890}
   m_Layer: 0
   m_Name: Manager_UI_Inventory 1
   m_TagString: Untagged
@@ -62,3 +64,32 @@ MonoBehaviour:
   panelInventory: {fileID: 0}
   buttonItemCombination: {fileID: 0}
   panelItemCombination: {fileID: 0}
+--- !u!114 &-8299583199925639295
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8832432261943845040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a33dada5274c47248aa5ab9cdaee8cc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slotImages: []
+  slotTexts: []
+--- !u!114 &4859567861657107890
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8832432261943845040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc10203a0facd5f4599ce8e810000f60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  panelInventory: {fileID: 0}
+  buttonSuggest: {fileID: 0}
+  panelSuggestionBoard: {fileID: 0}
