@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 6325328529010183105}
   - component: {fileID: 4666888557608101087}
   - component: {fileID: 3308396477341567662}
+  - component: {fileID: 7275333553810171252}
   m_Layer: 0
   m_Name: Manh chu N
   m_TagString: Untagged
@@ -186,3 +187,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   amplitude: 0.2
   speed: 2
+--- !u!114 &7275333553810171252
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2050278727828853709}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a465839461c90f48a31a0402a847386, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  icon: {fileID: -1323854416, guid: 01417056af3c134498a7f25032ab6c0c, type: 3}
+  itemName: "M\u1EA3nh ch\u1EEF N"
