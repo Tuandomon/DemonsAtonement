@@ -4,15 +4,21 @@ using UnityEngine;
 
 public class SpikeProjectile : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public SpikeMoving spike;   // G?n Spike vào ô này trong Inspector
+
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        
+        if (collision.CompareTag("Player"))
+        {
+            spike.Activate();
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnTriggerExit2D(Collider2D collision)
     {
-        
+        if (collision.CompareTag("Player"))
+        {
+            spike.Deactivate();
+        }
     }
 }
