@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5527537184161481645}
   - component: {fileID: -8299583199925639295}
   - component: {fileID: 4859567861657107890}
+  - component: {fileID: 6211487456191737189}
   m_Layer: 0
   m_Name: Manager_UI_Inventory 1
   m_TagString: Untagged
@@ -93,3 +94,20 @@ MonoBehaviour:
   panelInventory: {fileID: 0}
   buttonSuggest: {fileID: 0}
   panelSuggestionBoard: {fileID: 0}
+--- !u!114 &6211487456191737189
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8832432261943845040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a07f6f73021ecb14ea3f5e142cbb0641, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemSlots:
+  - {fileID: 0}
+  itemGOI: {fileID: 0}
+  itemY: {fileID: 0}
+  itemGoiY: {fileID: 0}
