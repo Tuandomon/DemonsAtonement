@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 [RequireComponent(typeof(AudioSource))]
 public class BossMusicController : MonoBehaviour
@@ -8,8 +9,12 @@ public class BossMusicController : MonoBehaviour
     [Header("Âm thanh Boss")]
     public AudioClip bossBGM;
 
+    [Header("Âm lượng tối đa (0.0 đến 1.0)")]
+    [Range(0f, 1f)]
+    public float masterVolume = 0.8f;
+
     [Header("Khoảng cách nghe tối đa")]
-    [Tooltip("Người chơi phải ở trong khoảng cách này mới nghe thấy nhạc. Đơn vị Unity.")]
+    [Tooltip("Nhạc sẽ nhỏ dần về 0 khi Player ở khoảng cách này.")]
     public float maxListenDistance = 30f;
 
     [Header("Thời gian nhạc nhỏ dần khi Boss Die")]
@@ -20,7 +25,6 @@ public class BossMusicController : MonoBehaviour
 
     void Awake()
     {
-        // 1. Chuẩn bị AudioSource
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null)
         {
@@ -29,52 +33,47 @@ public class BossMusicController : MonoBehaviour
         }
 
         audioSource.clip = bossBGM;
-        audioSource.loop = true; // Phát lặp lại liên tục
+        audioSource.loop = true;
         audioSource.playOnAwake = false;
 
-        // Quan trọng: Thiết lập 3D Sound để kiểm soát khoảng cách
-        audioSource.spatialBlend = 1f; // Bắt buộc phải là 3D
-        audioSource.maxDistance = maxListenDistance; // Khoảng cách nghe tối đa
-        audioSource.minDistance = 5f; // Giả sử âm lượng tối đa trong vòng 5 đơn vị
+        audioSource.spatialBlend = 1f;
 
-        startVolume = audioSource.volume;
+        audioSource.maxDistance = maxListenDistance;
+        audioSource.minDistance = 5f;
+
+        audioSource.volume = masterVolume;
+
+        startVolume = masterVolume;
     }
 
     void Start()
     {
-        // Bắt đầu phát ngay khi game object (Boss) được tạo
-        // Nếu muốn bật/tắt theo sự kiện, bạn có thể gọi .Play() từ nơi khác
         audioSource.Play();
     }
 
-    // Hàm gọi khi Boss chết
     public void OnBossDefeated()
     {
         if (audioSource.isPlaying && !isFadingOut)
         {
             isFadingOut = true;
-            // Bắt đầu Coroutine để làm nhỏ dần âm lượng
             StartCoroutine(FadeOut());
         }
     }
 
-    private System.Collections.IEnumerator FadeOut()
+    private IEnumerator FadeOut()
     {
         float timer = 0f;
+        float currentVolume = audioSource.volume;
 
         while (timer < fadeOutTime)
         {
             timer += Time.deltaTime;
-            // Tính toán âm lượng mới (giảm từ startVolume về 0)
-            audioSource.volume = Mathf.Lerp(startVolume, 0f, timer / fadeOutTime);
-            yield return null; // Chờ 1 frame
+            audioSource.volume = Mathf.Lerp(currentVolume, 0f, timer / fadeOutTime);
+            yield return null;
         }
 
         audioSource.Stop();
-        audioSource.volume = startVolume; // Đặt lại âm lượng nếu Boss này được tái sử dụng
+        audioSource.volume = startVolume;
         isFadingOut = false;
-
-        // Tùy chọn: Xóa object Boss nếu đây là nơi xử lý cái chết cuối cùng
-        // Destroy(gameObject); 
     }
 }
