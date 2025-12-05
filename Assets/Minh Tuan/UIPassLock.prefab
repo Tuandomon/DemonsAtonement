@@ -4060,12 +4060,12 @@ GameObject:
   - component: {fileID: 8127740716491192905}
   - component: {fileID: 204864632876570908}
   m_Layer: 5
-  m_Name: UI Pass Lock
+  m_Name: UIPassLock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3896700368504520021
 RectTransform:
   m_ObjectHideFlags: 0
