@@ -12,23 +12,31 @@ public class CombinationUIManager : MonoBehaviour
 
     void Start()
     {
-        // Gắn sự kiện click vào button
-        Button btn = buttonItemCombination.GetComponent<Button>();
-        if (btn != null)
+        if (buttonItemCombination != null)
         {
-            btn.onClick.AddListener(ToggleCombination);
+            Button btn = buttonItemCombination.GetComponent<Button>();
+            if (btn != null)
+            {
+                btn.onClick.RemoveAllListeners(); // loại bỏ listener cũ nếu có
+                btn.onClick.AddListener(ToggleCombination);
+            }
         }
+
+        // Khởi tạo panel combination tắt luôn
+        if (panelItemCombination != null)
+            panelItemCombination.SetActive(false);
     }
+
 
     void Update()
     {
-        // Nhấn phím N
+        // Nhấn phím N để toggle
         if (Input.GetKeyDown(KeyCode.N))
         {
             ToggleCombination();
         }
 
-        // Nếu Panel Inventory tắt → ẩn luôn Panel Combination
+        // Nếu panelInventory tắt → ẩn panel combination
         if (!panelInventory.activeSelf && isCombinationOpen)
         {
             CloseCombination();
@@ -39,11 +47,14 @@ public class CombinationUIManager : MonoBehaviour
     {
         isCombinationOpen = !isCombinationOpen;
         panelItemCombination.SetActive(isCombinationOpen);
+        Debug.Log("ToggleCombination called, isCombinationOpen = " + isCombinationOpen);
     }
+
 
     public void CloseCombination()
     {
         isCombinationOpen = false;
-        panelItemCombination.SetActive(false);
+        if (panelItemCombination != null)
+            panelItemCombination.SetActive(false);
     }
 }

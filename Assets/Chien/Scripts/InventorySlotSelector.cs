@@ -6,7 +6,6 @@ public class InventorySlotSelector : MonoBehaviour
 {
     public Color selectedColor = new Color(0.984f, 1f, 0.423f, 1f); // vàng sáng
     private Color originalColor;
-
     private List<Image> selectedSlots = new List<Image>(); // lưu các ô đã chọn (tối đa 2)
 
     void Start()
@@ -15,7 +14,6 @@ public class InventorySlotSelector : MonoBehaviour
         originalColor = GetComponentsInChildren<Image>()[0].color;
 
         Button[] buttons = GetComponentsInChildren<Button>();
-
         foreach (Button btn in buttons)
         {
             btn.onClick.AddListener(() => OnSlotClick(btn));

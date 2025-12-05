@@ -79,4 +79,14 @@ public class InventoryItem : MonoBehaviour
         c.a = 0f;
         slotImages[index].color = c;
     }
+
+    public void AddItemAtSlot(Sprite icon, string name, int slotIndex)
+    {
+        if (slotIndex < 0 || slotIndex >= slotImages.Length) return;
+
+        slotImages[slotIndex].sprite = icon;
+        slotImages[slotIndex].color = new Color(1f, 1f, 1f, 1f); // hiển thị sprite
+        slotTexts[slotIndex].text = name;
+    }
+
 }

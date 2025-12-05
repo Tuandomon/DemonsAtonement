@@ -3244,8 +3244,9 @@ GameObject:
   - component: {fileID: 8425994169504230792}
   - component: {fileID: 6144679914674281068}
   - component: {fileID: 1867237618448453536}
+  - component: {fileID: 2432458397331977606}
   m_Layer: 5
-  m_Name: Panel_item combination
+  m_Name: Panel_item combination (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3311,6 +3312,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &2432458397331977606
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5629065566595153338}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0da07f7bb8cfae24c82b26754920d9ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  combinationPanel: {fileID: 5629065566595153338}
+  inventory: {fileID: 0}
 --- !u!1 &5744308303596872144
 GameObject:
   m_ObjectHideFlags: 0
