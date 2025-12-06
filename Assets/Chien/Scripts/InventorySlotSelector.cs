@@ -32,7 +32,7 @@ public class InventorySlotSelector : MonoBehaviour
             return;
         }
 
-        // Nếu đang có 2 ô rồi → tắt 2 ô cũ
+        // Nếu đang có 2 ô rồi → tắt 2 ô đó, nhưng KHÔNG chọn ô mới
         if (selectedSlots.Count >= 2)
         {
             foreach (var slot in selectedSlots)
@@ -40,9 +40,10 @@ public class InventorySlotSelector : MonoBehaviour
                 slot.color = originalColor;
             }
             selectedSlots.Clear();
+            return; // ⬅️ QUAN TRỌNG: không chọn ô mới nữa
         }
 
-        // Chọn ô mới
+        // Nếu chưa đủ 2 thì chọn bình thường
         img.color = selectedColor;
         selectedSlots.Add(img);
     }
