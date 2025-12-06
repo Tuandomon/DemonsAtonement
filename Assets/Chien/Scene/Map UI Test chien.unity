@@ -1979,7 +1979,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7821177195231323234, guid: 0aa7974589dba964d9e41f887ede21d1, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8481786224085037641, guid: 0aa7974589dba964d9e41f887ede21d1, type: 3}
       propertyPath: inventory
