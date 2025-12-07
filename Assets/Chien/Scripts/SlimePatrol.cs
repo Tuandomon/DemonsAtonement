@@ -26,6 +26,10 @@ public class SlimePatrol : MonoBehaviour
     public float walkSoundInterval = 0.8f;
     private float lastWalkSoundTime = 0f;
 
+    [Header("Volume Settings")]
+    [Range(0f, 1f)] public float baseWalkVolume = 0.45f;
+    [Range(0f, 1f)] public float baseAttackVolume = 0.65f;
+
     [Header("Sound Range")]
     public float soundRange = 5f;
 
@@ -113,6 +117,7 @@ public class SlimePatrol : MonoBehaviour
         {
             rb.velocity = Vector2.zero;
             animator.SetFloat("Speed", 0);
+            FadeOutWalkImmediate();
             return;
         }
 
@@ -121,7 +126,8 @@ public class SlimePatrol : MonoBehaviour
         rb.velocity = new Vector2(moveDirection * moveSpeed, rb.velocity.y);
         animator.SetFloat("Speed", Mathf.Abs(rb.velocity.x));
 
-        PlayWalkSound();
+        HandleWalkSound();
+
         UpdateFacingDirection(rb.velocity.x);
 
         if ((moveDirection > 0 && transform.position.x >= rightPoint.position.x) ||
@@ -133,6 +139,8 @@ public class SlimePatrol : MonoBehaviour
 
     void ChaseState()
     {
+        FadeOutWalkImmediate();
+
         if (isBackingUp) return;
 
         float distance = Vector2.Distance(transform.position, player.position);
@@ -149,12 +157,13 @@ public class SlimePatrol : MonoBehaviour
         {
             rb.velocity = new Vector2(dir * chaseSpeed, rb.velocity.y);
             animator.SetFloat("Speed", Mathf.Abs(rb.velocity.x));
-            PlayWalkSound();
+            HandleWalkSound();
         }
         else
         {
             rb.velocity = Vector2.zero;
             animator.SetFloat("Speed", 0);
+            FadeOutWalkImmediate();
         }
 
         UpdateFacingDirection(rb.velocity.x);
@@ -162,6 +171,8 @@ public class SlimePatrol : MonoBehaviour
 
     void AttackState()
     {
+        FadeOutWalkImmediate();
+
         float distance = Vector2.Distance(transform.position, player.position);
         float dir = Mathf.Sign(player.position.x - transform.position.x);
 
@@ -192,18 +203,67 @@ public class SlimePatrol : MonoBehaviour
         UpdateFacingDirection(rb.velocity.x);
     }
 
-    void PlayWalkSound()
+    // ⭐⭐ HỆ THỐNG ÂM THANH ĐÃ SỬA FULL ⭐⭐
+    void HandleWalkSound()
     {
         if (walkSound == null || audioSource == null || player == null) return;
 
         float distance = Vector2.Distance(transform.position, player.position);
-        if (distance > soundRange) return;
 
+        // Player ra khỏi range → fade dần
+        if (distance > soundRange)
+        {
+            FadeOutWalk();
+            return;
+        }
+
+        // Không đi → tắt ngay
+        if (Mathf.Abs(rb.velocity.x) < 0.05f)
+        {
+            FadeOutWalkImmediate();
+            return;
+        }
+
+        // Attack state → tắt luôn
+        if (currentState == FoxState.Attack)
+        {
+            FadeOutWalkImmediate();
+            return;
+        }
+
+        // Tính âm lượng theo khoảng cách
+        float volumePercent = 1f - (distance / soundRange);
+        float finalVolume = Mathf.Clamp01(volumePercent) * baseWalkVolume;
+
+        // Phát bước chân theo interval
         if (Time.time - lastWalkSoundTime >= walkSoundInterval)
         {
-            audioSource.PlayOneShot(walkSound, 0.6f);
+            audioSource.clip = walkSound;
+            audioSource.volume = finalVolume;
+            audioSource.Play();
             lastWalkSoundTime = Time.time;
         }
+    }
+
+    void FadeOutWalk()
+    {
+        if (audioSource.isPlaying)
+        {
+            audioSource.volume -= Time.deltaTime * 2f;
+            if (audioSource.volume <= 0.01f)
+            {
+                audioSource.Stop();
+                audioSource.volume = 0;
+            }
+        }
+    }
+
+    void FadeOutWalkImmediate()
+    {
+        if (audioSource.isPlaying)
+            audioSource.Stop();
+
+        audioSource.volume = 0;
     }
 
     public void DealDamage()
@@ -219,12 +279,15 @@ public class SlimePatrol : MonoBehaviour
 
     public void PlayAttackSound()
     {
-        if (attackSound == null || audioSource == null || player == null) return;
+        if (attackSound == null || audioSource == null) return;
 
         float distance = Vector2.Distance(transform.position, player.position);
         if (distance > soundRange) return;
 
-        audioSource.PlayOneShot(attackSound, 0.7f);
+        float volumePercent = 1f - (distance / soundRange);
+        float finalVolume = Mathf.Clamp01(volumePercent) * baseAttackVolume;
+
+        audioSource.PlayOneShot(attackSound, finalVolume);
     }
 
     IEnumerator BackstepRoutine(float dir)
@@ -253,6 +316,7 @@ public class SlimePatrol : MonoBehaviour
         isWaiting = true;
         rb.velocity = Vector2.zero;
         animator.SetFloat("Speed", 0);
+        FadeOutWalkImmediate();
 
         yield return new WaitForSeconds(waitTime);
 
@@ -260,17 +324,10 @@ public class SlimePatrol : MonoBehaviour
         isWaiting = false;
     }
 
-    // 🔄 **Đổi hướng xoay: Trái = 0°, Phải = 180°**
     void UpdateFacingDirection(float moveDir)
     {
-        if (moveDir > 0.05f)
-        {
-            transform.rotation = Quaternion.Euler(0, 180f, 0); // ➜ phải
-        }
-        else if (moveDir < -0.05f)
-        {
-            transform.rotation = Quaternion.Euler(0, 0f, 0);   // ➜ trái
-        }
+        if (moveDir > 0.05f) transform.rotation = Quaternion.Euler(0, 180f, 0);
+        else if (moveDir < -0.05f) transform.rotation = Quaternion.Euler(0, 0f, 0);
     }
 
     void OnDrawGizmosSelected()
