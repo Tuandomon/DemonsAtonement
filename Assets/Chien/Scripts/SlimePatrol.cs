@@ -28,7 +28,9 @@ public class SlimePatrol : MonoBehaviour
 
     [Header("Volume Settings")]
     [Range(0f, 1f)] public float baseWalkVolume = 0.45f;
-    [Range(0f, 1f)] public float baseAttackVolume = 0.65f;
+
+    // ⭐ Giảm volume attack xuống nhẹ cho em
+    [Range(0f, 1f)] public float baseAttackVolume = 0.4f;
 
     [Header("Sound Range")]
     public float soundRange = 5f;
@@ -45,7 +47,10 @@ public class SlimePatrol : MonoBehaviour
     private bool isBackingUp = false;
 
     private Rigidbody2D rb;
-    private AudioSource audioSource;
+
+    // ⭐ 2 audio source riêng
+    private AudioSource audioSourceWalk;
+    private AudioSource audioSourceAttack;
 
     private bool isWaiting = false;
     private int moveDirection = 1;
@@ -58,7 +63,14 @@ public class SlimePatrol : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         animator = animator != null ? animator : GetComponent<Animator>();
-        audioSource = GetComponent<AudioSource>();
+
+        audioSourceWalk = gameObject.AddComponent<AudioSource>();
+        audioSourceWalk.playOnAwake = false;
+        audioSourceWalk.loop = false;
+
+        audioSourceAttack = gameObject.AddComponent<AudioSource>();
+        audioSourceAttack.playOnAwake = false;
+        audioSourceAttack.loop = false;
 
         if (leftPoint != null && rightPoint != null)
         {
@@ -127,7 +139,6 @@ public class SlimePatrol : MonoBehaviour
         animator.SetFloat("Speed", Mathf.Abs(rb.velocity.x));
 
         HandleWalkSound();
-
         UpdateFacingDirection(rb.velocity.x);
 
         if ((moveDirection > 0 && transform.position.x >= rightPoint.position.x) ||
@@ -172,6 +183,7 @@ public class SlimePatrol : MonoBehaviour
     void AttackState()
     {
         FadeOutWalkImmediate();
+        rb.velocity = Vector2.zero;
 
         float distance = Vector2.Distance(transform.position, player.position);
         float dir = Mathf.Sign(player.position.x - transform.position.x);
@@ -185,101 +197,83 @@ public class SlimePatrol : MonoBehaviour
         {
             lastAttackTime = Time.time;
             animator.SetTrigger("Attack");
-            rb.velocity = Vector2.zero;
-            return;
+            return; // ⭐ KHÔNG PHÁT ÂM Ở ĐÂY NỮA
         }
 
-        if (distance > idealAttackDistance && !isBackingUp)
-        {
-            rb.velocity = new Vector2(dir * chaseSpeed, rb.velocity.y);
-            animator.SetFloat("Speed", Mathf.Abs(rb.velocity.x));
-        }
-        else if (!isBackingUp)
-        {
-            rb.velocity = Vector2.zero;
-            animator.SetFloat("Speed", 0);
-        }
-
-        UpdateFacingDirection(rb.velocity.x);
+        UpdateFacingDirection(0);
     }
 
-    // ⭐⭐ HỆ THỐNG ÂM THANH ĐÃ SỬA FULL ⭐⭐
     void HandleWalkSound()
     {
-        if (walkSound == null || audioSource == null || player == null) return;
+        if (walkSound == null || audioSourceWalk == null || player == null) return;
 
         float distance = Vector2.Distance(transform.position, player.position);
 
-        // Player ra khỏi range → fade dần
-        if (distance > soundRange)
-        {
-            FadeOutWalk();
-            return;
-        }
-
-        // Không đi → tắt ngay
         if (Mathf.Abs(rb.velocity.x) < 0.05f)
         {
             FadeOutWalkImmediate();
             return;
         }
 
-        // Attack state → tắt luôn
-        if (currentState == FoxState.Attack)
+        if (distance > soundRange)
         {
-            FadeOutWalkImmediate();
+            FadeOutWalk();
             return;
         }
 
-        // Tính âm lượng theo khoảng cách
         float volumePercent = 1f - (distance / soundRange);
         float finalVolume = Mathf.Clamp01(volumePercent) * baseWalkVolume;
 
-        // Phát bước chân theo interval
+        audioSourceWalk.volume = finalVolume;
+
         if (Time.time - lastWalkSoundTime >= walkSoundInterval)
         {
-            audioSource.clip = walkSound;
-            audioSource.volume = finalVolume;
-            audioSource.Play();
+            audioSourceWalk.clip = walkSound;
+            audioSourceWalk.Play();
             lastWalkSoundTime = Time.time;
         }
     }
 
     void FadeOutWalk()
     {
-        if (audioSource.isPlaying)
+        if (audioSourceWalk.isPlaying)
         {
-            audioSource.volume -= Time.deltaTime * 2f;
-            if (audioSource.volume <= 0.01f)
+            audioSourceWalk.volume -= Time.deltaTime * 1.5f;
+
+            if (audioSourceWalk.volume <= 0.05f)
             {
-                audioSource.Stop();
-                audioSource.volume = 0;
+                audioSourceWalk.Stop();
+                audioSourceWalk.volume = baseWalkVolume;
             }
         }
     }
 
     void FadeOutWalkImmediate()
     {
-        if (audioSource.isPlaying)
-            audioSource.Stop();
+        if (audioSourceWalk.isPlaying)
+            audioSourceWalk.Stop();
 
-        audioSource.volume = 0;
+        audioSourceWalk.volume = baseWalkVolume;
     }
 
+    // ⭐ Animation Event gọi hàm này
     public void DealDamage()
     {
+        // ⭐ PHÁT ÂM THANH TẤN CÔNG TẠI ĐÂY
+        PlayAttackSound();
+
         float distance = Vector2.Distance(transform.position, player.position);
         if (distance <= attackRange)
         {
-            PlayAttackSound();
             PlayerHealth hp = player.GetComponent<PlayerHealth>();
             if (hp != null) hp.TakeDamage(100);
         }
     }
 
+    // ⭐ Hàm âm thanh attack CHỈ chạy khi Animation Event gọi
     public void PlayAttackSound()
     {
-        if (attackSound == null || audioSource == null) return;
+        if (attackSound == null || audioSourceAttack == null) return;
 
         float distance = Vector2.Distance(transform.position, player.position);
         if (distance > soundRange) return;
@@ -287,7 +281,7 @@ public class SlimePatrol : MonoBehaviour
         float volumePercent = 1f - (distance / soundRange);
         float finalVolume = Mathf.Clamp01(volumePercent) * baseAttackVolume;
 
-        audioSource.PlayOneShot(attackSound, finalVolume);
+        audioSourceAttack.PlayOneShot(attackSound, finalVolume);
     }
 
     IEnumerator BackstepRoutine(float dir)
