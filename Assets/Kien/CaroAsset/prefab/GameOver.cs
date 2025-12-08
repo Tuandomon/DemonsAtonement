@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -13,15 +12,29 @@ public class GameOver : MonoBehaviour
     {
         retry.onClick.AddListener(OnClick);
     }
+
     public void SetName(string s)
     {
         winerName.text = s;
+
+        if (s == "x")
+        {
+            StartCoroutine(GoToNextScene());
+        }
     }
 
-    // Update is called once per frame
+    IEnumerator GoToNextScene()
+    {
+        yield return new WaitForSeconds(3f);
+
+        // L?u l?i tr?ng thái win ?? map chính bi?t r?t item
+        PlayerPrefs.SetInt("DropReward1", 1);
+
+        SceneManager.LoadScene("Map2");
+    }
+
     public void OnClick()
     {
         SceneManager.LoadScene("Caro");
     }
-
 }

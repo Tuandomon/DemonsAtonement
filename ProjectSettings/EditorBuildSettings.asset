@@ -29,4 +29,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Kien/CaroAsset/prefab/Caro.unity
     guid: 2e88fee5a6263894a867343159ff52f5
+  - enabled: 1
+    path: Assets/Kien/mini grab/Grap 1.unity
+    guid: b8e4c51f665ceb34384cc812f123bb86
   m_configObjects: {}
