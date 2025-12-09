@@ -60,8 +60,27 @@ public class GameController : MonoBehaviour
     }
 
     void ReturnToMainScene()
+    {// L?y scene c?
+        string prevScene = PlayerPrefs.GetString("Diem", "Map2");
+
+        // L?ng nghe khi load ?? d?ch chuy?n Player
+        SceneManager.sceneLoaded += OnSceneLoaded;
+
+        SceneManager.LoadScene(prevScene);
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        SceneManager.LoadScene("Map2");
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
+        {
+            float x = PlayerPrefs.GetFloat("CheckpointX", player.transform.position.x);
+            float y = PlayerPrefs.GetFloat("CheckpointY", player.transform.position.y);
+
+            player.transform.position = new Vector2(x, y);
+        }
     }
 
     public void Retry()

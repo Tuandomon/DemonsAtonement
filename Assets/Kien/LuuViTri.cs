@@ -1,21 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LuuViTri : MonoBehaviour
 {
-    void Start()
+    public Transform checkpoint; // v? trí mu?n quay v?
+
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        if (PlayerPrefs.HasKey("ReturnPointName"))
+        if (other.CompareTag("Player"))
         {
-            string pointName = PlayerPrefs.GetString("ReturnPointName");
+            // L?u scene hi?n t?i
+            PlayerPrefs.SetString("Diem", SceneManager.GetActiveScene().name);
 
-            Transform returnPoint = GameObject.Find(pointName)?.transform;
+            // L?u v? trí checkpoint
+            PlayerPrefs.SetFloat("CheckpointX", checkpoint.position.x);
+            PlayerPrefs.SetFloat("CheckpointY", checkpoint.position.y);
 
-            if (returnPoint != null)
-            {
-                transform.position = returnPoint.position;
-            }
+            PlayerPrefs.Save();
+
         }
     }
 }

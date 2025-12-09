@@ -2934,6 +2934,7 @@ GameObject:
   - component: {fileID: 323299245}
   - component: {fileID: 323299246}
   - component: {fileID: 323299247}
+  - component: {fileID: 323299248}
   m_Layer: 0
   m_Name: NPC
   m_TagString: Untagged
@@ -3116,6 +3117,19 @@ MonoBehaviour:
   targetSceneName: Caro
   targetSpawnName: Door2_Spawn
   interactKey: 101
+--- !u!114 &323299248
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 323299241}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3d57dd0e4971214f9bd054da1946790, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  checkpoint: {fileID: 323299244}
 --- !u!1 &325391027
 GameObject:
   m_ObjectHideFlags: 0
@@ -5636,11 +5650,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8874407509574199018, guid: 5248485ab7286a94da927841283dc840, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 86.3
+      value: 96.4
       objectReference: {fileID: 0}
     - target: {fileID: 8874407509574199018, guid: 5248485ab7286a94da927841283dc840, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 84.9
+      value: 85
       objectReference: {fileID: 0}
     - target: {fileID: 8874407509574199018, guid: 5248485ab7286a94da927841283dc840, type: 3}
       propertyPath: m_LocalPosition.z
@@ -6135,6 +6149,7 @@ GameObject:
   - component: {fileID: 815433304}
   - component: {fileID: 815433303}
   - component: {fileID: 815433307}
+  - component: {fileID: 815433308}
   m_Layer: 0
   m_Name: NPC1
   m_TagString: DropReward
@@ -6290,6 +6305,19 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.9375, y: 2.125}
   m_EdgeRadius: 0
+--- !u!114 &815433308
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 815433302}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3d57dd0e4971214f9bd054da1946790, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  checkpoint: {fileID: 815433306}
 --- !u!1 &849149343
 GameObject:
   m_ObjectHideFlags: 0
@@ -9430,6 +9458,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3d57dd0e4971214f9bd054da1946790, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  checkpoint: {fileID: 0}
 --- !u!4 &1257505767
 Transform:
   m_ObjectHideFlags: 0
