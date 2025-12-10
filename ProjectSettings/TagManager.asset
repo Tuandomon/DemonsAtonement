@@ -25,6 +25,7 @@ TagManager:
   - Coin
   - Object
   - Spike
+  - DropReward
   layers:
   - Default
   - TransparentFX
