@@ -353,6 +353,9 @@ MonoBehaviour:
   jumpForce: 16
   groundCheck: {fileID: 7975217916263119792}
   groundCheckRadius: 0.2
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 1024
   firePoint: {fileID: 8262192158584465952}
   dashSpeed: 50
   dashTime: 0.2
@@ -456,6 +459,8 @@ MonoBehaviour:
   bulletSpeed: 20
   shootCooldown: 2
   isBuffed: 0
+  isShootingKeyWActive: 0
+  isBuffActive: 0
 --- !u!114 &4310506265417376544
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -587,6 +592,16 @@ MonoBehaviour:
   currentPotionCount: 0
   healAmountPerPotion: 30
   potionCountText: {fileID: 0}
+  maxBuffItemCount: 3
+  currentBuffItemCount: 0
+  buffItemCountText: {fileID: 0}
+  buffEffectPrefab: {fileID: 0}
+  buffDuration: 30
+  maxSummonItemCount: 1
+  currentSummonItemCount: 0
+  summonItemCountText: {fileID: 0}
+  petPrefab: {fileID: 0}
+  petSummonDuration: 30
 --- !u!114 &7965168258186823490
 MonoBehaviour:
   m_ObjectHideFlags: 0

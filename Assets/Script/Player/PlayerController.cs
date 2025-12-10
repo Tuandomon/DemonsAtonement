@@ -8,8 +8,11 @@ public class PlayerController : MonoBehaviour
     public float baseMoveSpeed = 5f;
     private float currentMoveSpeed;
     public float jumpForce = 7f;
-    public Transform groundCheck;
-    public float groundCheckRadius = 0.2f;
+
+    [Header("Ground Check Settings")]
+    public Transform groundCheck;            // Empty object đặt dưới chân player
+    public float groundCheckRadius = 0.2f;   // bán kính kiểm tra
+    public LayerMask groundLayer;            // chọn Layer Ground trong Inspector
 
     [Header("Slow Effect")]
     private bool isSlowed = false;
@@ -89,12 +92,7 @@ public class PlayerController : MonoBehaviour
 
         if (!canDash && Input.GetKeyDown(dashKey))
         {
-            Debug.Log(" Bạn chưa mở khóa dash!");
-        }
-
-        if (Input.GetKeyDown(KeyCode.K) && isGrounded && !isDashing)
-        {
-            jumpPressed = true;
+            Debug.Log("Bạn chưa mở khóa dash!");
         }
     }
 
@@ -166,7 +164,7 @@ public class PlayerController : MonoBehaviour
         if (!canDash)
         {
             canDash = true;
-            Debug.Log(" DASH ĐÃ ĐƯỢC MỞ KHÓA VĨNH VIỄN!");
+            Debug.Log("DASH ĐÃ ĐƯỢC MỞ KHÓA VĨNH VIỄN!");
             StartCoroutine(ShowDashUnlockedEffect());
         }
         else
@@ -180,10 +178,11 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(1f);
     }
 
+    // ✅ Ground check bằng OverlapCircle + LayerMask
     private bool CheckGrounded()
     {
-        RaycastHit2D hit = Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckRadius);
-        return hit.collider != null && hit.collider.CompareTag("Ground");
+        Collider2D hit = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+        return hit != null;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

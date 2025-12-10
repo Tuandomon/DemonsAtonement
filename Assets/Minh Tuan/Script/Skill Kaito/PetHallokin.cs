@@ -27,9 +27,25 @@ public class PetHallokin : MonoBehaviour
 
     void Start()
     {
-        // Luôn tự tìm Player bằng tag
+        // Tìm Player theo Tag trước
         GameObject p = GameObject.FindGameObjectWithTag("Player");
-        if (p != null) player = p.transform;
+
+        // Nếu không tìm thấy theo Tag, tìm theo Layer "Player"
+        if (p == null)
+        {
+            GameObject[] allObjects = FindObjectsOfType<GameObject>();
+            p = allObjects.FirstOrDefault(obj => obj.layer == LayerMask.NameToLayer("Player"));
+        }
+
+        if (p != null)
+        {
+            player = p.transform;
+            transform.position = player.position; // Đặt vị trí Pet tại Player
+        }
+        else
+        {
+            Debug.LogWarning("Không tìm thấy Player theo Tag hoặc Layer!");
+        }
 
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
