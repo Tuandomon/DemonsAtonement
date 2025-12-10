@@ -3,32 +3,62 @@ using System.Collections.Generic;
 
 public class CombinationManager : MonoBehaviour
 {
-    public GameObject combinationPanel; // Panel_item combination(1)
-    public InventoryItem inventory; // tham chiếu đến InventoryItem
+    public GameObject combinationPanel;   // Panel_item combination(1)
+    public GameObject panelChuGoiY;       // Panel chữ gợi ý
+    public InventoryItem inventory;       // tham chiếu đến InventoryItem
 
-    public Sprite suggestionSprite;  // sprite cho item Gợi ý
-    public string suggestionName = "Gợi ý"; // tên item Gợi ý
+    public Sprite suggestionSprite;       // sprite cho item Gợi ý
+    public string suggestionName = "Gợi ý";
 
-    private List<int> selectedIndices = new List<int>(); // lưu index của 2 ô được chọn
+    private List<int> selectedIndices = new List<int>();
+
+    // Double click support
+    private float lastClickTime = 0f;
+    private const float doubleClickThreshold = 0.25f;
 
     private void Start()
     {
         if (combinationPanel != null)
             combinationPanel.SetActive(false);
+
+        if (panelChuGoiY != null)
+            panelChuGoiY.SetActive(false);
     }
 
     public void ToggleCombinationPanel()
     {
         if (combinationPanel != null)
             combinationPanel.SetActive(!combinationPanel.activeSelf);
+
         selectedIndices.Clear();
     }
 
     public void OnItemClicked(int slotIndex)
     {
-        // Chỉ cho phép ghép khi panel combination đang hiển thị
-        if (!combinationPanel.activeSelf) return;
-        if (!inventory.IsSlotOccupied(slotIndex)) return;
+        // =========================
+        // 🔥 1. KIỂM TRA DOUBLE-CLICK
+        // =========================
+        if (Time.time - lastClickTime <= doubleClickThreshold)
+        {
+            string itemName = inventory.GetItemName(slotIndex);
+
+            if (itemName == suggestionName)  // nếu đúng là item Gợi ý
+            {
+                panelChuGoiY.SetActive(true); // mở panel chữ gợi ý
+            }
+        }
+
+        lastClickTime = Time.time;
+
+
+        // =========================
+        // 🔥 2. TÍNH NĂNG GHÉP ITEM
+        // =========================
+        if (!combinationPanel.activeSelf)
+            return;
+
+        if (!inventory.IsSlotOccupied(slotIndex))
+            return;
 
         if (!selectedIndices.Contains(slotIndex))
             selectedIndices.Add(slotIndex);
@@ -43,11 +73,9 @@ public class CombinationManager : MonoBehaviour
 
             if (CanCombine(nameA, nameB))
             {
-                // Xóa item cũ
                 inventory.ClearButtonItem(indexA);
                 inventory.ClearButtonItem(indexB);
 
-                // Thêm item Gợi ý vào ô indexA
                 inventory.AddItemAtSlot(suggestionSprite, suggestionName, indexA);
             }
 
