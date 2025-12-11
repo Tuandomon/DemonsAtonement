@@ -8,8 +8,11 @@ public class PlayerController : MonoBehaviour
     public float baseMoveSpeed = 5f;
     private float currentMoveSpeed;
     public float jumpForce = 7f;
-    public Transform groundCheck;
-    public float groundCheckRadius = 0.2f;
+
+    [Header("Ground Check Settings")]
+    public Transform groundCheck;              // đặt dưới chân player
+    public float groundCheckRadius = 0.22f;    // điều chỉnh 0.18–0.28 tùy collider
+    public LayerMask groundLayer;              // chọn Layer Ground trong Inspector
 
     [Header("Slow Effect")]
     private bool isSlowed = false;
@@ -49,9 +52,12 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        originalGravity = rb.gravityScale;
         audioSource = GetComponent<AudioSource>();
+
+        originalGravity = rb.gravityScale;
         currentMoveSpeed = baseMoveSpeed;
+
+        // Khuyến nghị: đặt Collision Detection = Continuous, Interpolate = Interpolate (nếu cần mượt)
         canDash = false;
     }
 
@@ -62,39 +68,37 @@ public class PlayerController : MonoBehaviour
         moveInput = Input.GetAxisRaw("Horizontal");
         isGrounded = CheckGrounded();
 
+        // Nhảy chỉ khi đang grounded
         if (Input.GetKeyDown(KeyCode.K) && isGrounded)
         {
             jumpPressed = true;
         }
 
+        // Animator params
         animator.SetBool("isRunning", moveInput != 0);
         animator.SetBool("isJumping", !isGrounded);
 
+        // Lật hướng và vị trí firePoint
         if (moveInput > 0)
         {
             spriteRenderer.flipX = false;
-            firePoint.localPosition = new Vector3(1f, 0f, 0f);
+            if (firePoint != null) firePoint.localPosition = new Vector3(1f, 0f, 0f);
         }
         else if (moveInput < 0)
         {
             spriteRenderer.flipX = true;
-            firePoint.localPosition = new Vector3(-1f, 0f, 0f);
+            if (firePoint != null) firePoint.localPosition = new Vector3(-1f, 0f, 0f);
         }
 
+        // Dash
         if (canDash && !isDashing && Input.GetKeyDown(dashKey) && Time.time >= lastDashTime + dashCooldown)
         {
             Vector2 dashDir = new Vector2(spriteRenderer.flipX ? -1 : 1, 0);
             StartCoroutine(Dash(dashDir));
         }
-
-        if (!canDash && Input.GetKeyDown(dashKey))
+        else if (!canDash && Input.GetKeyDown(dashKey))
         {
-            Debug.Log(" Bạn chưa mở khóa dash!");
-        }
-
-        if (Input.GetKeyDown(KeyCode.K) && isGrounded && !isDashing)
-        {
-            jumpPressed = true;
+            Debug.Log("Bạn chưa mở khóa dash!");
         }
     }
 
@@ -166,7 +170,7 @@ public class PlayerController : MonoBehaviour
         if (!canDash)
         {
             canDash = true;
-            Debug.Log(" DASH ĐÃ ĐƯỢC MỞ KHÓA VĨNH VIỄN!");
+            Debug.Log("DASH ĐÃ ĐƯỢC MỞ KHÓA VĨNH VIỄN!");
             StartCoroutine(ShowDashUnlockedEffect());
         }
         else
@@ -180,10 +184,12 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(1f);
     }
 
+    // ✅ Ground check ổn định bằng OverlapCircle + LayerMask
     private bool CheckGrounded()
     {
-        RaycastHit2D hit = Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckRadius);
-        return hit.collider != null && hit.collider.CompareTag("Ground");
+        // Chỉ kiểm tra với Ground layer để tránh nhầm CameraConfiner/Player
+        Collider2D hit = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+        return hit != null;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -234,5 +240,13 @@ public class PlayerController : MonoBehaviour
 
         animator.SetBool("isRunning", false);
         animator.SetBool("isJumping", false);
+    }
+
+    // Gizmos để debug vị trí vòng tròn ground check
+    void OnDrawGizmosSelected()
+    {
+        if (groundCheck == null) return;
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
     }
 }
