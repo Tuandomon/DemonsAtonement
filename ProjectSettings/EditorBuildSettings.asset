@@ -32,4 +32,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Kien/mini grab/Grap 1.unity
     guid: b8e4c51f665ceb34384cc812f123bb86
+  - enabled: 1
+    path: Assets/Map/Map2 1.unity
+    guid: c91265836f6799f498ed9991efb91664
   m_configObjects: {}
