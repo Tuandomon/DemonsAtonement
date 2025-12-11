@@ -3131,6 +3131,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3d57dd0e4971214f9bd054da1946790, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  checkpoint: {fileID: 323299244}
 --- !u!1 &325391027
 GameObject:
   m_ObjectHideFlags: 0
@@ -6330,6 +6331,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3d57dd0e4971214f9bd054da1946790, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  checkpoint: {fileID: 815433306}
 --- !u!1 &849149343
 GameObject:
   m_ObjectHideFlags: 0
@@ -9584,6 +9586,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3d57dd0e4971214f9bd054da1946790, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  checkpoint: {fileID: 0}
 --- !u!4 &1257505767
 Transform:
   m_ObjectHideFlags: 0
