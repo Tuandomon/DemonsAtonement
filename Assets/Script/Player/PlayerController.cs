@@ -42,6 +42,8 @@ public class PlayerController : MonoBehaviour
 
     [Header("Sound Effects")]
     public AudioClip dashSound;
+    // THÊM: Âm thanh nhảy
+    public AudioClip jumpSound;
     private AudioSource audioSource;
 
     void Start()
@@ -107,6 +109,13 @@ public class PlayerController : MonoBehaviour
         if (jumpPressed)
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+
+            // THÊM: Phát âm thanh nhảy
+            if (audioSource != null && jumpSound != null)
+            {
+                audioSource.PlayOneShot(jumpSound);
+            }
+
             jumpPressed = false;
         }
     }
