@@ -6,6 +6,10 @@ public class ChestOpenOnce : MonoBehaviour
     public Transform player;
     public Animator chestAnimator;
 
+    [Header("Audio Settings")]
+    public AudioSource audioSource;     // Component AudioSource
+    public AudioClip openSound;         // Clip âm thanh mở rương
+
     [Header("Coin Settings")]
     public GameObject coinPrefab;        // prefab đồng xu
     public int coinCount = 5;            // số xu bắn ra
@@ -19,6 +23,17 @@ public class ChestOpenOnce : MonoBehaviour
     {
         buttonUI.SetActive(false);
         chestAnimator.enabled = false;
+
+        // THÊM: Nếu audioSource chưa được gán, lấy component trên chính đối tượng này
+        if (audioSource == null)
+        {
+            audioSource = GetComponent<AudioSource>();
+        }
+        // THÊM: Nếu vẫn chưa có AudioSource, thêm nó vào đối tượng
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
     }
 
     void Update()
@@ -29,6 +44,12 @@ public class ChestOpenOnce : MonoBehaviour
             chestAnimator.Play("Chest_wood");
             isOpened = true;
             buttonUI.SetActive(false);
+
+            // THÊM: Phát âm thanh mở rương
+            if (audioSource != null && openSound != null)
+            {
+                audioSource.PlayOneShot(openSound);
+            }
 
             SpawnCoins(); // 💰 Gọi hàm tạo xu
         }
