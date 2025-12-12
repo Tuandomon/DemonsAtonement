@@ -9,14 +9,14 @@ public class LockPanelT9 : MonoBehaviour
     [SerializeField] private string targetPassword = "HI VONG"; // mật khẩu chỉ còn HI VONG
 
     [Header("UI")]
-    [SerializeField] private TMP_Text displayText;   // hiển thị chuỗi nhập
+    [SerializeField] private TMP_Text displayText;    // hiển thị chuỗi nhập
     [SerializeField] private TMP_Text feedbackText;  // báo đúng/sai
 
     [Header("Buttons")]
     [SerializeField] private Button[] digitButtons;  // 9 nút chính
     [SerializeField] private Button deleteButton;
     [SerializeField] private Button confirmButton;
-    [SerializeField] private Button spaceButton;     // nút khoảng cách
+    [SerializeField] private Button spaceButton;      // nút khoảng cách
 
     [Header("Events")]
     public UnityEvent onUnlock;
@@ -26,6 +26,8 @@ public class LockPanelT9 : MonoBehaviour
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip successClip;
     [SerializeField] private AudioClip failClip;
+    // THÊM: Clip âm thanh khi bấm phím
+    [SerializeField] private AudioClip keyPressClip;
 
     private float lastPressTime = 0f;
     private int lastButtonIndex = -1;
@@ -73,6 +75,12 @@ public class LockPanelT9 : MonoBehaviour
             currentInput += chars[pressIndex[index]];
         }
 
+        // THÊM: Phát âm thanh khi bấm phím
+        if (audioSource && keyPressClip)
+        {
+            audioSource.PlayOneShot(keyPressClip);
+        }
+
         lastPressTime = Time.time;
         lastButtonIndex = index;
         UpdateDisplay();
@@ -82,6 +90,12 @@ public class LockPanelT9 : MonoBehaviour
     {
         currentInput += " ";
         UpdateDisplay();
+
+        // THÊM: Phát âm thanh khi bấm nút Space
+        if (audioSource && keyPressClip)
+        {
+            audioSource.PlayOneShot(keyPressClip);
+        }
     }
 
     private void DeleteLast()
@@ -90,6 +104,12 @@ public class LockPanelT9 : MonoBehaviour
         {
             currentInput = currentInput.Substring(0, currentInput.Length - 1);
             UpdateDisplay();
+
+            // THÊM: Phát âm thanh khi bấm nút Delete
+            if (audioSource && keyPressClip)
+            {
+                audioSource.PlayOneShot(keyPressClip);
+            }
         }
     }
 
