@@ -61,7 +61,7 @@ public class GameController : MonoBehaviour
 
     void ReturnToMainScene()
     {// L?y scene c?
-        string prevScene = PlayerPrefs.GetString("Diem", "Map2");
+        string prevScene = PlayerPrefs.GetString("Diem", "Map2 1");
 
         // L?ng nghe khi load ?? d?ch chuy?n Player
         SceneManager.sceneLoaded += OnSceneLoaded;

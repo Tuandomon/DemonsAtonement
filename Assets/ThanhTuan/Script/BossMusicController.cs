@@ -15,7 +15,7 @@ public class BossMusicController : MonoBehaviour
 
     [Header("Khoảng cách nghe tối đa")]
     [Tooltip("Nhạc sẽ nhỏ dần về 0 khi Player ở khoảng cách này.")]
-    public float maxListenDistance = 30f;
+    public float maxListenDistance = 10f;
 
     [Header("Thời gian nhạc nhỏ dần khi Boss Die")]
     public float fadeOutTime = 2f;
