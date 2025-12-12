@@ -1,30 +1,28 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Bosstalk : MonoBehaviour
 {
     [Header("UI lời thoại")]
-    public GameObject dialoguePanel;   // Panel hiển thị hội thoại
-    public Text dialogueText;          // Text hiển thị lời thoại
-    public GameObject conButton;       // Nút "Tiếp"
+    public GameObject dialoguePanel;
+    public Text dialogueText;
+    public GameObject conButton;
 
-    [Header("Âm thanh (tuỳ chọn)")]
-    public AudioSource voiceSource;
+    [Header("Âm thanh khi panel bật")]
+    public AudioSource voiceSource;   // Phát 1 lần khi panel mở
 
     [TextArea(2, 5)]
-    public string[] dialogues;         // Danh sách câu thoại
+    public string[] dialogues;
 
     public float textSpeed = 0.05f;
 
-    private bool playerIsClose;        // Người chơi có đang ở gần không
-    private bool hasTalked = false;    // Đã nói xong chưa
-    private int index;                 // Câu thoại hiện tại
+    private bool playerIsClose;
+    private bool hasTalked = false;
+    private int index;
 
     void Update()
     {
-        // Hiện nút "Tiếp" khi gõ xong 1 câu
         if (dialoguePanel.activeInHierarchy && dialogueText.text == dialogues[index])
         {
             conButton.SetActive(true);
@@ -43,7 +41,6 @@ public class Bosstalk : MonoBehaviour
         }
         else
         {
-            // Hết thoại
             hasTalked = true;
             zeroText();
         }
@@ -64,6 +61,14 @@ public class Bosstalk : MonoBehaviour
         {
             playerIsClose = true;
             dialoguePanel.SetActive(true);
+
+            // 🔥 Phát âm thanh 1 lần khi mở panel
+            if (voiceSource != null)
+            {
+                voiceSource.loop = false;
+                voiceSource.Play();   // Chỉ play 1 lần
+            }
+
             dialogueText.text = "";
             StartCoroutine(Typing());
         }
@@ -84,5 +89,11 @@ public class Bosstalk : MonoBehaviour
         index = 0;
         dialoguePanel.SetActive(false);
         conButton.SetActive(false);
+
+        // 🔥 Nếu âm thanh đang chạy mà thoát panel → dừng
+        if (voiceSource != null)
+        {
+            voiceSource.Stop();
+        }
     }
 }

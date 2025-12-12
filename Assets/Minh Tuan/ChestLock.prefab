@@ -122,7 +122,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   openChestPrefab: {fileID: 3722931343427267215, guid: 9b7965739050e1e409b9586b73ca3dc2, type: 3}
-  panelObj: {fileID: 0}
+  panelObj: {fileID: 3722931343427267215, guid: 9b7965739050e1e409b9586b73ca3dc2, type: 3}
 --- !u!61 &4630540125030462803
 BoxCollider2D:
   m_ObjectHideFlags: 0
