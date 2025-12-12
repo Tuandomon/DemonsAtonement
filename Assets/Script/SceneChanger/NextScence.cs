@@ -18,7 +18,7 @@ public class NextScence : MonoBehaviour
     public void RePlay()
     {
         string name = SceneManager.GetActiveScene().name;
-        SceneManager.LoadScene("Man_1");
+        SceneManager.LoadScene("Map 1");
         Time.timeScale = 1;
     }
     public void RePlay1()
