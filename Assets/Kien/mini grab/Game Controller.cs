@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
@@ -6,11 +6,14 @@ using UnityEngine.SceneManagement;
 public class GameController : MonoBehaviour
 {
     [SerializeField] private grab Grap;
+
+
     public Canvas GameOver;
     public TMP_Text TimerText;
 
     public float WinTime = 2f;
     public float ReturnDelay = 3f;
+
     private bool isWin = false;
 
     private void Awake()
@@ -39,7 +42,7 @@ public class GameController : MonoBehaviour
     }
 
     // =============================
-    //              WIN
+    // WIN
     // =============================
     void WinMiniGame()
     {
@@ -48,24 +51,26 @@ public class GameController : MonoBehaviour
         GameOver.gameObject.SetActive(true);
         TimerText.text = "YOU WIN!";
 
-        // Th??ng item
+        // Thưởng item
         PlayerPrefs.SetInt("DropReward", 1);
         PlayerPrefs.Save();
 
-        // L?U T�N ?I?M QUAY L?I
+        // Lưu tên điểm quay lại
         PlayerPrefs.SetString("ReturnPointName", "WinReturnPoint");
         PlayerPrefs.Save();
+        // MỞ VÙNG CHẶN
+        PlayerPrefs.SetInt("LockZone1", 0);
 
         Invoke(nameof(ReturnToMainScene), ReturnDelay);
     }
 
     void ReturnToMainScene()
-    {// L?y scene c?
+    {
+        // Lấy scene cũ
         string prevScene = PlayerPrefs.GetString("Diem", "Map2 1");
 
-        // L?ng nghe khi load ?? d?ch chuy?n Player
+        // Lắng nghe khi load để dịch chuyển Player
         SceneManager.sceneLoaded += OnSceneLoaded;
-
         SceneManager.LoadScene(prevScene);
     }
 
@@ -81,6 +86,24 @@ public class GameController : MonoBehaviour
 
             player.transform.position = new Vector2(x, y);
         }
+    }
+    // =============================
+    // UI NÚT X – CỐ THOÁT
+    // =============================
+    public void ExitByXButton()
+    {
+        // Cố thoát → không win → không item → vẫn bị chặn
+        PlayerPrefs.SetInt("DropReward", 0);
+        PlayerPrefs.SetInt("MiniGameWin", 0);
+        PlayerPrefs.Save();
+
+        // Lưu tên điểm quay lại
+        PlayerPrefs.SetString("ReturnPointName", "WinReturnPoint");
+        PlayerPrefs.Save();
+        // BỊ CHẶN
+        PlayerPrefs.SetInt("LockZone1", 1);
+
+        Invoke(nameof(ReturnToMainScene), ReturnDelay);
     }
 
     public void Retry()
