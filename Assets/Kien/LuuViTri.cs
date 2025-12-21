@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class LuuViTri : MonoBehaviour
+public class LuuViTri1 : MonoBehaviour
 {
     public Transform checkpoint; // v? trí mu?n quay v?
 
