@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 [RequireComponent(typeof(AudioSource))]
 public class BackgroundMusicManager : MonoBehaviour
@@ -34,5 +35,15 @@ public class BackgroundMusicManager : MonoBehaviour
     {
         // Cập nhật âm lượng theo PlayerPrefs mỗi frame (hoặc có thể gọi từ sự kiện nếu muốn tối ưu hơn)
         audioSource.volume = PlayerPrefs.GetFloat(VolumeKey, 1f);
+    }
+
+    internal void ReturnToDefaultMusic()
+    {
+        throw new NotImplementedException();
+    }
+
+    internal void PlayNewMusic(AudioClip zoneMusic)
+    {
+        throw new NotImplementedException();
     }
 }

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5368535652343154625}
   - component: {fileID: 5682148997431521877}
   - component: {fileID: -8035241892157957392}
+  - component: {fileID: -5624294942400921230}
   m_Layer: 0
   m_Name: "G\u1EE3i \xFD"
   m_TagString: Untagged
@@ -99,3 +100,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   icon: {fileID: -1307550484, guid: 988eef0cc3a5df24e8a6def80349237e, type: 3}
   itemName: "G\u1EE3i \xDD"
+--- !u!114 &-5624294942400921230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6917279993679359443}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69c59b6082e918a41b5f1ed86398dc50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  amplitude: 0.2
+  speed: 2

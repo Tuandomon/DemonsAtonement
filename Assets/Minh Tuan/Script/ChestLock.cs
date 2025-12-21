@@ -3,12 +3,15 @@
 public class ChestLock : MonoBehaviour
 {
     [Header("Chest Prefab mở")]
-    [SerializeField] private GameObject openChestPrefab;   // Prefab rương mở
+    [SerializeField] private GameObject openChestPrefab;
 
     [Header("Panel Lock")]
-    [SerializeField] private GameObject panelObj;          // Kéo thả UIPassLock từ Hierarchy vào đây
+    [SerializeField] private GameObject panelObj;
 
     private LockPanelT9 lockPanelScript;
+
+    private bool isPanelOpen = false;
+    private bool playerInside = false;   // 🔥 kiểm tra player đứng trong vùng
 
     private void Start()
     {
@@ -20,7 +23,6 @@ public class ChestLock : MonoBehaviour
                 lockPanelScript.onUnlock.AddListener(UnlockChest);
             }
 
-            // Ẩn panel lúc đầu
             panelObj.SetActive(false);
         }
         else
@@ -29,30 +31,47 @@ public class ChestLock : MonoBehaviour
         }
     }
 
-    // Khi người chơi lại gần và bấm E thì mở panel (dùng Collider2D)
-    private void OnTriggerStay2D(Collider2D other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Player") && Input.GetKeyDown(KeyCode.E))
+        if (other.CompareTag("Player"))
         {
-            if (panelObj != null)
+            playerInside = true;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            playerInside = false;
+
+            // Nếu rời vùng → tự tắt panel
+            if (panelObj != null && isPanelOpen)
             {
-                panelObj.SetActive(true);
+                isPanelOpen = false;
+                panelObj.SetActive(false);
             }
         }
     }
 
-    // Hàm gọi khi mở khóa thành công
+    private void Update()
+    {
+        // 🔥 Bấm E để toggle panel
+        if (playerInside && Input.GetKeyDown(KeyCode.E))
+        {
+            isPanelOpen = !isPanelOpen;
+            panelObj.SetActive(isPanelOpen);
+        }
+    }
+
     private void UnlockChest()
     {
-        if (panelObj != null)
-        {
-            panelObj.SetActive(false);
-        }
+        panelObj.SetActive(false);
 
         if (openChestPrefab)
         {
             Instantiate(openChestPrefab, transform.position, transform.rotation);
-            Destroy(gameObject); // Xóa rương cũ
+            Destroy(gameObject);
         }
     }
 }
