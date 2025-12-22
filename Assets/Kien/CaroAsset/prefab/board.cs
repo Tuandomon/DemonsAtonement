@@ -75,46 +75,55 @@ public class board : MonoBehaviour
         AIMove();
     }
 
-    // AI mạnh
+    // AI RẤT DỄ - Đánh ngẫu nhiên đơn giản
     public void AIMove()
     {
-        int bestRow = -1;
-        int bestCol = -1;
-        int maxScore = -1;
+        // Ưu tiên chặn nếu người chơi sắp thắng (4 nước liên tiếp)
+        if (TryBlockImmediateWin())
+        {
+            currentTurn = "x";
+            return;
+        }
 
+        // Nếu không có nước nào cần chặn gấp, đánh ngẫu nhiên
+        List<Vector2Int> emptyCells = new List<Vector2Int>();
+
+        // Tìm tất cả ô trống
         for (int i = 1; i <= boardSize; i++)
         {
             for (int j = 1; j <= boardSize; j++)
             {
-                if (matrix[i, j] != "") continue;
-
-                int score = EvaluateCellStrong(i, j);
-
-                if (score > maxScore)
+                if (matrix[i, j] == "")
                 {
-                    maxScore = score;
-                    bestRow = i;
-                    bestCol = j;
+                    emptyCells.Add(new Vector2Int(i, j));
                 }
             }
         }
 
-        if (bestRow == -1 || bestCol == -1) return;
+        // Nếu không còn ô trống
+        if (emptyCells.Count == 0) return;
 
-        matrix[bestRow, bestCol] = "0";
+        // Đánh ngẫu nhiên
+        int randomIndex = Random.Range(0, emptyCells.Count);
+        Vector2Int selectedCell = emptyCells[randomIndex];
+
+        int row = selectedCell.x;
+        int col = selectedCell.y;
+
+        matrix[row, col] = "0";
 
         // Cập nhật sprite cho ô AI đánh
         foreach (Transform child in Board)
         {
             Cell cell = child.GetComponent<Cell>();
-            if (cell.row == bestRow && cell.colum == bestCol)
+            if (cell.row == row && cell.colum == col)
             {
                 cell.ChangeImage("0");
                 break;
             }
         }
 
-        if (Check(bestRow, bestCol, "0"))
+        if (Check(row, col, "0"))
         {
             Transform canvas = FindAnyObjectByType<Canvas>().transform;
             GameObject window = Instantiate(gameOverPrefab, canvas);
@@ -125,90 +134,54 @@ public class board : MonoBehaviour
         currentTurn = "x";
     }
 
-    // -------------------------------
-    //      AI ĐÁNH GIÁ MẠNH
-    // -------------------------------
-
-    private int EvaluateCellStrong(int row, int col)
+    // Kiểm tra và chặn nếu người chơi sắp thắng (4 nước liên tiếp)
+    private bool TryBlockImmediateWin()
     {
-        string ai = "0";
         string human = "x";
 
-        // Nếu đánh thắng ngay
-        matrix[row, col] = ai;
-        if (Check(row, col, ai))
+        // Duyệt qua tất cả ô trống để tìm nước chặn
+        for (int i = 1; i <= boardSize; i++)
         {
-            matrix[row, col] = "";
-            return 100000;
+            for (int j = 1; j <= boardSize; j++)
+            {
+                if (matrix[i, j] != "") continue;
+
+                // Kiểm tra nếu người chơi đặt ở đây sẽ thắng
+                matrix[i, j] = human;
+                if (Check(i, j, human))
+                {
+                    // Chặn nước này
+                    matrix[i, j] = "0";
+
+                    // Cập nhật sprite
+                    foreach (Transform child in Board)
+                    {
+                        Cell cell = child.GetComponent<Cell>();
+                        if (cell.row == i && cell.colum == j)
+                        {
+                            cell.ChangeImage("0");
+                            break;
+                        }
+                    }
+
+                    // Kiểm tra AI có thắng không (hiếm khi xảy ra với AI dễ)
+                    if (Check(i, j, "0"))
+                    {
+                        Transform canvas = FindAnyObjectByType<Canvas>().transform;
+                        GameObject window = Instantiate(gameOverPrefab, canvas);
+                        window.transform.localScale = Vector3.one;
+                        window.GetComponent<GameOver>().SetName("0");
+                    }
+
+                    return true;
+                }
+                matrix[i, j] = "";
+            }
         }
-        matrix[row, col] = "";
 
-        // Nếu người sắp thắng => chặn ngay
-        matrix[row, col] = human;
-        if (Check(row, col, human))
-        {
-            matrix[row, col] = "";
-            return 90000;
-        }
-        matrix[row, col] = "";
-
-        int score = 0;
-
-        score += PatternScore(row, col, ai);     // Tấn công
-        score += PatternScore(row, col, human);  // Phòng thủ
-
-        int center = boardSize / 2;
-        score += (boardSize - (Mathf.Abs(row - center) + Mathf.Abs(col - center)));
-
-        return score;
+        return false;
     }
 
-    private int PatternScore(int row, int col, string p)
-    {
-        int score = 0;
-
-        score += EvaluateLine(row, col, 1, 0, p);   // dọc
-        score += EvaluateLine(row, col, 0, 1, p);   // ngang
-        score += EvaluateLine(row, col, 1, 1, p);   // chéo \
-        score += EvaluateLine(row, col, 1, -1, p);  // chéo /
-
-        return score;
-    }
-
-    private int EvaluateLine(int row, int col, int dx, int dy, string p)
-    {
-        int count = 1;
-        int openEnds = 0;
-
-        // đi lùi
-        int r = row - dx;
-        int c = col - dy;
-        while (r >= 1 && r <= boardSize && c >= 1 && c <= boardSize && matrix[r, c] == p)
-        {
-            count++;
-            r -= dx; c -= dy;
-        }
-        if (r >= 1 && r <= boardSize && c >= 1 && c <= boardSize && matrix[r, c] == "") openEnds++;
-
-        // đi tới
-        r = row + dx;
-        c = col + dy;
-        while (r >= 1 && r <= boardSize && c >= 1 && c <= boardSize && matrix[r, c] == p)
-        {
-            count++;
-            r += dx; c += dy;
-        }
-        if (r >= 1 && r <= boardSize && c >= 1 && c <= boardSize && matrix[r, c] == "") openEnds++;
-
-        // tính điểm theo chuỗi
-        if (count >= 5) return 10000;
-        if (count == 4 && openEnds == 2) return 5000;
-        if (count == 4 && openEnds == 1) return 2000;
-        if (count == 3 && openEnds == 2) return 1000;
-        if (count == 3 && openEnds == 1) return 300;
-        if (count == 2 && openEnds == 2) return 150;
-        if (count == 2 && openEnds == 1) return 40;
-
-        return 10;
-    }
+    // Đơn giản hóa: AI dễ không cần đánh giá phức tạp
+    // Xóa các hàm EvaluateCellStrong, PatternScore, EvaluateLine không cần thiết
 }

@@ -390,7 +390,7 @@ MonoBehaviour:
   Grap: {fileID: 446100254}
   GameOver: {fileID: 902950339}
   TimerText: {fileID: 812253679}
-  WinTime: 20
+  WinTime: 2
   ReturnDelay: 3
 --- !u!1 &337747336
 GameObject:
